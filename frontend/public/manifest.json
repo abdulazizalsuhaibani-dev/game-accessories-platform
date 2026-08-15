@@ -1,0 +1,33 @@
+{
+  "short_name": "Game/Acc",
+  "name": "Game/Acc — Gear that keeps up.",
+  "description": "Mice, headsets, controllers and decks. Bench-tested, in stock, shipped same day.",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo-mark.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "logo-mark-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo-mark-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ccff00",
+  "background_color": "#06070a"
+}

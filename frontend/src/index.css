@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background: theme("colors.void");
+  }
+
+  body {
+    margin: 0;
+    background: theme("colors.void");
+    color: theme("colors.ink");
+    font-family: theme("fontFamily.sans");
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: theme("colors.acid.DEFAULT");
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: theme("colors.acid.hi");
+  }
+
+  /* Arabic swaps the type stack. Cairo needs more leading than Chakra Petch and
+     has no case, so the uppercase treatment is dropped rather than mirrored. */
+  html[lang="ar"] body {
+    font-family: theme("fontFamily.sans-ar");
+  }
+
+  /* `[dir="ltr"]` marks islands of Latin text inside an Arabic page — the
+     wordmark above all — which keep their own stack and casing. */
+  html[lang="ar"] .font-display:not([dir="ltr"]),
+  html[lang="ar"] h1:not([dir="ltr"]),
+  html[lang="ar"] h2:not([dir="ltr"]),
+  html[lang="ar"] h3:not([dir="ltr"]) {
+    font-family: theme("fontFamily.display-ar");
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+
+  html[lang="ar"] .telemetry,
+  html[lang="ar"] .font-mono {
+    letter-spacing: 0;
+  }
+
+  ::selection {
+    background: theme("colors.acid.DEFAULT");
+    color: theme("colors.void");
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: theme("colors.void");
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: theme("colors.line");
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme("colors.edge");
+  }
+
+  /* Kill the UA's light-mode autofill wash inside dark fields. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: theme("colors.ink");
+    -webkit-box-shadow: 0 0 0 1000px theme("colors.void") inset;
+  }
+}
+
+@layer components {
+  /* Small uppercase mono labels — the "telemetry" voice used for every
+     eyebrow, badge, nav item and table header in the design. */
+  .telemetry {
+    @apply font-mono font-semibold uppercase tracking-telemetry;
+  }
+
+  /* Primary action: acid fill, square, hard magenta offset. The explicit hover
+     colour is needed because these are often anchors, and the base `a:hover`
+     rule would otherwise repaint the label acid-on-acid. */
+  .btn-acid {
+    @apply inline-flex items-center justify-center gap-2 bg-acid px-7 text-void
+           telemetry text-xs shadow-offset transition-colors
+           hover:bg-acid-hi hover:text-void disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Secondary action: hairline box, no fill. */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border border-edge bg-transparent
+           px-6 text-ink telemetry text-xs transition-colors
+           hover:border-acid hover:text-acid;
+  }
+
+  /* Small flat action used inside toolbars and table rows. */
+  .btn-flat {
+    @apply inline-flex items-center justify-center gap-2 bg-acid px-4 text-void
+           telemetry text-[10px] transition-colors hover:bg-acid-hi hover:text-void;
+  }
+
+  .field {
+    @apply h-11 w-full border border-line bg-void px-3.5 text-sm text-ink
+           outline-none transition-colors
+           placeholder:text-muted focus:border-acid;
+  }
+
+  .field-label {
+    @apply mb-2.5 block telemetry text-[11px] text-dim;
+  }
+
+  /* Raised surface with a hairline — cards, rails, summary panels. */
+  .panel {
+    @apply border border-line bg-panel;
+  }
+
+  /* Filter/attribute pill in its inactive state. */
+  .chip {
+    @apply inline-flex items-center border border-line px-3 py-2 font-mono
+           text-[11px] tracking-badge text-dim;
+  }
+
+  .chip-active {
+    @apply inline-flex items-center bg-acid px-2.5 py-1.5 font-mono text-[10px]
+           font-semibold tracking-badge text-void;
+  }
+
+  /* Square checkbox — filled acid when on, hairline square when off. */
+  .box-check {
+    @apply block h-[13px] w-[13px] flex-none border border-edge transition-colors;
+  }
+
+  .box-check-on {
+    @apply border-acid bg-acid;
+  }
+
+  /* Status pill used in admin tables (LIVE / SHIPPED / UNSHIPPED …). */
+  .status-pill {
+    @apply inline-block px-2.5 py-1 font-mono text-[10px] font-semibold tracking-badge;
+  }
+}
+
+@layer utilities {
+  /* The angled corner cut on the logo mark. */
+  .clip-mark {
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+  }
+
+  /* Declared here rather than relying on the config, because the animation is
+     applied from raw CSS below and Tailwind only emits config keyframes that a
+     generated `animate-*` utility actually references. */
+  @keyframes tick {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes tickrtl {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(50%);
+    }
+  }
+
+  /* Marquee halves are duplicated in markup; translating 50% loops seamlessly. */
+  .ticker-track {
+    animation: tick 24s linear infinite;
+  }
+
+  [dir="rtl"] .ticker-track {
+    animation-name: tickrtl;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+    }
+  }
+}

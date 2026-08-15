@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Game/Acc mark: the acid square with its corner cut, on the void chassis.
+       Geometry matches the clip-path in src/components/shared/Brand.js. -->
+  <rect width="100" height="100" fill="#06070a"/>
+  <path d="M20 20H80V62L62 80H20Z" fill="#ccff00"/>
+</svg>
