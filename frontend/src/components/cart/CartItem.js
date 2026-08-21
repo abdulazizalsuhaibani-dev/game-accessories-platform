@@ -2,10 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 export default function CartItem(prop) {
   const { cartItem, cart, setCart, setCartCount, setSnackBarMessage, setOpenErrorSnackBar } = prop;
-  const { t, num, price } = useStoreSettings();
+  const { t, num } = useStoreSettings();
 
   function writeCart(updatedCart) {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -87,7 +88,7 @@ export default function CartItem(prop) {
 
       <div className="flex flex-col items-end gap-3">
         <div className="font-display text-xl font-bold text-ink">
-          {price(cartItem.product.productPrice * cartItem.quantity)}
+          <Money amount={cartItem.product.productPrice * cartItem.quantity} />
         </div>
         <div className="flex h-9 border border-line">
           <button

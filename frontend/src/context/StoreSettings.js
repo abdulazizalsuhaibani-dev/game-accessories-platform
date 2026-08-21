@@ -1,9 +1,20 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import strings from "../i18n/strings";
-import { DEFAULT_CURRENCY, formatMoney, getCurrency, localizeDigits } from "../i18n/currencies";
+import {
+  CURRENCIES,
+  DEFAULT_CURRENCY,
+  formatMoney,
+  getCurrency,
+  localizeDigits,
+} from "../i18n/currencies";
 
 const LOCALE_KEY = "locale";
 const CURRENCY_KEY = "currency";
+
+// Derived, never hand-listed: a returning customer can have any past choice in
+// localStorage, and this is what decides whether it is still offered. A literal
+// copy of the currency list drifts the moment one is added or removed.
+const CURRENCY_CODES = CURRENCIES.map((currency) => currency.code);
 
 const StoreSettingsContext = createContext(null);
 
@@ -15,11 +26,7 @@ function readStored(key, fallback, allowed) {
 export function StoreSettingsProvider({ children }) {
   const [locale, setLocaleState] = useState(() => readStored(LOCALE_KEY, "en", ["en", "ar"]));
   const [currency, setCurrencyState] = useState(() =>
-    readStored(
-      CURRENCY_KEY,
-      DEFAULT_CURRENCY,
-      ["USD", "EUR", "GBP", "SAR", "AED", "KWD", "QAR", "BHD", "OMR"]
-    )
+    readStored(CURRENCY_KEY, DEFAULT_CURRENCY, CURRENCY_CODES)
   );
 
   // Direction lives on <html> so MUI portals (dialogs, popovers, snackbars)

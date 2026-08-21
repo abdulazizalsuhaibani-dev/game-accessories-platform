@@ -1,6 +1,7 @@
 import React from "react";
 import { Slider } from "@mui/material";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 export const PRICE_FLOOR = 0;
 export const PRICE_CEILING = 500;
@@ -24,7 +25,7 @@ export default function SearchOptionsForm(prop) {
     activeFilters,
     onClearFilters,
   } = prop;
-  const { t, price } = useStoreSettings();
+  const { t } = useStoreSettings();
 
   const toggleColor = (color) => setColorSelect(colorSelect === color ? "" : color);
 
@@ -98,8 +99,8 @@ export default function SearchOptionsForm(prop) {
           }}
         />
         <div className="flex justify-between font-mono text-[11px] font-medium text-dim">
-          <span>{price(priceRange[0])}</span>
-          <span>{price(priceRange[1])}</span>
+          <Money amount={priceRange[0]} />
+          <Money amount={priceRange[1]} />
         </div>
       </div>
 

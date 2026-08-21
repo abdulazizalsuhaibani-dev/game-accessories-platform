@@ -6,6 +6,7 @@ import OrderSummary from "./OrderSummary";
 import ImageWell from "../shared/ImageWell";
 import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 export function cartSubtotal(cart) {
   return cart.reduce((sum, line) => sum + line.product.productPrice * line.quantity, 0);
@@ -24,7 +25,7 @@ export default function Cart(prop) {
     setSnackBarMessage,
     setOpenErrorSnackBar,
   } = prop;
-  const { t, price } = useStoreSettings();
+  const { t } = useStoreSettings();
   const navigate = useNavigate();
   const [upsell, setUpsell] = useState([]);
 
@@ -105,7 +106,7 @@ export default function Cart(prop) {
                         {product.productName}
                       </div>
                       <div className="mt-1.5 font-display text-sm font-bold text-acid">
-                        {price(product.productPrice)}
+                        <Money amount={product.productPrice} />
                       </div>
                     </div>
                   </Link>
