@@ -71,14 +71,11 @@ otherwise Render builds from the repo root and fails.
 
 ## Working in this repo
 
-Each half documents its own architecture and conventions in detail:
+Architecture and conventions for both halves live in the repository root's
+[`CLAUDE.md`](CLAUDE.md) — the per-half `CLAUDE.md` files it used to point at
+were deliberately removed, so that one file is the whole of it.
 
-- [`backend/CLAUDE.md`](backend/CLAUDE.md) — layer structure, DI wiring, auth,
-  and the gotchas worth knowing before changing anything.
-- [`frontend/CLAUDE.md`](frontend/CLAUDE.md) — state ownership, the checkout
-  call chain, i18n/RTL/currency, and the "Arcade" design system.
-
-Read those before the per-directory `README.md` files, which predate a lot of
+Read it before the per-directory `README.md` files, which predate a lot of
 the current code. In particular `backend/README.md` documents lowercase API
 routes; the real routes are PascalCase (`/api/v1/Products`, `/api/v1/Orders`).
 

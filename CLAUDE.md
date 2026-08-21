@@ -17,19 +17,20 @@ affecting the other **only** where it crosses that HTTP boundary.
 
 ## Start here
 
-**Each half has its own CLAUDE.md, and those are the authoritative documents.**
-This file is orientation only — do not duplicate their content here.
+**This file is the only CLAUDE.md in the repository.** Per-half `CLAUDE.md`
+files used to exist and were deliberately removed, so there is no deeper
+document to defer to — read the code for anything not covered here.
 
-- [`backend/CLAUDE.md`](backend/CLAUDE.md) — the four-layer
-  controller → service → repository → DbContext flow, hand-written DI
-  registration in `Program.cs`, `CustomException` error handling, JWT auth and
-  ownership checks, and a long list of load-bearing gotchas.
-- [`frontend/CLAUDE.md`](frontend/CLAUDE.md) — `App.js` as the owner of nearly
-  all cross-page state, the three-call checkout chain, the `useStoreSettings`
-  i18n/currency/RTL provider, and the "Arcade" design system's three
-  must-agree token sources.
+The shape of each half, in one line apiece:
 
-Read the one for the half you are touching before making changes.
+- **`backend/`** — a four-layer flow, controller → service → repository →
+  `DatabaseContext`, with hand-written DI registration in `Program.cs`,
+  `CustomException` plus `ErrorHandlerMiddleware` for error responses, and JWT
+  auth with ownership checks in `AuthorizationUtils`.
+- **`frontend/`** — `App.js` owns nearly all cross-page state, checkout is a
+  three-call chain, `useStoreSettings` provides i18n/currency/RTL, and the
+  "Arcade" design system's tokens must agree across `tailwind.config.js`,
+  `src/index.css` and `src/theme/arcadeTheme.js`.
 
 ## Commands
 
@@ -73,8 +74,9 @@ the other breaks the app:
   The frontend composes its address line from several fields plus courier notes,
   so this limit is easy to trip from checkout.
 - **`GET /api/v1/Products` returns `{ products, productsCount }`** where
-  `productsCount` is the table's total row count and ignores search/filter
-  arguments. It cannot drive filtered pagination on either side.
+  `productsCount` is counted against the same search and filters as the page,
+  so it does drive filtered pagination. `CountProductsAsync()` — the no-argument
+  overload — is still the whole-table count; do not confuse the two.
 
 ## Local setup and deployment
 
