@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,22 +8,30 @@ import Brand from "../shared/Brand";
 import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
 
-const schema = yup
-  .object({
-    email: yup.string().email().required(),
-    password: yup.string().required(),
-  })
-  .required();
+// Built per language, for the reasons set out in RegistrationForm.js. These
+// rules previously carried no messages at all, so yup answered with defaults
+// written from the property key — "email is a required field".
+const buildSchema = (t) =>
+  yup
+    .object({
+      email: yup
+        .string()
+        .email(t("validation.emailFormat"))
+        .required(t("validation.emailRequired")),
+      password: yup.string().required(t("validation.passwordRequired")),
+    })
+    .required();
 
 export default function LoginForm() {
   const { t } = useStoreSettings();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
+  const resolver = useMemo(() => yupResolver(buildSchema(t)), [t]);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({ resolver });
 
   function onSubmit(data) {
     setServerError("");

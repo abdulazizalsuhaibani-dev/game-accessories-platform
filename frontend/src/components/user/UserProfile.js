@@ -30,6 +30,10 @@ export default function UserProfile(prop) {
   async function handleSubmit(event) {
     event.preventDefault();
     setSaving(true);
+    const updatedFields = {
+      firstName: formUserData.firstName,
+      lastName: formUserData.lastName,
+    };
     try {
       // The password is re-checked against sign-in before the update, because
       // the update endpoint takes the password as part of the user payload.
@@ -42,12 +46,26 @@ export default function UserProfile(prop) {
         `${API_BASE}/Users/${userData.userId}`,
         {
           ...userData,
-          firstName: formUserData.firstName,
-          lastName: formUserData.lastName,
+          ...updatedFields,
           password: formUserData.password,
         },
         { headers: authHeaders() }
       );
+
+      // The rows above render from userData, so without this the screen keeps
+      // showing the old name while claiming the save worked. The PUT answers
+      // with a status string rather than the updated user, so re-read the
+      // record to show what was actually stored. A failed re-read does not
+      // undo the save, so fall back to the values we sent rather than
+      // reporting a failure that did not happen.
+      try {
+        const { data } = await axios.get(`${API_BASE}/Users/auth`, {
+          headers: authHeaders(),
+        });
+        setUserData(data && data.userId ? data : { ...userData, ...updatedFields });
+      } catch {
+        setUserData({ ...userData, ...updatedFields });
+      }
 
       setSnackBarMessage("User information updated successfully");
       setOpenSuccessSnackBar(true);

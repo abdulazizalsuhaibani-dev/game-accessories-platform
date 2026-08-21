@@ -17,6 +17,10 @@ namespace src.Services.user
 {
     public class UserService : IUserService
     {
+        // The special characters a password may satisfy its third rule with.
+        // RegistrationForm.js validates against this exact set.
+        private static readonly char[] PasswordSpecialCharacters = "!@#$%^&*()_[]".ToCharArray();
+
         protected readonly UserRepository _userRepo;
         protected readonly IMapper _mapper;
         protected readonly IConfiguration _config;
@@ -77,17 +81,25 @@ namespace src.Services.user
             }
             else
             {
+                // These three rules are the same ones RegistrationForm.js
+                // validates before it posts. Keep the two ends in step: a rule
+                // only one of them enforces makes registration impossible
+                // rather than merely strict.
                 if (user.Password.Length < 8)
                 {
                     throw CustomException.BadRequest("password should be at least 8 characters");
                 }
-                else if ((!user.Password.Contains("1")) && (!user.Password.Contains("2")) && (!user.Password.Contains("3")) && (!user.Password.Contains("4")) && (!user.Password.Contains("5")) && (!user.Password.Contains("6")) && (!user.Password.Contains("7")) && (!user.Password.Contains("8")) && (!user.Password.Contains("9")) && (!user.Password.Contains("0")))
+                else if (!user.Password.Any(char.IsLetter))
                 {
-                    throw CustomException.BadRequest("password should contains at least one number");
+                    throw CustomException.BadRequest("password should contain at least one letter");
                 }
-                else if ((!user.Password.Contains("!")) && (!user.Password.Contains("@")) && (!user.Password.Contains("#")) && (!user.Password.Contains("$")) && (!user.Password.Contains("%")) && (!user.Password.Contains("^")) && (!user.Password.Contains("&")) && (!user.Password.Contains("*")) && (!user.Password.Contains("(")) && (!user.Password.Contains(")")) && (!user.Password.Contains("_")) && (!user.Password.Contains("[")) && (!user.Password.Contains("]")))
+                else if (!user.Password.Any(char.IsDigit))
                 {
-                    throw CustomException.BadRequest("password should contains at least one special character (! - @ - # - $ - % - & - * - ( - ) - _ - [ - ])");
+                    throw CustomException.BadRequest("password should contain at least one number");
+                }
+                else if (user.Password.IndexOfAny(PasswordSpecialCharacters) < 0)
+                {
+                    throw CustomException.BadRequest($"password should contain at least one special character ({string.Join(" ", PasswordSpecialCharacters)})");
                 }
             }
             PasswordUtils.HashPassword(createDto.Password, out string hashedPassword, out byte[] salt);
