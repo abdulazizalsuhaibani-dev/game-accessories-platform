@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Dialog,
   DialogActions,
@@ -135,6 +135,17 @@ export default function Checkout(prop) {
       deliveryNotes: "",
     },
   });
+
+  // yup resolves a message when the schema is built, so an error raised before
+  // the customer switched language still holds the old language's string on
+  // screen. Re-run the rules when the language flips — but only for a form that
+  // is already showing an error, since validating one nobody has filled in yet
+  // would light it up red for no reason.
+  const errorCountRef = useRef(0);
+  errorCountRef.current = Object.keys(errors).length;
+  useEffect(() => {
+    if (errorCountRef.current > 0) trigger();
+  }, [t, trigger]);
 
   const addressValue = watch("address");
   const notesValue = watch("deliveryNotes");
