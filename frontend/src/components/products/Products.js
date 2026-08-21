@@ -13,10 +13,15 @@ import { useStoreSettings } from "../../context/StoreSettings";
 
 const LIMIT = 9;
 
+// The API sorts by a named field plus a direction, and every option has to name
+// both. The first option used to send neither, which left the server on its
+// price-ascending default — the very same order as the option below it. It was
+// also labelled "Best selling", which the catalogue cannot answer: a product
+// carries stock on hand, not units sold. Rating is what the data supports.
 const SORT_OPTIONS = [
-  { value: "", labelKey: "list.sortBest" },
-  { value: "0", labelKey: "list.sortAsc" },
-  { value: "1", labelKey: "list.sortDesc" },
+  { value: "", labelKey: "list.sortRated", sortBy: "rating", sortOrder: "1" },
+  { value: "0", labelKey: "list.sortAsc", sortBy: "price", sortOrder: "0" },
+  { value: "1", labelKey: "list.sortDesc", sortBy: "price", sortOrder: "1" },
 ];
 
 export default function Products() {
@@ -50,7 +55,10 @@ export default function Products() {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  useEffect(() => setPage(1), [debouncedSearch, priceRange, colorSelect, urlSort]);
+  useEffect(
+    () => setPage(1),
+    [debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort]
+  );
 
   useEffect(() => {
     const params = new URLSearchParams({
@@ -61,7 +69,12 @@ export default function Products() {
     if (priceRange[0] > PRICE_FLOOR) params.set("MinPrice", String(priceRange[0]));
     if (priceRange[1] < PRICE_CEILING) params.set("MaxPrice", String(priceRange[1]));
     if (colorSelect) params.set("Colors", colorSelect);
-    if (urlSort) params.set("SortOrder", urlSort);
+    if (inStockOnly) params.set("InStockOnly", "true");
+
+    const sortOption =
+      SORT_OPTIONS.find((option) => option.value === urlSort) ?? SORT_OPTIONS[0];
+    params.set("SortBy", sortOption.sortBy);
+    params.set("SortOrder", sortOption.sortOrder);
 
     let cancelled = false;
     setLoading(true);
@@ -84,7 +97,7 @@ export default function Products() {
     return () => {
       cancelled = true;
     };
-  }, [page, debouncedSearch, priceRange, colorSelect, urlSort]);
+  }, [page, debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort]);
 
   const activeFilters = useMemo(() => {
     const filters = [];
@@ -134,10 +147,10 @@ export default function Products() {
     setSearchParams(searchParams, { replace: true });
   }
 
-  // The catalogue endpoint has no stock filter, so this trims the fetched page.
-  const visible = inStockOnly
-    ? productsResponse.products.filter((product) => product.sku > 0)
-    : productsResponse.products;
+  // "In stock only" is a query parameter now. Trimming the already-fetched page
+  // used to shrink a nine-item page to whatever survived, and never reached the
+  // count or the pager.
+  const visible = productsResponse.products;
 
   const pageCount = Math.max(1, Math.ceil((productsResponse.productsCount || 0) / LIMIT));
 

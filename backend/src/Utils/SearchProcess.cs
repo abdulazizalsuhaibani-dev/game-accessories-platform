@@ -20,6 +20,10 @@ namespace src.Utils
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
 
+        // hides sold out products. applied in the query rather than on the fetched
+        // page, so it narrows the count and the pager along with the results
+        public bool InStockOnly { get; set; }
+
         //third: user will sort the prodcut based on sku,price,added date,and high reviews,by asc or desc
 
         public SortOrder SortOrder { get; set; } = SortOrder.Ascending; // the enum is defined in sortOptions class

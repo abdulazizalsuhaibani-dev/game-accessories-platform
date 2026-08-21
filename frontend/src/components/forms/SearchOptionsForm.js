@@ -7,9 +7,9 @@ export const PRICE_CEILING = 500;
 export const COLORS = ["Black", "White", "Silver"];
 
 /**
- * The 236px filter rail from screen 02. Price, colour and sort map onto the
- * catalogue query; "in stock only" has no server-side equivalent, so it is
- * applied to the fetched page in Products.js.
+ * The 236px filter rail from screen 02. Every control here maps onto the
+ * catalogue query, "in stock only" included — so each one narrows the result
+ * count and the pager, not just the page that came back.
  */
 export default function SearchOptionsForm(prop) {
   const {
