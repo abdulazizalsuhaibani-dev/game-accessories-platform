@@ -5,6 +5,7 @@ import axios from "axios";
 import AdminTableToolbar from "./AdminTableToolbar";
 import { API_BASE, authHeaders } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { isShipped, isUnshipped } from "../../utils/orderStatus";
 
 export default function OrdersTable(prop) {
   const { setSnackBarMessage, setOpenErrorSnackBar } = prop;
@@ -32,15 +33,23 @@ export default function OrdersTable(prop) {
 
   const columns = [
     { field: "id", headerName: "Order ID", width: 180 },
-    { field: "userId", headerName: "User ID", width: 180 },
+    {
+      field: "customerName",
+      headerName: "Customer",
+      width: 180,
+      // the API leaves this null once the customer is deleted; the id is all that is
+      // left to identify the order by
+      valueGetter: (value, row) => value || row.userId,
+    },
     { field: "orderDate", headerName: "Placed", width: 160 },
-    { field: "shipDate", headerName: "Shipped", width: 160 },
+    // ShipDate is the delivery date promised at checkout, not a dispatch timestamp
+    { field: "shipDate", headerName: "Est. delivery", width: 160 },
     {
       field: "orderStatus",
       headerName: "Status",
       width: 130,
       renderCell: ({ row }) => {
-        const shipped = Boolean(row.shipDate);
+        const shipped = isShipped(row);
         return (
           <span
             className={`status-pill ${
@@ -61,9 +70,11 @@ export default function OrdersTable(prop) {
   const visibleRows = useMemo(() => {
     const term = query.trim().toLowerCase();
     return rows.filter((row) => {
-      if (unshippedOnly && row.shipDate) return false;
+      if (unshippedOnly && !isUnshipped(row)) return false;
       if (!term) return true;
-      return `${row.id} ${row.userId} ${row.city} ${row.address}`.toLowerCase().includes(term);
+      return `${row.id} ${row.customerName ?? ""} ${row.userId} ${row.city} ${row.address}`
+        .toLowerCase()
+        .includes(term);
     });
   }, [rows, query, unshippedOnly]);
 

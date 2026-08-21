@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE, authHeaders } from "../../api";
+import { isUnshipped } from "../../utils/orderStatus";
 
 /**
  * Sidebar and KPI figures for the admin screens. Each source is independent —
@@ -52,7 +53,6 @@ export default function useAdminCounts() {
       .then((response) => {
         if (cancelled) return;
         const orders = response.data ?? [];
-        const isUnshipped = (order) => !order.shipDate || order.orderStatus === "Pending";
         setCounts((current) => ({
           ...current,
           orders: orders.length,

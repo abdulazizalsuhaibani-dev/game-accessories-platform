@@ -30,6 +30,9 @@ namespace src.DTO
         {
             public Guid Id { get; set; }
             public Guid UserId { get; set; }
+            // Customer's display name, joined in by the service. Null once that user is
+            // deleted, so callers fall back to the id.
+            public string? CustomerName { get; set; }
             public Guid CartId { get; set; }
             public Guid PaymentId { get; set; }
             public DateTime OrderDate { get; set; }
