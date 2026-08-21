@@ -2,31 +2,36 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 export default function Product({ product }) {
-  const { t, num, price } = useStoreSettings();
-  const outOfStock = product.sku === 0;
+  const { t, num } = useStoreSettings();
+  // `sku === 0` missed a string "0", a null or an absent sku and called all three
+  // in stock. Every other stock check in the app compares rather than identifies.
+  const outOfStock = Number(product.sku) <= 0;
 
   return (
     <Link
       to={`/products/${product.productId}`}
       className={`panel block transition-colors hover:border-acid ${
-        outOfStock ? "opacity-60 hover:border-line" : ""
+        outOfStock ? "hover:border-line" : ""
       }`}
     >
-      {outOfStock ? (
-        <div className="flex h-[180px] items-center justify-center border-b border-line bg-well">
-          <span className="border border-edge px-3 py-1.5 telemetry text-[10px] text-dim">
+      {/* Being unavailable today is no reason to hide what the product looks like —
+          a customer may still want to browse it or come back for it. The image is
+          dimmed and badged instead of replaced by an empty well. */}
+      <ImageWell
+        src={product.productImage}
+        alt={product.productName}
+        className="h-[180px] border-b border-line"
+        imageClassName={outOfStock ? "opacity-35 grayscale" : ""}
+      >
+        {outOfStock ? (
+          <span className="pointer-events-none absolute top-3 start-3 status-pill bg-magenta text-white">
             {t("list.outOfStock")}
           </span>
-        </div>
-      ) : (
-        <ImageWell
-          src={product.productImage}
-          alt={product.productName}
-          className="h-[180px] border-b border-line"
-        />
-      )}
+        ) : null}
+      </ImageWell>
 
       <div className="p-4">
         <div className="telemetry text-[10px] font-medium text-muted">
@@ -45,7 +50,7 @@ export default function Product({ product }) {
               outOfStock ? "text-dim" : "text-acid"
             }`}
           >
-            {price(product.productPrice)}
+            <Money amount={product.productPrice} />
           </span>
           <span className="font-mono text-[11px] font-medium text-dim">
             {num(Number(product.averageRating || 0).toFixed(1))}★
