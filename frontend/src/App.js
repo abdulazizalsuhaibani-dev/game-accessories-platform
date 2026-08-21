@@ -86,6 +86,14 @@ function Store() {
   };
 
   useEffect(() => {
+    // The token can outlive the account it was issued for, so a failed or
+    // empty answer from /Users/auth has to drop it. Leaving it in storage
+    // means every later request keeps presenting a token nobody honours.
+    function clearSession() {
+      localStorage.removeItem("token");
+      setUserData(null);
+    }
+
     function getUserData() {
       const token = localStorage.getItem("token");
       axios
@@ -95,10 +103,20 @@ function Store() {
           },
         })
         .then((response) => {
-          setUserData(response.data);
+          // A 200 is not by itself proof of a session: an empty body arrives
+          // here as "", and storing that would leave the app signed in as a
+          // user with no fields.
+          if (response.data && response.data.userId) {
+            setUserData(response.data);
+          } else {
+            clearSession();
+          }
           setIsUserDataLoading(false);
         })
         .catch((error) => {
+          if (error.response?.status === 401) {
+            clearSession();
+          }
           setIsUserDataLoading(false);
           console.log(error);
         });
@@ -106,7 +124,9 @@ function Store() {
     getUserData();
   }, []);
 
-  let isAuthenticated = userData !== null;
+  // Truthiness rather than `!== null`, so a malformed payload can never read
+  // as a signed-in session.
+  const isAuthenticated = Boolean(userData && userData.userId);
 
   return (
     <ThemeProvider theme={appTheme}>

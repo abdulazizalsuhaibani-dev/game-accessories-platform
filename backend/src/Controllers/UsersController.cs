@@ -72,6 +72,12 @@ namespace src.Controllers
             var userId = authenticatedClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var userGuid = new Guid(userId);
             var user = await _userService.GetByIdAsync(userGuid);
+            // A token outlives the row it points at - deleting your own account
+            // leaves a still-valid token in the browser. "Who am I" has to
+            // answer 401 in that case; a 200 with an empty body reads to the
+            // client as a signed-in user with no fields.
+            if (user == null)
+                throw CustomException.UnAuthorized("This session is no longer valid. Please log in again");
             return Ok(user);
         }
         [Authorize]

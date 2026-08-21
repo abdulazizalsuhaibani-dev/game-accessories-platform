@@ -201,7 +201,7 @@ const strings = {
     "auth.phone": "Phone number",
     "auth.confirmPassword": "Confirm password",
     "auth.passwordHint":
-      "At least 8 characters, mixing letters and numbers.",
+      "At least 8 characters, with a letter, a number, and one special character from ! @ # $ % ^ & * ( ) _ [ ]",
 
     "error.goHome": "Go home",
     "error.notFound": "We couldn't find your page!",
@@ -446,7 +446,7 @@ const strings = {
     "auth.birthday": "تاريخ الميلاد",
     "auth.phone": "رقم الهاتف",
     "auth.confirmPassword": "تأكيد كلمة المرور",
-    "auth.passwordHint": "٨ أحرف على الأقل، تجمع بين الحروف والأرقام.",
+    "auth.passwordHint": "٨ أحرف على الأقل، وتحتوي على حرف ورقم ورمز خاص من ! @ # $ % ^ & * ( ) _ [ ]",
 
     "error.goHome": "العودة للرئيسية",
     "error.notFound": "تعذّر العثور على الصفحة!",

@@ -27,13 +27,24 @@ const schema = yup
       )
       .required("Phone Number is required"),
     email: yup.string().email().required("Email is required"),
+    // The same policy the API enforces in UserService.CreateOneAsync: at least
+    // 8 characters carrying a letter, a number and one of ! @ # $ % ^ & * ( ) _
+    // [ ]. Any other character is allowed through, because the API restricts
+    // which characters must appear, never which ones may. Each rule is its own
+    // check so the message can say which one the password broke. Letters and
+    // numbers are matched by Unicode category to mirror char.IsLetter and
+    // char.IsDigit on the API side, so an Arabic-script password behaves the
+    // same at both ends.
     password: yup
       .string()
+      .required("Password is required!")
+      .min(8, "Password must be at least 8 characters!")
+      .matches(/\p{L}/u, "Password must contain at least one letter!")
+      .matches(/\p{Nd}/u, "Password must contain at least one number!")
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-        "Password must satisfy the conditions!"
-      )
-      .required("Password is required!"),
+        /[!@#$%^&*()_[\]]/,
+        "Password must contain at least one special character (! @ # $ % ^ & * ( ) _ [ ])!"
+      ),
     passwordConfirmation: yup
       .string()
       .oneOf([yup.ref("password"), null], "Passwords must match!"),
