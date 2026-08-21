@@ -15,25 +15,23 @@ export default function HomePage() {
     let cancelled = false;
 
     axios
-      .get(`${API_BASE}/Products?Limit=4&Offset=0`)
+      // SortBy=rating, SortOrder=1 (descending). The repository sorts unrated products
+      // last; without a sort the API falls back to price ascending, so the "leaderboard"
+      // was the four cheapest products.
+      .get(`${API_BASE}/Products?Limit=4&Offset=0&SortBy=rating&SortOrder=1`)
       .then((response) => {
         if (cancelled) return;
         const products = response.data.products ?? [];
         setFeatured(products);
-        setStats({
-          itemCount: response.data.productsCount ?? products.length,
-          avgRating: products.length
-            ? (
-                products.reduce((sum, item) => sum + Number(item.averageRating || 0), 0) /
-                products.length
-              ).toFixed(1)
-            : "4.7",
-        });
+        // productsCount is a real total, counted against the same query. The hero used to
+        // show an average rating alongside it, computed from these four rows and
+        // presented as a site-wide figure.
+        setStats({ itemCount: response.data.productsCount ?? products.length });
         setLoading(false);
       })
       .catch(() => {
-        // The home page is still worth showing without the leaderboard, so a
-        // failed fetch just leaves the placeholder counts in the hero.
+        // The home page is still worth showing without the leaderboard. stats stays null
+        // and the hero renders without its figure rather than inventing one.
         if (!cancelled) setLoading(false);
       });
 

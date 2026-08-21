@@ -26,17 +26,12 @@ const strings = {
     "nav.gulf": "Gulf",
     "nav.currencyNote": "Prices convert at checkout. Gulf pegs fixed.",
 
-    "hero.eyebrow": "Season drop 04 · live now",
     "hero.titleA": "Gear that",
     "hero.titleB": "keeps up.",
     "hero.lede":
-      "Mice, headsets, controllers and decks. Bench-tested, in stock, shipped same day. Free returns for 30 days.",
+      "Mice, headsets, controllers and decks. The whole catalogue, priced in your currency.",
     "hero.ctaPrimary": "Shop all gear",
-    "hero.ctaSecondary": "This week's deals",
-    "hero.statItems": "Items in stock",
-    "hero.statDispatch": "Dispatch time",
-    "hero.statRating": "Avg rating",
-    "hero.drop": "Drop 04",
+    "hero.statItems": "Products in the catalogue",
 
     "cat.title": "Pick your class",
     "cat.all": "All categories",
@@ -309,17 +304,12 @@ const strings = {
     "nav.gulf": "الخليج",
     "nav.currencyNote": "تُحوّل الأسعار عند الدفع. أسعار الخليج مثبتة.",
 
-    "hero.eyebrow": "إصدار الموسم ٠٤ · متاح الآن",
     "hero.titleA": "عتاد",
     "hero.titleB": "يواكب سرعتك.",
     "hero.lede":
-      "فأرات وسماعات ووحدات تحكم ولوحات مفاتيح. مُختبرة، متوفرة في المخزون، وتُشحن في نفس اليوم. إرجاع مجاني خلال ٣٠ يومًا.",
+      "فأرات وسماعات ووحدات تحكم ولوحات مفاتيح. الكتالوج كامل، بأسعار بعملتك.",
     "hero.ctaPrimary": "تسوّق كل العتاد",
-    "hero.ctaSecondary": "عروض هذا الأسبوع",
-    "hero.statItems": "منتج في المخزون",
-    "hero.statDispatch": "مدة التجهيز",
-    "hero.statRating": "متوسط التقييم",
-    "hero.drop": "إصدار ٠٤",
+    "hero.statItems": "منتج في الكتالوج",
 
     "cat.title": "اختر فئتك",
     "cat.all": "كل الفئات",
