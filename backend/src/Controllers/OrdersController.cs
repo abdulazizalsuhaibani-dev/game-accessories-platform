@@ -68,13 +68,14 @@ namespace scr.Controller
         [HttpPost]
         public async Task<ActionResult<OrderReadDTO>> CreateOrder([FromBody] OrderCreateDTO newOrder)
         {
-            // stops a customer from placing an order in somebody else's name
+            // stops a customer from placing an order in somebody else's name.
+            // the cart and the payment are checked against this user in the service
             AuthorizationUtils.EnsureOwnerOrAdmin(User, newOrder.UserId);
 
+            // out of stock now throws a CustomException naming the product, so the
+            // customer is told which item is short instead of "one of products"
             var createdOrder = await _orderService.CreateOneAsync(newOrder);
-            return createdOrder != null ?
-                Created($"api/v1/orders/{createdOrder.Id}", createdOrder) :
-                BadRequest("One of products is out of stock");
+            return Created($"api/v1/orders/{createdOrder.Id}", createdOrder);
         }
 
         // Update current order status into ("shipped", "on delivery", "delivered") or the ship date into new one.
