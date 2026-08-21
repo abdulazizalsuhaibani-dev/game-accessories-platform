@@ -42,20 +42,23 @@ namespace src.Repository
         public async Task UpdateProductReviewAsync(Guid id)
         {
             var product = await _products.FirstOrDefaultAsync(x => x.ProductId == id);
-            if (product != null)
-            {
-                var reviewsForProduct = await _review.Where(r => r.ProductId == id).ToListAsync();// all reviews for this product
-                product.AverageRating = (decimal)reviewsForProduct.Average(r => r.Rating);
 
-                _products.Update(product);
-                await _databaseContext.SaveChangesAsync();
-            }
-            else
-            {
-                throw CustomException.BadRequest("Product not found");
-            }
+            // A recompute for a product that is already gone is nothing to do, not an error.
+            // The delete path calls this after the review row is committed, so throwing here
+            // would report failure for work that has in fact succeeded.
+            if (product == null)
+                return;
 
+            var reviewsForProduct = await _review.Where(r => r.ProductId == id).ToListAsync();// all reviews for this product
 
+            // Average() throws on an empty sequence. Null is what the rest of the system
+            // already reads as "unrated" — the catalogue's rating sort puts nulls last.
+            product.AverageRating = reviewsForProduct.Count == 0
+                ? null
+                : (decimal)reviewsForProduct.Average(r => r.Rating);
+
+            _products.Update(product);
+            await _databaseContext.SaveChangesAsync();
         }
 
 

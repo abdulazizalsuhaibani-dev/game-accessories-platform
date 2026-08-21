@@ -42,9 +42,17 @@ namespace src.Services.review
             if (foundReview == null)
                 throw CustomException.NotFound($"Review with ID {id} not found");
 
-            bool isDeleted = await _reviewRepo.DeleteReviewAsync(foundReview);
-            return isDeleted;
+            // read the product before the row goes away
+            var productId = foundReview.ProductId;
 
+            bool isDeleted = await _reviewRepo.DeleteReviewAsync(foundReview);
+
+            // create and update both recompute; without this the stored average keeps
+            // counting a review that no longer exists.
+            if (isDeleted)
+                await _reviewRepo.UpdateProductReviewAsync(productId);
+
+            return isDeleted;
         }
 
         public async Task<List<ReadReviewDto>> GetAllReviewsAsync()
