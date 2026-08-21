@@ -125,9 +125,13 @@ namespace src.Services
             }
             _mapper.Map(updateDTO, foundOrder);
 
-            // if order is delivered to the user
-            if (foundOrder.OrderStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase))
-                foundOrder.IsDelivered = true;
+            // IsDelivered has to track the status in both directions. GetByUserIdAsync and
+            // GetByHistoryUserIdAsync partition a customer's orders on this flag, so an order
+            // walked back from "delivered" would otherwise stay stranded in their history.
+            foundOrder.IsDelivered =
+                foundOrder.OrderStatus is not null
+                && foundOrder.OrderStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase);
+
             return await _orderRepository.UpdateOneAsync(foundOrder);
         }
         public async Task<bool> DeleteOneAsync(Guid id)

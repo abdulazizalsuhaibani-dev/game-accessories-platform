@@ -83,21 +83,26 @@ namespace scr.Controller
         [HttpPut("{orderId}")]
         public async Task<ActionResult> UpdateOrder(Guid orderId, OrderUpdateDTO updatedOrder)
         {
-            bool foundOrderStatus = false;
-            foreach (string status in orderStatuses)
+            // Both fields are optional and validated only when supplied, so an admin can
+            // advance the status without restating the ship date. Omitting both is a no-op
+            // the caller almost certainly did not mean.
+            if (updatedOrder.OrderStatus is null && updatedOrder.ShipDate is null)
+                return BadRequest("Supply an order status, a ship date, or both");
+
+            if (updatedOrder.OrderStatus is not null
+                && !orderStatuses.Contains(updatedOrder.OrderStatus, StringComparer.OrdinalIgnoreCase))
+                return BadRequest($"Invalid order status. Expected one of: {string.Join(", ", orderStatuses)}");
+
+            if (updatedOrder.ShipDate is DateTime shipDate)
             {
-                if (updatedOrder.OrderStatus.Equals(status, StringComparison.OrdinalIgnoreCase))
-                {
-                    foundOrderStatus = true;
-                    break;
-                }
+                // OrderDate and ShipDate are timestamptz, so Npgsql rejects a non-UTC value
+                var shipDateUtc = shipDate.ToUniversalTime();
+
+                if (shipDateUtc < DateTime.UtcNow)
+                    return BadRequest("Invalid ship date");
+
+                updatedOrder.ShipDate = shipDateUtc;
             }
-
-            if (!foundOrderStatus)
-                return NotFound("Invalid order status");
-
-            if (updatedOrder.ShipDate < DateTime.Now)
-                return BadRequest("Invalid ship date");
 
             bool isUpdated = await _orderService.UpdateOneAsync(orderId, updatedOrder);
 
