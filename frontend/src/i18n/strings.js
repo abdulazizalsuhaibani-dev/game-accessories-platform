@@ -172,8 +172,12 @@ const strings = {
     "checkout.city": "City",
     "checkout.state": "State",
     "checkout.zip": "Zip code",
-    "checkout.addressRequired": "Add a street address and city to continue.",
     "checkout.paymentRequired": "Pick a payment method to continue.",
+    "checkout.fixFields": "Some details need fixing before we can place the order.",
+    "checkout.notesRemaining": "{count} characters left on the address line.",
+    "checkout.cartFailed": "We couldn't submit your cart.",
+    "checkout.paymentFailed": "We couldn't submit your payment.",
+    "checkout.orderFailed": "We couldn't submit your order.",
 
     "wishlist.title": "Wishlist",
     "wishlist.empty": "Your wishlist is empty!",
@@ -221,6 +225,20 @@ const strings = {
     "validation.passwordSpecial":
       "Your password needs one special character from ! @ # $ % ^ & * ( ) _ [ ]",
     "validation.passwordMatch": "Both passwords need to match.",
+    // The checkout rules mirror OrderCreateDTO exactly. The API enforces them
+    // with a 400 on the last call of the chain, after the cart and the payment
+    // have already been written, so anything it would reject has to be caught here.
+    "validation.addressRequired": "Please enter your street address.",
+    "validation.addressTooLong":
+      "Your street address is too long — it needs to fit in 100 characters.",
+    "validation.addressLineTooLong":
+      "Your address, delivery option and note come to more than 100 characters together. Please shorten the note or the address.",
+    "validation.cityRequired": "Please enter your city.",
+    "validation.cityLength": "Your city needs between 2 and 50 characters.",
+    "validation.stateRequired": "Please enter your state or region.",
+    "validation.stateLength": "Your state needs between 2 and 50 characters.",
+    "validation.zipRequired": "Please enter your postal code.",
+    "validation.zipRange": "Your postal code needs to be 5 digits, from 10000 to 99999.",
 
     "error.goHome": "Go home",
     "error.notFound": "We couldn't find your page!",
@@ -437,8 +455,12 @@ const strings = {
     "checkout.city": "المدينة",
     "checkout.state": "المنطقة",
     "checkout.zip": "الرمز البريدي",
-    "checkout.addressRequired": "أضف عنوان الشارع والمدينة للمتابعة.",
     "checkout.paymentRequired": "اختر طريقة دفع للمتابعة.",
+    "checkout.fixFields": "بعض البيانات تحتاج إلى تصحيح قبل إتمام الطلب.",
+    "checkout.notesRemaining": "بقي {count} حرفًا في سطر العنوان.",
+    "checkout.cartFailed": "تعذّر إرسال سلتك.",
+    "checkout.paymentFailed": "تعذّر إرسال دفعتك.",
+    "checkout.orderFailed": "تعذّر إرسال طلبك.",
 
     "wishlist.title": "المفضلة",
     "wishlist.empty": "قائمة المفضلة فارغة!",
@@ -482,6 +504,16 @@ const strings = {
     "validation.passwordNumber": "كلمة المرور تحتاج إلى رقم واحد على الأقل.",
     "validation.passwordSpecial": "كلمة المرور تحتاج إلى رمز خاص من ! @ # $ % ^ & * ( ) _ [ ]",
     "validation.passwordMatch": "كلمتا المرور غير متطابقتين.",
+    "validation.addressRequired": "الرجاء إدخال عنوان الشارع.",
+    "validation.addressTooLong": "عنوان الشارع طويل جدًا — يجب ألا يتجاوز ١٠٠ حرف.",
+    "validation.addressLineTooLong":
+      "مجموع العنوان وخيار التوصيل والملاحظة يتجاوز ١٠٠ حرف. الرجاء اختصار الملاحظة أو العنوان.",
+    "validation.cityRequired": "الرجاء إدخال المدينة.",
+    "validation.cityLength": "اسم المدينة يحتاج من حرفين إلى ٥٠ حرفًا.",
+    "validation.stateRequired": "الرجاء إدخال المنطقة.",
+    "validation.stateLength": "اسم المنطقة يحتاج من حرفين إلى ٥٠ حرفًا.",
+    "validation.zipRequired": "الرجاء إدخال الرمز البريدي.",
+    "validation.zipRange": "الرمز البريدي يجب أن يكون ٥ أرقام، من ١٠٠٠٠ إلى ٩٩٩٩٩.",
 
     "error.goHome": "العودة للرئيسية",
     "error.notFound": "تعذّر العثور على الصفحة!",
