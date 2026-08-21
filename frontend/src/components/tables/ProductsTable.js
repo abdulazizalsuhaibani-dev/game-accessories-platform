@@ -15,15 +15,17 @@ import ProductEditToolbar from "./ProductEditToolbar";
 import AdminTableToolbar from "./AdminTableToolbar";
 import { API_BASE, authHeaders } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
+import useSubCategories from "./useSubCategories";
 
 // Fields the catalogue PUT rejects — stripped before an edited row is sent.
+// subCategoryId is no longer among them: the update DTO takes it now, and the API
+// re-derives subCategoryName from it, so sending the stale name back would fight that.
 const READ_ONLY_FIELDS = [
   "addedDate",
   "averageRating",
   "id",
   "isNew",
   "productId",
-  "subCategoryId",
   "subCategoryName",
 ];
 
@@ -34,6 +36,7 @@ export default function ProductsTable(prop) {
   const [rowModesModel, setRowModesModel] = useState({});
   const [query, setQuery] = useState("");
   const [lowStockOnly, setLowStockOnly] = useState(false);
+  const { subCategories } = useSubCategories();
 
   useEffect(() => {
     let cancelled = false;
@@ -141,6 +144,22 @@ export default function ProductsTable(prop) {
     { field: "sku", headerName: "Stock", type: "number", width: 90, editable: true },
     { field: "productPrice", headerName: "Price", type: "number", width: 100, editable: true },
     { field: "weight", headerName: "Weight", type: "number", width: 90, editable: true },
+    {
+      field: "subCategoryId",
+      headerName: "Sub-category",
+      width: 170,
+      editable: true,
+      type: "singleSelect",
+      // Editing this was impossible before: the grid stripped the field and the API's
+      // update DTO had nowhere to put it. Picking from the list is the only way in, so
+      // a product cannot be filed under a sub-category that does not exist.
+      valueOptions: subCategories.map((subCategory) => ({
+        value: subCategory.subCategoryId,
+        label: subCategory.categoryName
+          ? `${subCategory.categoryName} / ${subCategory.name}`
+          : subCategory.name,
+      })),
+    },
     {
       field: "status",
       headerName: "Status",
