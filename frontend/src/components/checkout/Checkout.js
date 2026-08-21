@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Dialog,
   DialogActions,
@@ -8,6 +8,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import OrderForm from "../forms/OrderForm";
 import PaymentForm from "../forms/PaymentForm";
 import OrderSummary from "../cart/OrderSummary";
@@ -22,6 +25,72 @@ const DELIVERY_OPTIONS = [
   { id: "standard", labelKey: "checkout.standard", noteKey: "checkout.standardNote" },
   { id: "locker", labelKey: "checkout.locker", noteKey: "checkout.lockerNote" },
 ];
+
+// Order.Address and OrderCreateDTO.Address are both [MaxLength(100)], and the
+// column behind them is character varying(100). [ApiController] rejects a longer
+// value with a 400 before the service runs — and the order is the third call of
+// the chain, so by then the cart and the payment rows already exist and the
+// stock is already gone. This number is not a display cap, it is the API's.
+const ADDRESS_MAX = 100;
+const ADDRESS_SEPARATOR = " — ";
+
+// One composition, used by the validation rule and by the request alike, so the
+// string that gets measured is the string that gets sent.
+function composeAddressLine(address, deliveryLabel, notes) {
+  return [address, deliveryLabel, notes]
+    .map((part) => (part ?? "").trim())
+    .filter(Boolean)
+    .join(ADDRESS_SEPARATOR);
+}
+
+// Built per language, and rebuilt when the delivery option changes, because the
+// option's label is part of the address line and so eats into its budget. yup
+// resolves a rule's message when the schema is constructed, so a schema built at
+// import time would freeze whichever language was active then. Every rule names
+// its own message — a bare rule falls back to a yup default written from the
+// property key.
+const buildSchema = (t, deliveryLabel) =>
+  yup
+    .object({
+      address: yup
+        .string()
+        .trim()
+        .required(t("validation.addressRequired"))
+        .max(ADDRESS_MAX, t("validation.addressTooLong")),
+      city: yup
+        .string()
+        .trim()
+        .required(t("validation.cityRequired"))
+        .min(2, t("validation.cityLength"))
+        .max(50, t("validation.cityLength")),
+      state: yup
+        .string()
+        .trim()
+        .required(t("validation.stateRequired"))
+        .min(2, t("validation.stateLength"))
+        .max(50, t("validation.stateLength")),
+      // An empty number input casts to NaN before .required() is consulted, so
+      // typeError is the only place the "please enter one" message can live.
+      postalCode: yup
+        .number()
+        .typeError(t("validation.zipRequired"))
+        .integer(t("validation.zipRange"))
+        .min(10000, t("validation.zipRange"))
+        .max(99999, t("validation.zipRange"))
+        .required(t("validation.zipRequired")),
+      // The order model has no field for the delivery method or the courier
+      // note, so both ride along on the address line. That makes the 100
+      // characters a budget shared between three inputs, and the only honest
+      // place to check it is the composed string. Truncating it to fit would
+      // silently ship a customer a parcel to half an address.
+      deliveryNotes: yup
+        .string()
+        .test("composed-address-fits", t("validation.addressLineTooLong"), function (value) {
+          const composed = composeAddressLine(this.parent.address, deliveryLabel, value);
+          return composed.length <= ADDRESS_MAX;
+        }),
+    })
+    .required();
 
 export default function Checkout(prop) {
   const {
@@ -39,19 +108,50 @@ export default function Checkout(prop) {
   const [submitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
 
-  const [orderData, setOrderData] = useState({
-    userId: userData.userId,
-    cartId: EMPTY_GUID,
-    paymentId: EMPTY_GUID,
-    address: "",
-    city: "",
-    state: "",
-    postalCode: 0,
-    coordinateX: 0,
-    coordinateY: 0,
-  });
   const [delivery, setDelivery] = useState("standard");
-  const [deliveryNotes, setDeliveryNotes] = useState("");
+  const deliveryLabel = t(
+    DELIVERY_OPTIONS.find((option) => option.id === delivery).labelKey
+  );
+
+  // The address fields and the courier note are one form even though they sit on
+  // two different steps, because the rule that matters spans both of them.
+  const resolver = useMemo(
+    () => yupResolver(buildSchema(t, deliveryLabel)),
+    [t, deliveryLabel]
+  );
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver,
+    defaultValues: {
+      address: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      deliveryNotes: "",
+    },
+  });
+
+  // yup resolves a message when the schema is built, so an error raised before
+  // the customer switched language still holds the old language's string on
+  // screen. Re-run the rules when the language flips — but only for a form that
+  // is already showing an error, since validating one nobody has filled in yet
+  // would light it up red for no reason.
+  const errorCountRef = useRef(0);
+  errorCountRef.current = Object.keys(errors).length;
+  useEffect(() => {
+    if (errorCountRef.current > 0) trigger();
+  }, [t, trigger]);
+
+  const addressValue = watch("address");
+  const notesValue = watch("deliveryNotes");
+  const addressRemaining =
+    ADDRESS_MAX - composeAddressLine(addressValue, deliveryLabel, notesValue).length;
+
   const [paymentData, setPaymentData] = useState({
     paymentMethod: "",
     paymentDate: "",
@@ -69,20 +169,42 @@ export default function Checkout(prop) {
     navigate("/products");
   }
 
-  function goToDelivery() {
-    if (!orderData.address.trim() || !orderData.city.trim()) {
-      setSnackBarMessage(t("checkout.addressRequired"));
-      setOpenErrorSnackBar(true);
-      return;
+  // Every address rule is checked here rather than at the end, so a value the
+  // API would reject can never reach the chain that has already taken payment.
+  async function goToDelivery() {
+    const valid = await trigger([
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "deliveryNotes",
+    ]);
+    if (valid) setStep(2);
+  }
+
+  async function goToPayment() {
+    const valid = await trigger("deliveryNotes");
+    if (valid) setStep(3);
+  }
+
+  // The field that failed may live on a step the customer has already left, so
+  // send them back to it instead of reporting a field they cannot see.
+  function onInvalid(formErrors) {
+    if (
+      formErrors.address ||
+      formErrors.city ||
+      formErrors.state ||
+      formErrors.postalCode
+    ) {
+      setStep(1);
+    } else if (formErrors.deliveryNotes) {
+      setStep(2);
     }
-    setStep(2);
+    setSnackBarMessage(t("checkout.fixFields"));
+    setOpenErrorSnackBar(true);
   }
 
-  function goToPayment() {
-    setStep(3);
-  }
-
-  async function processOrder() {
+  async function processOrder(formData) {
     if (!paymentData.paymentMethod) {
       setSnackBarMessage(t("checkout.paymentRequired"));
       setOpenErrorSnackBar(true);
@@ -92,16 +214,17 @@ export default function Checkout(prop) {
 
     // The order model has no field for delivery method or courier notes, so
     // they ride along on the address line — the only channel that reaches the
-    // merchant — instead of being silently dropped.
-    const deliveryLabel = t(DELIVERY_OPTIONS.find((option) => option.id === delivery).labelKey);
-    const addressLine = [orderData.address, deliveryLabel, deliveryNotes.trim()]
-      .filter(Boolean)
-      .join(" — ")
-      .slice(0, 250);
+    // merchant — instead of being silently dropped. The schema has already
+    // proved this fits in ADDRESS_MAX; it is never truncated to make it fit.
+    const addressLine = composeAddressLine(
+      formData.address,
+      deliveryLabel,
+      formData.deliveryNotes
+    );
 
     // Tracks which leg of the three-call chain failed, so the snackbar names
     // the step the user has to retry.
-    let failureMessage = "We couldn't submit your cart";
+    let failureMessage = t("checkout.cartFailed");
 
     try {
       const cartResponse = await axios.post(
@@ -120,7 +243,7 @@ export default function Checkout(prop) {
         { headers: authHeaders() }
       );
 
-      failureMessage = "We could not submit your payment";
+      failureMessage = t("checkout.paymentFailed");
       const paymentResponse = await axios.post(
         `${API_BASE}/Payments`,
         {
@@ -133,12 +256,17 @@ export default function Checkout(prop) {
         { headers: authHeaders() }
       );
 
-      failureMessage = "We could not submit your order";
+      failureMessage = t("checkout.orderFailed");
       await axios.post(
         `${API_BASE}/Orders`,
         {
-          ...orderData,
+          userId: userData.userId,
           address: addressLine,
+          city: formData.city,
+          state: formData.state,
+          postalCode: formData.postalCode,
+          coordinateX: 0,
+          coordinateY: 0,
           paymentId: paymentResponse.data.paymentId,
           cartId: paymentResponse.data.cartId,
         },
@@ -151,7 +279,15 @@ export default function Checkout(prop) {
       setCartCount(0);
       setOpenDialog(true);
     } catch (error) {
-      setSnackBarMessage(failureMessage);
+      // The API answers a CustomException as { statusCode, message }. A DTO rule
+      // rejected by [ApiController] instead comes back as ValidationProblemDetails,
+      // which carries the offending fields under `errors` and no message at all —
+      // so both shapes have to be read before falling back to the leg's own line.
+      const body = error.response?.data;
+      const validationDetail = body?.errors
+        ? Object.values(body.errors).flat().join(" ")
+        : "";
+      setSnackBarMessage(body?.message || validationDetail || failureMessage);
       setOpenErrorSnackBar(true);
     } finally {
       setSubmitting(false);
@@ -219,7 +355,7 @@ export default function Checkout(prop) {
               </div>
 
               <StepHeading title={t("checkout.address")} />
-              <OrderForm orderData={orderData} setOrderData={setOrderData} />
+              <OrderForm register={register} errors={errors} />
 
               <div className="mt-1.5 flex gap-3">
                 <button type="button" onClick={goToDelivery} className="h-[50px] flex-1 btn-acid">
@@ -233,7 +369,7 @@ export default function Checkout(prop) {
             <>
               <StepHeading
                 title={t("checkout.deliverySpeed")}
-                sub={`${orderData.address}, ${orderData.city}`}
+                sub={`${addressValue}, ${watch("city")}`}
               />
 
               <div className="flex flex-col gap-3">
@@ -278,11 +414,22 @@ export default function Checkout(prop) {
                 </label>
                 <input
                   id="deliveryNotes"
-                  value={deliveryNotes}
-                  onChange={(event) => setDeliveryNotes(event.target.value)}
                   placeholder={t("checkout.notesPlaceholder")}
                   className="field"
+                  {...register("deliveryNotes")}
                 />
+                {errors.deliveryNotes ? (
+                  <p className="mt-1.5 font-mono text-[11px] text-magenta">
+                    {errors.deliveryNotes.message}
+                  </p>
+                ) : (
+                  // The note shares the address line's 100 characters with the
+                  // street address and the delivery label, so show what is left
+                  // rather than letting the customer find out at the last step.
+                  <p className="mt-1.5 font-mono text-[11px] text-dim">
+                    {t("checkout.notesRemaining", { count: Math.max(0, addressRemaining) })}
+                  </p>
+                )}
               </div>
 
               <div className="mt-1.5 flex gap-3">
@@ -307,7 +454,7 @@ export default function Checkout(prop) {
                 </button>
                 <button
                   type="button"
-                  onClick={processOrder}
+                  onClick={handleSubmit(processOrder, onInvalid)}
                   disabled={submitting}
                   className="h-[50px] flex-1 btn-acid"
                 >

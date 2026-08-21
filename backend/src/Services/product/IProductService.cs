@@ -12,6 +12,8 @@ namespace src.Services.product
         Task<List<GetProductDto>> GetAllProductsAsync();
         //get products count
         Task<int> CountProductsAsync();
+        //get the count of the products matching a search and its filters
+        Task<int> CountProductsAsync(SearchProcess to_search, Guid? SubCategoryId = null);
 
         //get all products in specific subcategory
         Task<List<GetProductDto>> GetProductsBySubCategoryIdAsync(Guid subCategoryId);

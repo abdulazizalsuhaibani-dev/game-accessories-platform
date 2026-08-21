@@ -27,7 +27,10 @@ namespace src.Controller
         )
         {
             var products = await _productService.GetAllAsync(to_search);
-            var productsCount = await _productService.CountProductsAsync();
+            // counted against the same search and filters as the page above. it used
+            // to be the table's total row count, which left the storefront rendering
+            // a pager for products the filters had already excluded
+            var productsCount = await _productService.CountProductsAsync(to_search);
             var response = new GetProductListDto
             {
                 Products = products,

@@ -80,6 +80,12 @@ namespace src.Services.product
             return await _productRepository.CountProductsAsync();
         }
 
+        // Get the count of the products matching a search and its filters
+        public async Task<int> CountProductsAsync(SearchProcess to_search, Guid? SubCategoryId = null)
+        {
+            return await _productRepository.CountProductsAsync(to_search, SubCategoryId);
+        }
+
         //get all products in specific subcategory
         public async Task<List<GetProductDto>> GetProductsBySubCategoryIdAsync(Guid subCategoryId)
         {

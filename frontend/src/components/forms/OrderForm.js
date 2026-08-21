@@ -1,16 +1,18 @@
 import React from "react";
 import { useStoreSettings } from "../../context/StoreSettings";
 
-export default function OrderForm({ orderData, setOrderData }) {
+/**
+ * The address step of checkout. The form instance itself lives in Checkout.js
+ * rather than here, because the address line the API receives is composed from
+ * fields spread across two steps — so one useForm has to see all of them.
+ * `register` and `errors` come from that instance.
+ *
+ * Every rule mirrors OrderCreateDTO, because [ApiController] enforces those
+ * annotations with a 400 on the third call of the checkout chain, by which
+ * point the cart and the payment already exist.
+ */
+export default function OrderForm({ register, errors }) {
   const { t } = useStoreSettings();
-
-  function onChangeHandler(event) {
-    const { id, value } = event.target;
-    setOrderData({
-      ...orderData,
-      [id]: id === "postalCode" ? Number(value) : value,
-    });
-  }
 
   const fields = [
     { id: "address", label: t("checkout.street"), type: "text", wide: true },
@@ -29,11 +31,15 @@ export default function OrderForm({ orderData, setOrderData }) {
           <input
             id={field.id}
             type={field.type}
-            value={orderData[field.id] || ""}
-            onChange={onChangeHandler}
             placeholder={field.label}
             className="field"
+            {...register(field.id)}
           />
+          {errors[field.id] ? (
+            <p className="mt-1.5 font-mono text-[11px] text-magenta">
+              {errors[field.id].message}
+            </p>
+          ) : null}
         </div>
       ))}
     </div>

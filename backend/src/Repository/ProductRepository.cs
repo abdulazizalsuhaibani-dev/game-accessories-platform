@@ -38,6 +38,14 @@ namespace src.Repository
             return await _products.CountAsync();
         }
 
+        // how many products the search and filters actually match. counted before
+        // Skip/Take, so it is the size of the whole result set rather than of the
+        // page - which is what drives the "N results" headline and the pager
+        public async Task<int> CountProductsAsync(SearchProcess toSearch, Guid? SubCategoryId = null)
+        {
+            return await BuildFilteredQuery(toSearch, SubCategoryId).CountAsync();
+        }
+
         //get all products in specific subcategory
         public async Task<List<Product>> GetProductsBySubCategoryIdAsync(Guid subCategoryId)
         {
@@ -126,33 +134,29 @@ namespace src.Repository
             return await query.ToListAsync();
         }
 
-        //get all products by using the search by name & pagination & filer & sort
-        public async Task<List<Product>> GetAllAsync(
+        // the search and filter predicates, with no sort and no paging. both the
+        // page of products and its total count are built from this one method, so
+        // the two can never disagree about what the result set is
+        private IQueryable<Product> BuildFilteredQuery(
             SearchProcess toSearch,
             Guid? SubCategoryId = null
         )
         {
             //implement search
             //all products in all subcategories
-            var search_result = _products.Where(x =>
-                x.ProductName.ToLower().Contains(toSearch.Search.ToLower())
-                || x.Description.ToLower().Contains(toSearch.Search.ToLower())
+            var search = toSearch.Search.ToLower();
+            IQueryable<Product> query = _products.Where(x =>
+                x.ProductName.ToLower().Contains(search)
+                || x.Description.ToLower().Contains(search)
             );
 
             //or all products in specific subcategory:
             if (SubCategoryId != null)
             {
-                search_result = _products.Where(x =>
-                    (
-                        x.ProductName.ToLower().Contains(toSearch.Search.ToLower())
-                        || x.Description.ToLower().Contains(toSearch.Search.ToLower())
-                    ) && x.SubCategoryId.Equals(SubCategoryId)
-                );
+                query = query.Where(x => x.SubCategoryId.Equals(SubCategoryId));
             }
 
             //implement filter
-            IQueryable<Product> query = search_result;
-
             if (!string.IsNullOrEmpty(toSearch.Name))
             {
                 query = query.Where(x => x.ProductName.ToLower() == toSearch.Name.ToLower());
@@ -174,6 +178,24 @@ namespace src.Repository
                 query = query.Where(x => x.ProductPrice <= toSearch.MaxPrice.Value);
             }
 
+            // the storefront used to drop out of stock rows from the page it had
+            // already fetched, which shrank the page and never reached the count
+            if (toSearch.InStockOnly)
+            {
+                query = query.Where(x => x.SKU > 0);
+            }
+
+            return query;
+        }
+
+        //get all products by using the search by name & pagination & filer & sort
+        public async Task<List<Product>> GetAllAsync(
+            SearchProcess toSearch,
+            Guid? SubCategoryId = null
+        )
+        {
+            IQueryable<Product> query = BuildFilteredQuery(toSearch, SubCategoryId);
+
             //implement sort
             if (!string.IsNullOrEmpty(toSearch.SortBy))
             {
@@ -193,10 +215,15 @@ namespace src.Repository
                 }
                 else if (toSearch.SortBy.Equals("rating", StringComparison.OrdinalIgnoreCase))
                 {
+                    // a product nobody has rated sorts last either way. postgres puts
+                    // NULLs first on a DESC, which would otherwise lead the catalogue
+                    // with the products that have no rating at all
                     query =
                         toSearch.SortOrder == SortOrder.Descending
-                            ? query.OrderByDescending(x => x.AverageRating)
-                            : query.OrderBy(x => x.AverageRating);
+                            ? query.OrderByDescending(x => x.AverageRating.HasValue)
+                                .ThenByDescending(x => x.AverageRating)
+                            : query.OrderByDescending(x => x.AverageRating.HasValue)
+                                .ThenBy(x => x.AverageRating);
                 }
                 else if (toSearch.SortBy.Equals("date", StringComparison.OrdinalIgnoreCase))
                 {
