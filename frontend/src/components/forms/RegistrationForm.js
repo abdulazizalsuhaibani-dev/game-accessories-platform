@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,56 +10,70 @@ import { useStoreSettings } from "../../context/StoreSettings";
 
 const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
-const schema = yup
-  .object({
-    username: yup.string().required("Username is required!"),
-    firstName: yup.string().required("First Name is required!"),
-    lastName: yup.string().required("Last Name is required!"),
-    birthDate: yup
-      .date()
-      .max(new Date(), "Date must not be from the future!")
-      .required("Birthday is required!"),
-    phoneNumber: yup
-      .string()
-      .matches(
-        /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{3,6}$/,
-        "Phone Number must be in valid format!"
-      )
-      .required("Phone Number is required"),
-    email: yup.string().email().required("Email is required"),
-    // The same policy the API enforces in UserService.CreateOneAsync: at least
-    // 8 characters carrying a letter, a number and one of ! @ # $ % ^ & * ( ) _
-    // [ ]. Any other character is allowed through, because the API restricts
-    // which characters must appear, never which ones may. Each rule is its own
-    // check so the message can say which one the password broke. Letters and
-    // numbers are matched by Unicode category to mirror char.IsLetter and
-    // char.IsDigit on the API side, so an Arabic-script password behaves the
-    // same at both ends.
-    password: yup
-      .string()
-      .required("Password is required!")
-      .min(8, "Password must be at least 8 characters!")
-      .matches(/\p{L}/u, "Password must contain at least one letter!")
-      .matches(/\p{Nd}/u, "Password must contain at least one number!")
-      .matches(
-        /[!@#$%^&*()_[\]]/,
-        "Password must contain at least one special character (! @ # $ % ^ & * ( ) _ [ ])!"
-      ),
-    passwordConfirmation: yup
-      .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match!"),
-  })
-  .required();
+// Built per language rather than once at module load. yup resolves a rule's
+// message when the schema is constructed, so a schema built at import time
+// would freeze whichever language happened to be active then. Every rule names
+// its own message — any rule left bare falls back to a yup default written from
+// the property key, which is how "birthDate must be a `date` type" reached the
+// screen.
+const buildSchema = (t) =>
+  yup
+    .object({
+      username: yup.string().required(t("validation.usernameRequired")),
+      firstName: yup.string().required(t("validation.firstNameRequired")),
+      lastName: yup.string().required(t("validation.lastNameRequired")),
+      birthDate: yup
+        .date()
+        // An empty date input arrives as "", which fails yup's cast to Date
+        // before .required() is ever consulted. Only typeError can replace
+        // the message shown in that case.
+        .typeError(t("validation.birthdayRequired"))
+        .max(new Date(), t("validation.birthdayFuture"))
+        .required(t("validation.birthdayRequired")),
+      phoneNumber: yup
+        .string()
+        .matches(
+          /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{3,6}$/,
+          t("validation.phoneFormat")
+        )
+        .required(t("validation.phoneRequired")),
+      email: yup
+        .string()
+        .email(t("validation.emailFormat"))
+        .required(t("validation.emailRequired")),
+      // The same policy the API enforces in UserService.CreateOneAsync: at
+      // least 8 characters carrying a letter, a number and one of
+      // ! @ # $ % ^ & * ( ) _ [ ]. Any other character is allowed through,
+      // because the API restricts which characters must appear, never which
+      // ones may. Each rule is its own check so the message can say which one
+      // the password broke. Letters and numbers are matched by Unicode
+      // category to mirror char.IsLetter and char.IsDigit on the API side, so
+      // an Arabic-script password behaves the same at both ends.
+      password: yup
+        .string()
+        .required(t("validation.passwordRequired"))
+        .min(8, t("validation.passwordMin"))
+        .matches(/\p{L}/u, t("validation.passwordLetter"))
+        .matches(/\p{Nd}/u, t("validation.passwordNumber"))
+        .matches(/[!@#$%^&*()_[\]]/, t("validation.passwordSpecial")),
+      passwordConfirmation: yup
+        .string()
+        .oneOf([yup.ref("password"), null], t("validation.passwordMatch")),
+    })
+    .required();
 
 export default function RegistrationForm() {
   const { t } = useStoreSettings();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
+  // Rebuilt when the language flips, so the messages follow the switch. `t` is
+  // a useCallback keyed on locale, so this is stable between renders.
+  const resolver = useMemo(() => yupResolver(buildSchema(t)), [t]);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({ resolver });
 
   function onSubmit(data) {
     setServerError("");

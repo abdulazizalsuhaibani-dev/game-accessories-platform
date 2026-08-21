@@ -203,6 +203,25 @@ const strings = {
     "auth.passwordHint":
       "At least 8 characters, with a letter, a number, and one special character from ! @ # $ % ^ & * ( ) _ [ ]",
 
+    // Form validation. Every rule in the auth forms names its own message, so
+    // yup never falls back to a default built from the property key.
+    "validation.usernameRequired": "Please choose a username.",
+    "validation.firstNameRequired": "Please enter your first name.",
+    "validation.lastNameRequired": "Please enter your last name.",
+    "validation.birthdayRequired": "Please enter your birthday.",
+    "validation.birthdayFuture": "Your birthday can't be in the future.",
+    "validation.phoneRequired": "Please enter your phone number.",
+    "validation.phoneFormat": "Please enter a valid phone number.",
+    "validation.emailRequired": "Please enter your email address.",
+    "validation.emailFormat": "Please enter a valid email address.",
+    "validation.passwordRequired": "Please enter a password.",
+    "validation.passwordMin": "Your password needs at least 8 characters.",
+    "validation.passwordLetter": "Your password needs at least one letter.",
+    "validation.passwordNumber": "Your password needs at least one number.",
+    "validation.passwordSpecial":
+      "Your password needs one special character from ! @ # $ % ^ & * ( ) _ [ ]",
+    "validation.passwordMatch": "Both passwords need to match.",
+
     "error.goHome": "Go home",
     "error.notFound": "We couldn't find your page!",
     "error.pageTitle": "Page not found",
@@ -447,6 +466,22 @@ const strings = {
     "auth.phone": "رقم الهاتف",
     "auth.confirmPassword": "تأكيد كلمة المرور",
     "auth.passwordHint": "٨ أحرف على الأقل، وتحتوي على حرف ورقم ورمز خاص من ! @ # $ % ^ & * ( ) _ [ ]",
+
+    "validation.usernameRequired": "الرجاء اختيار اسم مستخدم.",
+    "validation.firstNameRequired": "الرجاء إدخال الاسم الأول.",
+    "validation.lastNameRequired": "الرجاء إدخال اسم العائلة.",
+    "validation.birthdayRequired": "الرجاء إدخال تاريخ ميلادك.",
+    "validation.birthdayFuture": "لا يمكن أن يكون تاريخ الميلاد في المستقبل.",
+    "validation.phoneRequired": "الرجاء إدخال رقم هاتفك.",
+    "validation.phoneFormat": "الرجاء إدخال رقم هاتف صحيح.",
+    "validation.emailRequired": "الرجاء إدخال بريدك الإلكتروني.",
+    "validation.emailFormat": "الرجاء إدخال بريد إلكتروني صحيح.",
+    "validation.passwordRequired": "الرجاء إدخال كلمة المرور.",
+    "validation.passwordMin": "كلمة المرور تحتاج إلى ٨ أحرف على الأقل.",
+    "validation.passwordLetter": "كلمة المرور تحتاج إلى حرف واحد على الأقل.",
+    "validation.passwordNumber": "كلمة المرور تحتاج إلى رقم واحد على الأقل.",
+    "validation.passwordSpecial": "كلمة المرور تحتاج إلى رمز خاص من ! @ # $ % ^ & * ( ) _ [ ]",
+    "validation.passwordMatch": "كلمتا المرور غير متطابقتين.",
 
     "error.goHome": "العودة للرئيسية",
     "error.notFound": "تعذّر العثور على الصفحة!",
