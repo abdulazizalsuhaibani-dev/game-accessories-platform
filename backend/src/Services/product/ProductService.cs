@@ -29,6 +29,11 @@ namespace src.Services.product
         {
             var subCategory = await _subCategories.GetByIdAsync(createProductDto.SubCategoryId);
 
+            // a well-formed guid for a subcategory that does not exist used to NRE on the
+            // read below and surface as a 500
+            if (subCategory is null)
+                throw CustomException.NotFound($"Sub-category with id {createProductDto.SubCategoryId} not found");
+
             // Create a new Product entity
             var product = new Product
             {
@@ -166,6 +171,21 @@ namespace src.Services.product
                 throw CustomException.NotFound($"Product with id {id} not found");
             }
             _mapper.Map(product, isFound);
+
+            // Moving a product between subcategories was impossible: the DTO carried no
+            // subcategory, so the admin grid stripped the field before sending. Name and id
+            // have to move together - SubCategoryName is denormalised onto the row, and a
+            // stale one hides the product under a category it no longer belongs to.
+            if (product.SubCategoryId is Guid subCategoryId)
+            {
+                var subCategory = await _subCategories.GetByIdAsync(subCategoryId);
+                if (subCategory is null)
+                    throw CustomException.NotFound($"Sub-category with id {subCategoryId} not found");
+
+                isFound.SubCategoryId = subCategory.SubCategoryId;
+                isFound.SubCategoryName = subCategory.Name;
+            }
+
             var updatedProduct = await _productRepository.UpdateProductInfoAsync(isFound);
             return _mapper.Map<Product, GetProductDto>(updatedProduct);
         }

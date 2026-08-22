@@ -44,6 +44,14 @@ namespace src.Repository
             await _databaseContext.SaveChangesAsync();
             return true;
         }
+        // One query for a page of orders, rather than one per row.
+        // The caller maps out only what it needs; nothing here reaches a response DTO.
+        public async Task<List<User>> GetManyByIdAsync(IEnumerable<Guid> userIds)
+        {
+            return await _user.Where(u => userIds.Contains(u.UserId)).ToListAsync();
+        }
+
+
         // Emails are stored lower-cased so the unique index actually catches
         // "Ada@example.com" and "ada@example.com" as the same account.
         public static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();

@@ -14,6 +14,7 @@ namespace src.Services
         protected readonly CartRepository _cartRepository;
         protected readonly ProductRepository _productRepository;
         protected readonly PaymentRepository _paymentRepository;
+        protected readonly UserRepository _userRepository;
         // placing an order writes to several tables through several repositories,
         // and the context is what lets those writes share one transaction
         protected readonly DatabaseContext _databaseContext;
@@ -22,12 +23,13 @@ namespace src.Services
 
         public OrderService(OrderRepository orderRepository, CartRepository cartRepository,
             ProductRepository productRepository, PaymentRepository paymentRepository,
-            DatabaseContext databaseContext, IMapper mapper)
+            UserRepository userRepository, DatabaseContext databaseContext, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;
             _productRepository = productRepository;
             _paymentRepository = paymentRepository;
+            _userRepository = userRepository;
             _databaseContext = databaseContext;
             _mapper = mapper;
         }
@@ -94,7 +96,28 @@ namespace src.Services
         public async Task<List<OrderReadDTO>> GetAllAsync(PaginationOptions paginationOptions)
         {
             var orderList = await _orderRepository.GetAllAsync(paginationOptions);
-            return _mapper.Map<List<Order>, List<OrderReadDTO>>(orderList);
+            var orders = _mapper.Map<List<Order>, List<OrderReadDTO>>(orderList);
+
+            // The admin table identified every order by raw user id. Order has no User
+            // navigation property to Include, so the names are fetched in one extra query
+            // keyed on the ids this page actually holds - two queries whatever the row
+            // count, rather than the per-row lookup a client-side join would cost.
+            var userIds = orders.Select(order => order.UserId).Distinct().ToList();
+            var users = await _userRepository.GetManyByIdAsync(userIds);
+            var namesById = users.ToDictionary(
+                user => user.UserId,
+                user => string.Join(" ", new[] { user.FirstName, user.LastName }
+                    .Where(part => !string.IsNullOrWhiteSpace(part))));
+
+            foreach (var order in orders)
+            {
+                // left null when the customer has since been deleted; the table falls
+                // back to the id rather than showing a blank cell
+                if (namesById.TryGetValue(order.UserId, out var name) && name.Length > 0)
+                    order.CustomerName = name;
+            }
+
+            return orders;
         }
 
         public async Task<OrderReadDTO> GetByIdAsync(Guid id)

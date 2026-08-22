@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import useAdminCounts from "./useAdminCounts";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { isShipped } from "../../utils/orderStatus";
 
 export default function Dashboard({ userData }) {
   const { t, num } = useStoreSettings();
@@ -140,14 +141,14 @@ export default function Dashboard({ userData }) {
                   </tr>
                 ) : (
                   counts.latestOrders.map((order) => {
-                    const shipped = Boolean(order.shipDate);
+                    const shipped = isShipped(order);
                     return (
                       <tr key={order.id} className="border-b border-seam last:border-0">
                         <td className="px-3.5 py-3 font-mono text-xs text-dim">
                           {String(order.id).slice(0, 8)}
                         </td>
                         <td className="px-3.5 py-3 text-[13px] text-ink">
-                          {[order.city, order.state].filter(Boolean).join(", ") || dash}
+                          {order.customerName || String(order.userId ?? "").slice(0, 8) || dash}
                         </td>
                         <td className="px-3.5 py-3 font-mono text-xs text-dim">
                           {order.orderDate ? String(order.orderDate).slice(0, 10) : dash}
