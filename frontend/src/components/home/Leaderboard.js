@@ -2,10 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 /** Top four products, ranked — the numbered corner tab marks first place acid. */
 export default function Leaderboard({ products, loading }) {
-  const { t, num, price } = useStoreSettings();
+  const { t, num } = useStoreSettings();
 
   return (
     <section className="border-b border-line px-6 py-10 sm:px-11">
@@ -50,7 +51,7 @@ export default function Leaderboard({ products, loading }) {
                   </div>
                   <div className="mt-3.5 flex items-center justify-between border-t border-line pt-3.5">
                     <span className="font-display text-[19px] font-bold text-acid">
-                      {price(product.productPrice)}
+                      <Money amount={product.productPrice} />
                     </span>
                     <span className="font-mono text-[11px] font-medium text-dim">
                       {num(Number(product.averageRating || 0).toFixed(1))}★

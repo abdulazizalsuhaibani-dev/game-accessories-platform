@@ -2,9 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 export default function WishListItem({ wishListItem, onRemove }) {
-  const { t, price } = useStoreSettings();
+  const { t } = useStoreSettings();
 
   return (
     <div className="panel relative transition-colors hover:border-acid">
@@ -27,7 +28,7 @@ export default function WishListItem({ wishListItem, onRemove }) {
             {wishListItem.productName}
           </div>
           <div className="mt-3.5 border-t border-line pt-3.5 font-display text-[19px] font-bold text-acid">
-            {price(wishListItem.productPrice)}
+            <Money amount={wishListItem.productPrice} />
           </div>
         </div>
       </Link>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 /**
  * The 380px summary rail shared by the cart and the checkout.
@@ -9,7 +10,7 @@ import { useStoreSettings } from "../../context/StoreSettings";
  * separate tax or delivery line to add on top of the subtotal.
  */
 export default function OrderSummary({ title, itemCount, subtotal, lines, children }) {
-  const { t, num, price } = useStoreSettings();
+  const { t, num } = useStoreSettings();
 
   return (
     <aside className="flex flex-col gap-3.5 self-start bg-panel p-6">
@@ -29,7 +30,7 @@ export default function OrderSummary({ title, itemCount, subtotal, lines, childr
                   </span>
                 ) : null}
               </div>
-              <div className="font-mono text-xs text-dim">{price(line.total)}</div>
+              <div className="font-mono text-xs text-dim"><Money amount={line.total} /></div>
             </div>
           ))}
         </div>
@@ -38,7 +39,7 @@ export default function OrderSummary({ title, itemCount, subtotal, lines, childr
       <dl className="m-0 flex flex-col gap-2.5 border-y border-line py-3.5 text-[13px] text-dim">
         <div className="flex justify-between gap-3">
           <dt>{t("cart.subtotal", { count: itemCount })}</dt>
-          <dd className="m-0 font-mono text-ink">{price(subtotal)}</dd>
+          <dd className="m-0 font-mono text-ink"><Money amount={subtotal} /></dd>
         </div>
         <div className="flex justify-between gap-3">
           <dt>{t("cart.shipping")}</dt>
@@ -53,7 +54,7 @@ export default function OrderSummary({ title, itemCount, subtotal, lines, childr
       <div className="flex items-baseline justify-between gap-3">
         <span className="telemetry text-[11px] text-dim">{t("cart.total")}</span>
         <span className="font-display text-[30px] font-bold leading-none text-acid">
-          {price(subtotal)}
+          <Money amount={subtotal} />
         </span>
       </div>
 

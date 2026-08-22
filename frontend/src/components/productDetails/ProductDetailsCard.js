@@ -4,6 +4,7 @@ import ImageWell from "../shared/ImageWell";
 import Reviews from "./Reviews";
 import ReviewForm from "../forms/ReviewForm";
 import { useStoreSettings } from "../../context/StoreSettings";
+import Money from "../shared/Money";
 
 const TABS = ["specs", "reviews", "shipping"];
 
@@ -22,7 +23,7 @@ export default function ProductDetailsCard(prop) {
     setOpenSuccessSnackBar,
     setOpenErrorSnackBar,
   } = prop;
-  const { t, num, price } = useStoreSettings();
+  const { t, num } = useStoreSettings();
   const navigate = useNavigate();
 
   const [quantity, setQuantity] = useState(1);
@@ -130,7 +131,7 @@ export default function ProductDetailsCard(prop) {
 
         <div className="flex flex-wrap items-baseline gap-3">
           <span className="font-display text-[34px] font-bold leading-none text-acid">
-            {price(product.productPrice)}
+            <Money amount={product.productPrice} />
           </span>
           <span className="ms-auto font-mono text-xs font-medium text-dim">
             {num(Number(product.averageRating || 0).toFixed(1))}★
