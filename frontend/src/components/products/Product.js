@@ -40,9 +40,6 @@ export default function Product({ product }) {
         <div className="mt-2 text-[15px] font-semibold leading-snug text-ink">
           {product.productName}
         </div>
-        {product.weight ? (
-          <div className="mt-2 font-mono text-xs text-muted">{num(product.weight)}g</div>
-        ) : null}
 
         <div className="mt-3.5 flex items-center justify-between border-t border-line pt-3.5">
           <span

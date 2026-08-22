@@ -24,10 +24,6 @@ namespace src.Entity
 
         public decimal ProductPrice { get; set; }
 
-
-        public decimal Weight { get; set; }
-
-
         public decimal? AverageRating { get; set; }
     }
 }

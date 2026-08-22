@@ -14,7 +14,6 @@ namespace src.DTO
             public string? Description { get; set; }
             public int SKU { get; set; }
             public decimal ProductPrice { get; set; }
-            public decimal Weight { get; set; }
             public Guid SubCategoryId { get; set; }
             public string? SubCategoryName { get; set; }
         }
@@ -33,7 +32,6 @@ namespace src.DTO
             public string Description { get; set; }
             public int SKU { get; set; }
             public decimal ProductPrice { get; set; }
-            public decimal Weight { get; set; }
             public decimal? AverageRating { get; set; }
         }
 
@@ -53,7 +51,6 @@ namespace src.DTO
             public string Description { get; set; }
             public int SKU { get; set; }
             public decimal ProductPrice { get; set; }
-            public decimal Weight { get; set; }
             // null leaves the product where it is; supplying it re-derives SubCategoryName
             // from the looked-up subcategory, the same way creation does
             public Guid? SubCategoryId { get; set; }

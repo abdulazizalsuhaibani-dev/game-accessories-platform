@@ -44,7 +44,6 @@ namespace src.Services.product
                 Description = createProductDto.Description,
                 SKU = createProductDto.SKU,
                 ProductPrice = createProductDto.ProductPrice,
-                Weight = createProductDto.Weight,
                 SubCategoryId = subCategory.SubCategoryId,
                 SubCategoryName = subCategory.Name // Link to the correct subcategory
 
@@ -66,7 +65,6 @@ namespace src.Services.product
                 Description = newProduct.Description,
                 SKU = newProduct.SKU,
                 ProductPrice = newProduct.ProductPrice,
-                Weight = newProduct.Weight,
                 SubCategoryName = newProduct.SubCategoryName,
                 SubCategoryId = newProduct.SubCategoryId,
             };
@@ -105,7 +103,6 @@ namespace src.Services.product
                     Description = product.Description,
                     SKU = product.SKU,
                     ProductPrice = product.ProductPrice,
-                    Weight = product.Weight,
                     SubCategoryName = product.SubCategoryName, // Access the SubCategory name here
                     SubCategoryId = product.SubCategoryId,
                 })

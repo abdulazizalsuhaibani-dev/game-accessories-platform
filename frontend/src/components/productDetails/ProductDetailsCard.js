@@ -77,7 +77,6 @@ export default function ProductDetailsCard(prop) {
   }
 
   const specTiles = [
-    { value: product.weight ? `${num(product.weight)}g` : "—", label: t("detail.weight") },
     { value: num(product.sku ?? 0), label: t("detail.sku") },
     {
       value: num(Number(product.averageRating || 0).toFixed(1)),
@@ -138,7 +137,7 @@ export default function ProductDetailsCard(prop) {
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-px border border-line bg-line">
+        <div className="grid grid-cols-2 gap-px border border-line bg-line">
           {specTiles.map((tile) => (
             <div key={tile.label} className="bg-panel p-3.5">
               <div className="font-display text-xl font-bold leading-none text-ink">

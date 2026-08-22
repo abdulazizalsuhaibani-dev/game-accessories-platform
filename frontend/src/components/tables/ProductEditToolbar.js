@@ -13,12 +13,11 @@ const BLANK_PRODUCT = {
   description: "",
   sku: 0,
   productPrice: 0,
-  weight: 0,
   categoryId: "",
   subCategoryId: "",
 };
 
-const NUMERIC_FIELDS = ["sku", "productPrice", "weight"];
+const NUMERIC_FIELDS = ["sku", "productPrice"];
 
 const FIELDS = [
   { id: "productName", label: "Product name" },
@@ -27,7 +26,6 @@ const FIELDS = [
   { id: "description", label: "Description", multiline: true },
   { id: "sku", label: "SKU", type: "number" },
   { id: "productPrice", label: "Price", type: "number" },
-  { id: "weight", label: "Weight", type: "number" },
 ];
 
 export default function ProductEditToolbar(props) {
