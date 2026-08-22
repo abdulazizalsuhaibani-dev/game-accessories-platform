@@ -103,10 +103,10 @@ git clone git@github.com:your-username/sda-3-online-Backend_Teamwork.git
 }
 ```
 
-- Run migrations to create database
+- Create the schema. The migrations are committed, and the app applies any
+  pending one on startup, so this is only needed to migrate without running it:
 
 ```bash
-dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 

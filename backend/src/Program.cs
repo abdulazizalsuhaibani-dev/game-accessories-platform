@@ -108,25 +108,24 @@ app.UseRouting();
 app.MapGet("/", () =>
 "Hello! You may notice that the website appears empty at the moment. This is because we are currently focused on developing the backend functionality. The front-end will be completed individually by each team member, transforming the project into a complete full-stack application. Thank you for your understanding! Team members: Abdulaziz, Razan, Raghad, Jomana, and Talal.");
 //
-// test database connection
+// Bring the schema up to date before serving anything. Migrations are committed
+// to the repository, so the container applies whatever the build needs on boot
+// and a schema change ships with the code that depends on it - there is no
+// separate migrate-then-deploy step to remember, or to get the wrong way round.
+// This assumes a single instance, which is how the service is deployed;
+// concurrent boots would race here. A failure is deliberately fatal rather than
+// swallowed: serving traffic against a half-migrated schema is worse than not
+// starting at all.
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-    try
+    var pending = context.Database.GetPendingMigrations().ToList();
+    if (pending.Count > 0)
     {
-        if (context.Database.CanConnect())
-        {
-            Console.WriteLine("Database connection successful");
-        }
-        else
-        {
-            Console.WriteLine("Database connection failed");
-        }
+        Console.WriteLine($"Applying {pending.Count} pending migration(s): {string.Join(", ", pending)}");
+        context.Database.Migrate();
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
+    Console.WriteLine("Database connection successful");
 }
 
 

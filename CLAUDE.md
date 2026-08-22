@@ -80,7 +80,13 @@ the other breaks the app:
 
 ## Local setup and deployment
 
-See [`README.md`](README.md) for the gitignored files a fresh clone must
-recreate (`backend/appsettings.json`, `backend/Migrations/`), how to bootstrap
-the first admin in Postgres, and the Render **Root Directory** setting each of
-the two services needs now that both live in one repository.
+See [`README.md`](README.md) for the one gitignored file a fresh clone must
+recreate (`backend/appsettings.json`), how to bootstrap the first admin in
+Postgres, and the Render **Root Directory** setting each of the two services
+needs now that both live in one repository.
+
+`backend/Migrations/` **is** committed, and `Program.cs` applies any pending
+migration on startup — locally and in the deployed container alike. So a schema
+change ships with the code that needs it, in the same deploy; there is no
+separate migrate step, and a migration must never be added without the code
+that goes with it.

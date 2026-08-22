@@ -69,7 +69,6 @@ namespace src.Services.SubCategory
                     Description = product.Description,
                     SKU = product.SKU,
                     ProductPrice = product.ProductPrice,
-                    Weight = product.Weight,
                     AverageRating=product.AverageRating,
                     SubCategoryId = product.SubCategoryId,
                     SubCategoryName= product.SubCategoryName
@@ -101,7 +100,6 @@ namespace src.Services.SubCategory
                     Description = p.Description,
                     SKU = p.SKU,
                     ProductPrice = p.ProductPrice,
-                    Weight = p.Weight,
                     SubCategoryId = p.SubCategoryId,
                     SubCategoryName = p.SubCategoryName
                 }).ToList()

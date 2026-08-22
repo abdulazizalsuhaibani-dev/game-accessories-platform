@@ -30,20 +30,19 @@ npm install
 npm start           # http://localhost:3000
 ```
 
-Two pieces of first-run setup are **not** in the repo and a fresh clone will
-not run without them:
+One piece of first-run setup is **not** in the repo and a fresh clone will not
+run without it: **`backend/appsettings.json`**, gitignored because it carries
+the database connection string and the JWT signing key. Create it with a
+`ConnectionStrings:Local` value in Npgsql format and a `Jwt` section (`Key`,
+`Issuer`, `Audience`). `appsettings.Development.json` *is* committed but only
+sets log levels.
 
-1. **`backend/appsettings.json`** — gitignored, because it carries the database
-   connection string and the JWT signing key. Create it with a
-   `ConnectionStrings:Local` value in Npgsql format and a `Jwt` section
-   (`Key`, `Issuer`, `Audience`). `appsettings.Development.json` *is* committed
-   but only sets log levels.
-2. **`backend/Migrations/`** — also gitignored. Generate and apply it:
-   ```bash
-   cd backend
-   dotnet ef migrations add InitialCreate
-   dotnet ef database update
-   ```
+**`backend/Migrations/` is committed**, and the API applies any pending
+migration on startup — so pointing a fresh, empty database at it and running
+`dotnet run` is enough to build the schema. The same code path migrates the
+deployed container when it boots, which is why a schema change and the code
+that needs it must ship in the same deploy. To apply migrations without
+starting the app, `cd backend && dotnet ef database update`.
 
 By default the frontend points at the **deployed** API, not your local one.
 `frontend/src/api.js` holds the single `API_BASE` constant; change it to

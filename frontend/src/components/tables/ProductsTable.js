@@ -143,7 +143,6 @@ export default function ProductsTable(prop) {
     { field: "description", headerName: "Description", width: 200, editable: true },
     { field: "sku", headerName: "Stock", type: "number", width: 90, editable: true },
     { field: "productPrice", headerName: "Price", type: "number", width: 100, editable: true },
-    { field: "weight", headerName: "Weight", type: "number", width: 90, editable: true },
     {
       field: "subCategoryId",
       headerName: "Sub-category",
