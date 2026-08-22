@@ -68,6 +68,11 @@ namespace src.Services.Payment
         public async Task<PaymentReadDto> GetByIdAsync(Guid paymentId)
         {
             var foundPayment = await _paymentRepo.GetByIdAsync(paymentId);
+            if (foundPayment is null)
+            {
+                throw CustomException.NotFound($"Payment with id {paymentId} not found");
+            }
+
             return _mapper.Map<src.Entity.Payment, PaymentReadDto> (foundPayment);
         }
 
@@ -110,13 +115,13 @@ namespace src.Services.Payment
         // Delete a payment by id
         public async Task<bool> DeleteOneAsync(Guid paymentId)
         {
-        var foundPayment = await _paymentRepo.GetByIdAsync(paymentId);
-           bool IsDeleted = await _paymentRepo.DeleteOneAsync(foundPayment);
-           if(IsDeleted)
-            {        
-                return true;
+            var foundPayment = await _paymentRepo.GetByIdAsync(paymentId);
+            if (foundPayment is null)
+            {
+                throw CustomException.NotFound($"Payment with id {paymentId} not found");
             }
-           return false;
+
+            return await _paymentRepo.DeleteOneAsync(foundPayment);
         }
     }
 }
