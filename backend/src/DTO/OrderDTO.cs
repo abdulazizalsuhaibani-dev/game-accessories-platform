@@ -46,7 +46,10 @@ namespace src.DTO
         }
         public class OrderUpdateDTO
         {
-            public DateTime ShipDate { get; set; }
+            // null means "leave unchanged" — a PUT that only advances the status must not
+            // carry a ship date, and a non-nullable DateTime would bind to MinValue and
+            // both fail validation and overwrite the stored date through the mapper.
+            public DateTime? ShipDate { get; set; }
             public string? OrderStatus { get; set; }
         }
 

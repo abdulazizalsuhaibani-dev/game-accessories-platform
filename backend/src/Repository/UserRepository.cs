@@ -44,10 +44,36 @@ namespace src.Repository
             await _databaseContext.SaveChangesAsync();
             return true;
         }
+        // Emails are stored lower-cased so the unique index actually catches
+        // "Ada@example.com" and "ada@example.com" as the same account.
+        public static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
+
         // find user by email
         public async Task<User> FindByEmailAsync(string email)
         {
-            return await _user.FirstOrDefaultAsync(u => u.Email == email);
+            var normalized = NormalizeEmail(email);
+            return await _user.FirstOrDefaultAsync(u => u.Email == normalized);
+        }
+
+        // Existence checks are a targeted query, never a full-table scan: registration
+        // used to load every user row into memory to compare three fields.
+        public async Task<bool> EmailExistsAsync(string email, Guid? exceptUserId = null)
+        {
+            var normalized = NormalizeEmail(email);
+            return await _user.AnyAsync(u =>
+                u.Email == normalized && (exceptUserId == null || u.UserId != exceptUserId));
+        }
+
+        public async Task<bool> PhoneExistsAsync(string phoneNumber, Guid? exceptUserId = null)
+        {
+            return await _user.AnyAsync(u =>
+                u.PhoneNumber == phoneNumber && (exceptUserId == null || u.UserId != exceptUserId));
+        }
+
+        public async Task<bool> UsernameExistsAsync(string username, Guid? exceptUserId = null)
+        {
+            return await _user.AnyAsync(u =>
+                u.Username == username && (exceptUserId == null || u.UserId != exceptUserId));
         }
     }
 }

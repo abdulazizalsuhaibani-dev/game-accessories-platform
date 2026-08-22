@@ -123,11 +123,23 @@ namespace src.Services
             {
                 return false;
             }
-            _mapper.Map(updateDTO, foundOrder);
+            // Assigned by hand rather than through AutoMapper. Its ForAllMembers null guard
+            // does not hold for ShipDate: the destination is a non-nullable DateTime, so a
+            // null source is materialised as DateTime.MinValue before the condition is
+            // consulted, and a status-only update silently reset the ship date to 0001-01-01.
+            if (updateDTO.OrderStatus is not null)
+                foundOrder.OrderStatus = updateDTO.OrderStatus;
 
-            // if order is delivered to the user
-            if (foundOrder.OrderStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase))
-                foundOrder.IsDelivered = true;
+            if (updateDTO.ShipDate is DateTime shipDate)
+                foundOrder.ShipDate = shipDate;
+
+            // IsDelivered has to track the status in both directions. GetByUserIdAsync and
+            // GetByHistoryUserIdAsync partition a customer's orders on this flag, so an order
+            // walked back from "delivered" would otherwise stay stranded in their history.
+            foundOrder.IsDelivered =
+                foundOrder.OrderStatus is not null
+                && foundOrder.OrderStatus.Equals("delivered", StringComparison.OrdinalIgnoreCase);
+
             return await _orderRepository.UpdateOneAsync(foundOrder);
         }
         public async Task<bool> DeleteOneAsync(Guid id)

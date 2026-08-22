@@ -33,32 +33,42 @@ namespace src.Services.user
         public async Task<UserReadDto> CreateOneAsync(UserCreateDto createDto)
         {
             var user = _mapper.Map<UserCreateDto, User>(createDto);
-            var userTable = await _userRepo.GetAllAsync();
-            if (userTable.Any(x => x.Email == user.Email))
-            {
-                throw CustomException.BadRequest("Email already registered please try another one");
-            }
-            if (userTable.Any(x => x.PhoneNumber == user.PhoneNumber))
-            {
-                throw CustomException.BadRequest("Phone number already registered please try another one");
-            }
-            if (userTable.Any(x => x.Username == user.Username))
-            {
-                throw CustomException.BadRequest("Username already registered please try another one");
-            }
+
+            // the empty checks come first: a null email used to reach the duplicate
+            // scan below and compare equal to every other row with a null email
             if (user.Email == null)
             {
                 throw CustomException.BadRequest("You cant leave Email empty");
+            }
+            if (user.PhoneNumber == null)
+            {
+                throw CustomException.BadRequest("You cant leave phone number empty");
+            }
+
+            // stored lower-cased, so the unique index treats case variants as one account
+            user.Email = UserRepository.NormalizeEmail(user.Email);
+
+            // three targeted queries. this used to be GetAllAsync() plus three in-memory
+            // scans, which loaded the whole user table on every signup and — being a
+            // check outside the write — let two concurrent registrations both through.
+            // The database's unique index on Email is what actually holds the line.
+            if (await _userRepo.EmailExistsAsync(user.Email))
+            {
+                throw CustomException.BadRequest("Email already registered please try another one");
+            }
+            if (await _userRepo.PhoneExistsAsync(user.PhoneNumber))
+            {
+                throw CustomException.BadRequest("Phone number already registered please try another one");
+            }
+            if (user.Username != null && await _userRepo.UsernameExistsAsync(user.Username))
+            {
+                throw CustomException.BadRequest("Username already registered please try another one");
             }
             // everybody who signs up is a customer. the role is never taken from
             // the email or from the request body, otherwise anyone could hand
             // themselves an admin account. an existing admin promotes people
             // through PUT api/v1/Users/{userId}/role
             user.Role = UserRole.Customer;
-            if (user.PhoneNumber == null)
-            {
-                throw CustomException.BadRequest("You cant leave phone number empty");
-            }
             if (user.Username == null)
             {
                 throw CustomException.BadRequest("You cant leave Username empty");
@@ -175,23 +185,25 @@ namespace src.Services.user
                 throw CustomException.BadRequest($"user with {id}  doesnt exist");
             }
 
-            var userTable = await _userRepo.GetAllAsync();
-            var duplicatEmail = userTable.Any(x => x.Email == updateDto.Email && x.UserId != foundUser.UserId);
-            var duplicatUsername = userTable.Any(x => x.Username == updateDto.Username && x.UserId != foundUser.UserId);
-            var duplicatPhone = userTable.Any(x => x.PhoneNumber == updateDto.PhoneNumber && x.UserId != foundUser.UserId);
-            if (duplicatEmail)
+            // Targeted existence queries rather than loading the whole user table, and
+            // each field is only checked when the update actually supplies it — comparing
+            // a null against the table matched every other row holding a null.
+            if (updateDto.Email != null)
             {
-                throw CustomException.BadRequest($"email already exist try another one");
+                updateDto.Email = UserRepository.NormalizeEmail(updateDto.Email);
+                if (await _userRepo.EmailExistsAsync(updateDto.Email, foundUser.UserId))
+                    throw CustomException.BadRequest($"email already exist try another one");
             }
-            if (duplicatUsername)
+            if (updateDto.Username != null
+                && await _userRepo.UsernameExistsAsync(updateDto.Username, foundUser.UserId))
             {
                 throw CustomException.BadRequest($"Username already exist try another one");
             }
-            if (duplicatPhone)
+            if (updateDto.PhoneNumber != null
+                && await _userRepo.PhoneExistsAsync(updateDto.PhoneNumber, foundUser.UserId))
             {
                 throw CustomException.BadRequest($"phone number already exist try another one");
             }
-            else
             {
                 if (updateDto.Email == null)
                 {

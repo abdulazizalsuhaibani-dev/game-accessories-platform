@@ -68,10 +68,9 @@ namespace src.Utils
             CreateMap<Order, OrderReadDTO>();
             CreateMap<OrderCreateDTO, Order>();
             CreateMap<OrderReadDTO, Order>();
-            CreateMap<OrderUpdateDTO, Order>()
-                .ForAllMembers(opts =>
-                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
-                );
+            // No OrderUpdateDTO map: the partial update is two fields assigned directly in
+            // OrderService, because the ForAllMembers null guard silently fails to protect a
+            // nullable source mapped onto a non-nullable destination.
 
             // Cart mappings
             CreateMap<Cart, CartReadDto>();
