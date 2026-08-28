@@ -39,6 +39,8 @@ const strings = {
     "cat.headsets": "Headsets",
     "cat.controllers": "Controllers",
     "cat.keyboards": "Keyboards",
+    "cat.monitors": "Monitors",
+    "cat.chairs": "Chairs",
     "cat.skus": "{count} SKUs",
 
     "best.title": "Top of the leaderboard",
@@ -333,6 +335,8 @@ const strings = {
     "cat.headsets": "سماعات",
     "cat.controllers": "وحدات تحكم",
     "cat.keyboards": "لوحات مفاتيح",
+    "cat.monitors": "شاشات",
+    "cat.chairs": "كراسي",
     "cat.skus": "{count} منتجًا",
 
     "best.title": "الأكثر مبيعًا",

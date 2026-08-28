@@ -37,6 +37,13 @@ namespace src.Services.Category
             return _mapper.Map<List<src.Entity.Category>, List<CategoryReadDto>>(categoryList);
         }
         
+        // Get every category as a tile-sized summary
+        public async Task<List<CategorySummaryDto>> GetSummariesAsync()
+        {
+            var summaries = await _categoryRepo.GetSummariesAsync();
+            return _mapper.Map<List<CategorySummary>, List<CategorySummaryDto>>(summaries);
+        }
+
         // Get a categroy by id
         public async Task<CategoryReadDto> GetByIdAsync(Guid id)
         {

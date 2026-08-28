@@ -121,19 +121,9 @@ namespace src.Services.product
         {
             var products = await _productRepository.GetProductsBySubCategoryIdAsync(subCategoryId);
 
-            return products
-                .Select(product => new GetProductDto
-                {
-                    ProductId = product.ProductId,
-                    ProductName = product.ProductName,
-                    ProductColor = product.ProductColor,
-                    Description = product.Description,
-                    SKU = product.SKU,
-                    ProductPrice = product.ProductPrice,
-                    SubCategoryName = product.SubCategoryName, // Access the SubCategory name here
-                    SubCategoryId = product.SubCategoryId,
-                })
-                .ToList();
+            // mapped by name like every other read on this service. listing the fields
+            // by hand dropped ProductImage, AddedDate and AverageRating
+            return _mapper.Map<List<Product>, List<GetProductDto>>(products);
         }
 
         //get all products by using the search by name & pagination

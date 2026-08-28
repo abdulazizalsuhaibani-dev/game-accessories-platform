@@ -8,12 +8,14 @@ namespace src.Repository
     public class ProductRepository
     {
         protected DbSet<Product> _products;
+        protected DbSet<SubCategory> _subCategories;
         protected DatabaseContext _databaseContext;
 
         public ProductRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
             _products = databaseContext.Set<Product>();
+            _subCategories = databaseContext.Set<SubCategory>();
         }
 
         // add a new product:
@@ -154,6 +156,19 @@ namespace src.Repository
             if (SubCategoryId != null)
             {
                 query = query.Where(x => x.SubCategoryId.Equals(SubCategoryId));
+            }
+
+            // or every product under a category. Product carries a denormalised
+            // SubCategoryId with no navigation to SubCategory, so the category has to
+            // be resolved to the subcategory ids beneath it. Applied here, inside the
+            // shared predicate, so the page and its count cannot disagree.
+            if (toSearch.CategoryId is Guid categoryId)
+            {
+                var subCategoryIds = _subCategories
+                    .Where(subCategory => subCategory.CategoryId == categoryId)
+                    .Select(subCategory => subCategory.SubCategoryId);
+
+                query = query.Where(x => subCategoryIds.Contains(x.SubCategoryId));
             }
 
             //implement filter

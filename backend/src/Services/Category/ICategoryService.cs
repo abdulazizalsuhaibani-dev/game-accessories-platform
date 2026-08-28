@@ -11,6 +11,7 @@ namespace src.Services.Category
     {
         Task<CategoryReadDto> CreateOneAsync(CategoryCreateDto creaDto);
         Task<List<CategoryReadDto>> GetAllAsync();
+        Task<List<CategorySummaryDto>> GetSummariesAsync();
 
         Task<CategoryReadDto> GetByIdAsync(Guid id);
         Task<bool> DeleteOneAsync(Guid id);

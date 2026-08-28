@@ -10,6 +10,7 @@ import SearchOptionsForm, {
 } from "../forms/SearchOptionsForm";
 import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { categoryLabel } from "../../utils/categoryLabel";
 
 const LIMIT = 9;
 
@@ -28,10 +29,12 @@ export default function Products() {
   const { t, num } = useStoreSettings();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // The header search box and the category tiles both navigate here with a
-  // ?search= term, so the URL is the source of truth for the query.
+  // The header search box navigates here with a ?search= term and the home page's
+  // category tiles with a ?category= id, so the URL is the source of truth for the
+  // query.
   const urlSearch = searchParams.get("search") ?? "";
   const urlSort = searchParams.get("sort") ?? "";
+  const urlCategory = searchParams.get("category") ?? "";
 
   const [searchInput, setSearchInput] = useState(urlSearch);
   const [priceRange, setPriceRange] = useState([PRICE_FLOOR, PRICE_CEILING]);
@@ -57,8 +60,37 @@ export default function Products() {
 
   useEffect(
     () => setPage(1),
-    [debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort]
+    [debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort, urlCategory]
   );
+
+  // The id in the URL is all the tile can carry, but the heading and the filter
+  // chip have to name the category. The summary is one small row per category, so
+  // resolving the name costs a request only while a category filter is on.
+  const [categoryName, setCategoryName] = useState("");
+  useEffect(() => {
+    if (!urlCategory) {
+      setCategoryName("");
+      return undefined;
+    }
+
+    let cancelled = false;
+    axios
+      .get(`${API_BASE}/Categories/summary`)
+      .then((response) => {
+        if (cancelled) return;
+        const match = (response.data ?? []).find((row) => row.id === urlCategory);
+        setCategoryName(match ? match.categoryName : "");
+      })
+      // The listing is already filtered server-side, so an unnamed chip is a much
+      // smaller problem than failing the page over a label.
+      .catch(() => {
+        if (!cancelled) setCategoryName("");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [urlCategory]);
 
   useEffect(() => {
     const params = new URLSearchParams({
@@ -66,6 +98,7 @@ export default function Products() {
       Offset: String((page - 1) * LIMIT),
     });
     if (debouncedSearch) params.set("Search", debouncedSearch);
+    if (urlCategory) params.set("CategoryId", urlCategory);
     if (priceRange[0] > PRICE_FLOOR) params.set("MinPrice", String(priceRange[0]));
     if (priceRange[1] < PRICE_CEILING) params.set("MaxPrice", String(priceRange[1]));
     if (colorSelect) params.set("Colors", colorSelect);
@@ -97,10 +130,23 @@ export default function Products() {
     return () => {
       cancelled = true;
     };
-  }, [page, debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort]);
+  }, [page, debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort, urlCategory]);
 
   const activeFilters = useMemo(() => {
     const filters = [];
+    if (urlCategory) {
+      filters.push({
+        key: "category",
+        // Falls back to the id only if the summary could not be read; an
+        // unnamed chip still tells the customer a filter is on and how to
+        // drop it.
+        label: categoryLabel(t, categoryName) || urlCategory,
+        onRemove: () => {
+          searchParams.delete("category");
+          setSearchParams(searchParams, { replace: true });
+        },
+      });
+    }
     if (debouncedSearch) {
       filters.push({
         key: "search",
@@ -130,13 +176,24 @@ export default function Products() {
       });
     }
     return filters;
-  }, [debouncedSearch, colorSelect, priceRange, inStockOnly, searchParams, setSearchParams, t]);
+  }, [
+    debouncedSearch,
+    urlCategory,
+    categoryName,
+    colorSelect,
+    priceRange,
+    inStockOnly,
+    searchParams,
+    setSearchParams,
+    t,
+  ]);
 
   function clearAllFilters() {
     setSearchInput("");
     setColorSelect("");
     setPriceRange([PRICE_FLOOR, PRICE_CEILING]);
     setInStockOnly(false);
+    searchParams.delete("category");
     searchParams.delete("search");
     setSearchParams(searchParams, { replace: true });
   }
@@ -166,7 +223,7 @@ export default function Products() {
             {t("list.breadcrumb")}
           </div>
           <h1 className="m-0 font-display text-[30px] font-bold uppercase text-ink sm:text-[38px]">
-            {debouncedSearch || t("list.title")}{" "}
+            {debouncedSearch || categoryLabel(t, categoryName) || t("list.title")}{" "}
             <span className="text-xl text-muted">
               {t("list.results", { count: productsResponse.productsCount || 0 })}
             </span>

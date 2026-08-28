@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using src.Entity;
+using src.Repository;
 using static src.DTO.CategoryDTO;
 using static src.DTO.PaymentDTO;
 using static src.DTO.ProductDTO;
@@ -42,6 +43,7 @@ namespace src.Utils
 
             // Category mappings
             CreateMap<Category, CategoryReadDto>();
+            CreateMap<CategorySummary, CategorySummaryDto>();
             CreateMap<CategoryCreateDto, Category>();
             CreateMap<CategoryUpdateDto, Category>()
                 .ForAllMembers(options =>
