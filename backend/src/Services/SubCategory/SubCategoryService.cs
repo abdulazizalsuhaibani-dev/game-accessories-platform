@@ -61,18 +61,13 @@ namespace src.Services.SubCategory
                 Name = subCategory.Name,
                 CategoryId = subCategory.CategoryId,
                 CategoryName = subCategory.Category.CategoryName, // Map the Category Name
-                Products = subCategory.Products.Select(product => new GetProductDto
-                {
-                    ProductId = product.ProductId,
-                    ProductName = product.ProductName,
-                    ProductColor = product.ProductColor,
-                    Description = product.Description,
-                    SKU = product.SKU,
-                    ProductPrice = product.ProductPrice,
-                    AverageRating=product.AverageRating,
-                    SubCategoryId = product.SubCategoryId,
-                    SubCategoryName= product.SubCategoryName
-                }).ToList()
+
+                // mapped by name rather than listed by hand. the hand-written version
+                // omitted ProductImage and AddedDate, so a product reached through a
+                // subcategory arrived with no picture
+                Products = _mapper.Map<List<GetProductDto>>(
+                    subCategory.Products ?? new List<src.Entity.Product>()
+                )
             }).ToList();
 
             return subCategoryReadDtoList;
@@ -91,18 +86,13 @@ namespace src.Services.SubCategory
                 SubCategoryId = subCategory.SubCategoryId,
                 Name = subCategory.Name,
                 CategoryId = subCategory.CategoryId,
-                CategoryName = subCategory.Category?.CategoryName, 
-                Products = subCategory.Products.Select(p => new GetProductDto
-                {
-                    ProductId = p.ProductId,
-                    ProductName = p.ProductName,
-                    ProductColor = p.ProductColor,
-                    Description = p.Description,
-                    SKU = p.SKU,
-                    ProductPrice = p.ProductPrice,
-                    SubCategoryId = p.SubCategoryId,
-                    SubCategoryName = p.SubCategoryName
-                }).ToList()
+                CategoryName = subCategory.Category?.CategoryName,
+
+                // as above - by name, so ProductImage, AddedDate and AverageRating
+                // survive the trip
+                Products = _mapper.Map<List<GetProductDto>>(
+                    subCategory.Products ?? new List<src.Entity.Product>()
+                )
             };
         }
 
