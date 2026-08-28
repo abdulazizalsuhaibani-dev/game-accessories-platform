@@ -20,6 +20,11 @@ namespace src.Utils
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
 
+        // narrows the listing to one category. the storefront's category tiles show a
+        // product count, and searching for the category's name instead matched product
+        // descriptions too - so a tile reading 5 landed on a page of 6
+        public Guid? CategoryId { get; set; }
+
         // hides sold out products. applied in the query rather than on the fetched
         // page, so it narrows the count and the pager along with the results
         public bool InStockOnly { get; set; }

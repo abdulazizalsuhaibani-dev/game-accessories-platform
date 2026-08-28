@@ -36,6 +36,34 @@ namespace src.Repository
             .ToListAsync();
         }
 
+        // One row per category, projected in the database. GetAllAsync above is the
+        // only way to ask what categories exist, and it serialises every product of
+        // every subcategory - the storefront needs a name, a count and one image.
+        public async Task<List<CategorySummary>> GetSummariesAsync()
+        {
+            return await _categories
+                .OrderBy(c => c.CategoryName)
+                .Select(c => new CategorySummary
+                {
+                    Id = c.Id,
+                    CategoryName = c.CategoryName,
+                    ProductCount = c.SubCategory!.SelectMany(s => s.Products!).Count(),
+
+                    // the best-rated product represents its category. rated products are
+                    // ordered ahead of unrated ones - the same null-last handling the
+                    // catalogue sort uses - so an unrated product is picked only when the
+                    // category holds nothing else, which today is true of Gaming Chairs.
+                    TopProductImage = c
+                        .SubCategory!.SelectMany(s => s.Products!)
+                        .Where(p => p.ProductImage != null && p.ProductImage != "")
+                        .OrderByDescending(p => p.AverageRating != null)
+                        .ThenByDescending(p => p.AverageRating)
+                        .Select(p => p.ProductImage)
+                        .FirstOrDefault(),
+                })
+                .ToListAsync();
+        }
+
         // Get a category by id
          public async Task<Category> GetByIdAsync(Guid id)
         {

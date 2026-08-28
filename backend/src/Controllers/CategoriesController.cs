@@ -30,6 +30,16 @@ namespace src.Controller
             return Ok(category_list);
         }
 
+        // Get every category as a name, a product count and one representative image.
+        // A literal segment outranks "{id}" in routing, so this never reaches the
+        // action below and tries to parse "summary" as a guid.
+        [HttpGet("summary")]
+        public async Task<ActionResult<List<CategorySummaryDto>>> GetCategorySummaries()
+        {
+            var summaries = await _categoryService.GetSummariesAsync();
+            return Ok(summaries);
+        }
+
         // Get a category with its details
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryReadDto>> GetCategoryById(Guid id)
