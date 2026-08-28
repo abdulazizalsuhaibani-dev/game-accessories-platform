@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_BASE, authHeaders } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
+import OrderHistory from "./OrderHistory";
 
 export default function UserProfile(prop) {
   const {
@@ -67,13 +68,15 @@ export default function UserProfile(prop) {
         setUserData({ ...userData, ...updatedFields });
       }
 
-      setSnackBarMessage("User information updated successfully");
+      setSnackBarMessage(t("profile.updated"));
       setOpenSuccessSnackBar(true);
       setEditing(false);
     } catch (error) {
       const status = error.response?.status;
       setSnackBarMessage(
-        status === 401 || status === 500 ? "Incorrect password" : "User information update failed"
+        status === 401 || status === 500
+          ? t("profile.wrongPassword")
+          : t("profile.updateFailed")
       );
       setOpenErrorSnackBar(true);
     } finally {
@@ -96,6 +99,8 @@ export default function UserProfile(prop) {
       </div>
 
       <div className="mx-auto max-w-3xl px-6 py-8 sm:px-7">
+        <section>
+        <h2 className="m-0 mb-4 telemetry text-[11px] text-ink">{t("profile.details")}</h2>
         <dl className="m-0 grid gap-px border border-line bg-line sm:grid-cols-2">
           {rows.map((row) => (
             <div key={row.label} className="bg-panel p-4">
@@ -181,6 +186,9 @@ export default function UserProfile(prop) {
             </button>
           </div>
         )}
+        </section>
+
+        <OrderHistory userId={userData.userId} />
       </div>
     </div>
   );
