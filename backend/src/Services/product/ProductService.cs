@@ -24,9 +24,36 @@ namespace src.Services.product
             _mapper = mapper;
         }
 
+        // the image is a client-supplied string written straight onto the entity, so an
+        // admin typo - or a javascript: url - used to reach the catalogue unchecked.
+        // blank means "no image" and is normalised to null, which on update leaves the
+        // existing one alone the same way a null does. anything else has to be an
+        // absolute https url of a sane length.
+        private const int ProductImageMaxLength = 2048;
+
+        private static string? ValidateProductImage(string? productImage)
+        {
+            if (string.IsNullOrWhiteSpace(productImage))
+                return null;
+
+            var trimmed = productImage.Trim();
+
+            if (trimmed.Length > ProductImageMaxLength)
+                throw CustomException.BadRequest(
+                    $"Product image url cannot be longer than {ProductImageMaxLength} characters"
+                );
+
+            if (!Uri.TryCreate(trimmed, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+                throw CustomException.BadRequest("Product image must be an absolute https url");
+
+            return trimmed;
+        }
+
         //Raghad
         public async Task<GetProductDto> CreateProductAsync(CreateProductDto createProductDto)
         {
+            var productImage = ValidateProductImage(createProductDto.ProductImage);
+
             var subCategory = await _subCategories.GetByIdAsync(createProductDto.SubCategoryId);
 
             // a well-formed guid for a subcategory that does not exist used to NRE on the
@@ -39,7 +66,7 @@ namespace src.Services.product
             {
                 ProductId = Guid.NewGuid(),
                 ProductName = createProductDto.ProductName,
-                ProductImage = createProductDto.ProductImage,
+                ProductImage = productImage,
                 ProductColor = createProductDto.ProductColor,
                 Description = createProductDto.Description,
                 SKU = createProductDto.SKU,
@@ -167,6 +194,10 @@ namespace src.Services.product
             {
                 throw CustomException.NotFound($"Product with id {id} not found");
             }
+
+            // validated before the map, so a rejected url never reaches the entity
+            product.ProductImage = ValidateProductImage(product.ProductImage);
+
             _mapper.Map(product, isFound);
 
             // Moving a product between subcategories was impossible: the DTO carried no
