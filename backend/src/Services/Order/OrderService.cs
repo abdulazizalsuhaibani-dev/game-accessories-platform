@@ -170,7 +170,11 @@ namespace src.Services
             var foundOrder = await _orderRepository.GetByIdAsync(id);
             if (foundOrder == null)
                 throw CustomException.NotFound($"Order with ID {id} not found");
-            if (!foundOrder.OrderStatus.Equals("Ordered", StringComparison.OrdinalIgnoreCase))
+            // OrderStatus is nullable - UpdateOneAsync above already reads it through a
+            // null check. string.Equals takes the null instead of dereferencing it, so an
+            // order with no status is refused here rather than crashing the request; it is
+            // not known to be cancellable, and cancelling restores its stock.
+            if (!string.Equals(foundOrder.OrderStatus, "Ordered", StringComparison.OrdinalIgnoreCase))
                 throw CustomException.BadRequest($"Order with ID {id} cannot be deleted since its already shipped");
 
             // increase the SKU back.
