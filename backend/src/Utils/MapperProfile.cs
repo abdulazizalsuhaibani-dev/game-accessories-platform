@@ -26,7 +26,6 @@ namespace src.Utils
             // User mappings
             CreateMap<User, UserReadDto>();
             CreateMap<UserCreateDto, User>();
-            CreateMap<User, UserReadUsernameDto>();
             CreateMap<UserUpdateDto, User>()
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)

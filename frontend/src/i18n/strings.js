@@ -106,6 +106,7 @@ const strings = {
     "detail.submitReview": "Submit review",
     "detail.comment": "Comment",
     "detail.noReviews": "No reviews yet.",
+    "detail.deletedUser": "Deleted user",
     "detail.shippingCopy":
       "Free standard delivery on every order, dispatched within 24 hours. Express next-day available at checkout. Free returns for 30 days.",
     "detail.loadError": "We couldn't find that product!",
@@ -176,7 +177,6 @@ const strings = {
     "wishlist.empty": "Your wishlist is empty!",
 
     "profile.title": "Account",
-    "profile.username": "Username",
     "profile.firstName": "First name",
     "profile.lastName": "Last name",
     "profile.email": "Email",
@@ -210,7 +210,6 @@ const strings = {
     "auth.haveAccount": "Already have an account?",
     "auth.loginHere": "Login here",
     "auth.createAccount": "Create an account",
-    "auth.username": "Username",
     "auth.birthday": "Birthday",
     "auth.phone": "Phone number",
     "auth.confirmPassword": "Confirm password",
@@ -219,7 +218,6 @@ const strings = {
 
     // Form validation. Every rule in the auth forms names its own message, so
     // yup never falls back to a default built from the property key.
-    "validation.usernameRequired": "Please choose a username.",
     "validation.firstNameRequired": "Please enter your first name.",
     "validation.lastNameRequired": "Please enter your last name.",
     "validation.birthdayRequired": "Please enter your birthday.",
@@ -399,6 +397,7 @@ const strings = {
     "detail.submitReview": "إرسال التقييم",
     "detail.comment": "التعليق",
     "detail.noReviews": "لا توجد تقييمات بعد.",
+    "detail.deletedUser": "مستخدم محذوف",
     "detail.shippingCopy":
       "شحن عادي مجاني على كل الطلبات، ويُجهّز خلال ٢٤ ساعة. الشحن السريع متاح عند الدفع. إرجاع مجاني خلال ٣٠ يومًا.",
     "detail.loadError": "تعذّر العثور على هذا المنتج!",
@@ -469,7 +468,6 @@ const strings = {
     "wishlist.empty": "قائمة المفضلة فارغة!",
 
     "profile.title": "حسابي",
-    "profile.username": "اسم المستخدم",
     "profile.firstName": "الاسم الأول",
     "profile.lastName": "اسم العائلة",
     "profile.email": "البريد الإلكتروني",
@@ -503,13 +501,11 @@ const strings = {
     "auth.haveAccount": "لديك حساب بالفعل؟",
     "auth.loginHere": "ادخل من هنا",
     "auth.createAccount": "إنشاء حساب",
-    "auth.username": "اسم المستخدم",
     "auth.birthday": "تاريخ الميلاد",
     "auth.phone": "رقم الهاتف",
     "auth.confirmPassword": "تأكيد كلمة المرور",
     "auth.passwordHint": "٨ أحرف على الأقل، وتحتوي على حرف ورقم ورمز خاص من ! @ # $ % ^ & * ( ) _ [ ]",
 
-    "validation.usernameRequired": "الرجاء اختيار اسم مستخدم.",
     "validation.firstNameRequired": "الرجاء إدخال الاسم الأول.",
     "validation.lastNameRequired": "الرجاء إدخال اسم العائلة.",
     "validation.birthdayRequired": "الرجاء إدخال تاريخ ميلادك.",

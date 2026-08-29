@@ -14,9 +14,7 @@ namespace src.Services.user
         Task<List<UserReadDto>> GetAllAsync();
         // get by id
         Task<UserReadDto> GetByIdAsync(Guid id);
-        // get username by id
-        Task<UserReadUsernameDto> GetUsernameByIdAsync(Guid id);
-        // delete 
+        // delete
         Task<bool> DeleteOneAsync(Guid id);
         // update
         Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto);

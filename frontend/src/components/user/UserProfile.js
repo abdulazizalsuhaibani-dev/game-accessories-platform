@@ -85,7 +85,6 @@ export default function UserProfile(prop) {
   }
 
   const rows = [
-    { label: t("profile.username"), value: userData.username },
     { label: t("profile.firstName"), value: userData.firstName },
     { label: t("profile.lastName"), value: userData.lastName },
     { label: t("profile.email"), value: userData.email },

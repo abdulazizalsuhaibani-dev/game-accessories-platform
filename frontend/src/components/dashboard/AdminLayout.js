@@ -23,11 +23,9 @@ export default function AdminLayout({ userData, counts, title, meta, actions, ch
     { to: "/dashboard/Users", end: false, label: t("admin.users"), count: counts.users },
   ];
 
-  const initials = [userData?.firstName, userData?.lastName]
-    .filter(Boolean)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
+  const nameParts = [userData?.firstName, userData?.lastName].filter(Boolean);
+  const initials = nameParts.map((part) => part[0]).join("").toUpperCase();
+  const displayName = nameParts.join(" ");
 
   return (
     <div className="flex min-h-[calc(100vh-94px)] bg-chassis max-lg:flex-col">
@@ -79,7 +77,7 @@ export default function AdminLayout({ userData, counts, title, meta, actions, ch
               {initials || "AD"}
             </div>
             <div className="min-w-0">
-              <div className="truncate text-xs font-medium text-ink">{userData.username}</div>
+              <div className="truncate text-xs font-medium text-ink">{displayName}</div>
               <div className="mt-1 telemetry text-[9px] font-medium text-muted">
                 {t("admin.label")}
               </div>

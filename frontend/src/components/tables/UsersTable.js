@@ -49,7 +49,6 @@ export default function UsersTable(prop) {
   };
 
   const columns = [
-    { field: "username", headerName: "Username", width: 160 },
     { field: "firstName", headerName: "First name", width: 150 },
     { field: "lastName", headerName: "Last name", width: 150 },
     { field: "email", headerName: "Email", width: 220 },
@@ -90,7 +89,7 @@ export default function UsersTable(prop) {
     const term = query.trim().toLowerCase();
     if (!term) return rows;
     return rows.filter((row) =>
-      `${row.username} ${row.firstName} ${row.lastName} ${row.email}`.toLowerCase().includes(term)
+      `${row.firstName} ${row.lastName} ${row.email}`.toLowerCase().includes(term)
     );
   }, [rows, query]);
 

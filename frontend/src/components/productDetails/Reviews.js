@@ -4,6 +4,13 @@ import { Rating } from "@mui/material";
 import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
 
+/**
+ * Author names arrive on the review DTO itself (`FirstName`, set server-side
+ * from a batched lookup) — this used to fetch `GET /Users/username/{userId}`
+ * per review, an endpoint with no `[Authorize]` that let anyone resolve a
+ * username from a bare user id.
+ */
+
 export default function Reviews({ productId, setSnackBarMessage, setOpenErrorSnackBar }) {
   const { t } = useStoreSettings();
   const [reviewsList, setReviewsList] = useState([]);
@@ -43,27 +50,14 @@ export default function Reviews({ productId, setSnackBarMessage, setOpenErrorSna
 }
 
 function SingleReview({ review }) {
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    let cancelled = false;
-    axios
-      .get(`${API_BASE}/Users/username/${review.userId}`)
-      .then((response) => {
-        if (!cancelled) setUsername(response.data.username);
-      })
-      .catch(() => {
-        // A deleted author is expected; the fallback label covers it.
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [review.userId]);
+  const { t } = useStoreSettings();
 
   return (
     <li className="border-t border-line pt-4">
       <div className="flex items-center justify-between gap-3">
-        <span className="telemetry text-[10px] text-ink">{username || "Deleted user"}</span>
+        <span className="telemetry text-[10px] text-ink">
+          {review.firstName || t("detail.deletedUser")}
+        </span>
         <Rating name="read-only" value={review.rating} size="small" readOnly />
       </div>
       <p className="mt-2 text-sm leading-relaxed text-dim">{review.comment}</p>

@@ -54,16 +54,6 @@ namespace src.Controllers
             return Ok(foundUser);
         }
 
-        [HttpGet("username/{userId}")]
-        public async Task<ActionResult<UserReadUsernameDto>> GetUserUsernameById([FromRoute] Guid userId)
-        {
-            var foundUsername = await _userService.GetUsernameByIdAsync(userId);
-            if (foundUsername == null)
-            {
-                throw CustomException.BadRequest("Username not found");
-            }
-            return Ok(foundUsername);
-        }
         [HttpGet("auth")]
         [Authorize]
         public async Task<ActionResult<UserReadDto>> CheckAuthAsync()

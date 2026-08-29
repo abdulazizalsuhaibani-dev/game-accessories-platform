@@ -19,7 +19,6 @@ const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 const buildSchema = (t) =>
   yup
     .object({
-      username: yup.string().required(t("validation.usernameRequired")),
       firstName: yup.string().required(t("validation.firstNameRequired")),
       lastName: yup.string().required(t("validation.lastNameRequired")),
       birthDate: yup
@@ -93,7 +92,6 @@ export default function RegistrationForm() {
   }
 
   const fields = [
-    { id: "username", label: t("auth.username"), type: "text" },
     { id: "firstName", label: t("profile.firstName"), type: "text" },
     { id: "lastName", label: t("profile.lastName"), type: "text" },
     { id: "birthDate", label: t("auth.birthday"), type: "date" },
