@@ -77,11 +77,5 @@ namespace src.Repository
             return await _user.AnyAsync(u =>
                 u.PhoneNumber == phoneNumber && (exceptUserId == null || u.UserId != exceptUserId));
         }
-
-        public async Task<bool> UsernameExistsAsync(string username, Guid? exceptUserId = null)
-        {
-            return await _user.AnyAsync(u =>
-                u.Username == username && (exceptUserId == null || u.UserId != exceptUserId));
-        }
     }
 }

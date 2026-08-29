@@ -12,7 +12,6 @@ namespace src.DTO
     {
         public class UserCreateDto
         {
-            public string? Username { get; set; }
             public string? FirstName { get; set; }
             public string? LastName { get; set; }
             public string? Email { get; set; }
@@ -30,7 +29,6 @@ namespace src.DTO
         public class UserReadDto
         {
             public Guid UserId { get; set; }
-            public string? Username { get; set; }
             public string? FirstName { get; set; }
             public string? LastName { get; set; }
             public string? Email { get; set; }
@@ -39,13 +37,8 @@ namespace src.DTO
             public UserRole Role { get; set; }
             public Guid CartId { get; set; }
         }
-        public class UserReadUsernameDto
-        {
-            public string? Username { get; set; }
-        }
         public class UserUpdateDto
         {
-            public string? Username { get; set; }
             public string? FirstName { get; set; }
             public string? LastName { get; set; }
             public string? Email { get; set; }

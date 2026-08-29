@@ -60,19 +60,11 @@ namespace src.Services.user
             {
                 throw CustomException.BadRequest("Phone number already registered please try another one");
             }
-            if (user.Username != null && await _userRepo.UsernameExistsAsync(user.Username))
-            {
-                throw CustomException.BadRequest("Username already registered please try another one");
-            }
             // everybody who signs up is a customer. the role is never taken from
             // the email or from the request body, otherwise anyone could hand
             // themselves an admin account. an existing admin promotes people
             // through PUT api/v1/Users/{userId}/role
             user.Role = UserRole.Customer;
-            if (user.Username == null)
-            {
-                throw CustomException.BadRequest("You cant leave Username empty");
-            }
             if (user.FirstName == null)
             {
                 throw CustomException.BadRequest("You cant leave First name empty");
@@ -157,13 +149,7 @@ namespace src.Services.user
             var foundUser = await _userRepo.GetByIdAsync(id);
             return _mapper.Map<User, UserReadDto>(foundUser);
         }
-        // get by id
-        public async Task<UserReadUsernameDto> GetUsernameByIdAsync(Guid id)
-        {
-            var foundUser = await _userRepo.GetByIdAsync(id);
-            return _mapper.Map<User, UserReadUsernameDto>(foundUser);
-        }
-        // delete 
+        // delete
         public async Task<bool> DeleteOneAsync(Guid id)
         {
             var foundUser = await _userRepo.GetByIdAsync(id);
@@ -194,11 +180,6 @@ namespace src.Services.user
                 if (await _userRepo.EmailExistsAsync(updateDto.Email, foundUser.UserId))
                     throw CustomException.BadRequest($"email already exist try another one");
             }
-            if (updateDto.Username != null
-                && await _userRepo.UsernameExistsAsync(updateDto.Username, foundUser.UserId))
-            {
-                throw CustomException.BadRequest($"Username already exist try another one");
-            }
             if (updateDto.PhoneNumber != null
                 && await _userRepo.PhoneExistsAsync(updateDto.PhoneNumber, foundUser.UserId))
             {
@@ -208,10 +189,6 @@ namespace src.Services.user
                 if (updateDto.Email == null)
                 {
                     updateDto.Email = foundUser.Email;
-                }
-                if (updateDto.Username == null)
-                {
-                    updateDto.Username = foundUser.Username;
                 }
                 if (updateDto.FirstName == null)
                 {

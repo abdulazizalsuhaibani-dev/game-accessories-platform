@@ -10,12 +10,32 @@ namespace src.Services.review
     public class ReviewService : IReviewService
     {
         protected readonly ReviewRepository _reviewRepo;
+        protected readonly UserRepository _userRepo;
         protected readonly IMapper _mapper;
-        public ReviewService(ReviewRepository reviewRepo, IMapper mapper)
+        public ReviewService(ReviewRepository reviewRepo, UserRepository userRepo, IMapper mapper)
         {
             _reviewRepo = reviewRepo;
+            _userRepo = userRepo;
             _mapper = mapper;
         }
+
+        // Review carries no navigation property to User, so the author's first name is
+        // attached here in one batched query keyed on the ids this page actually holds —
+        // the same pattern OrderService uses for CustomerName. Left null for a deleted
+        // author; the caller shows a fallback label rather than treating that as an error.
+        private async Task AttachAuthorNamesAsync(List<ReadReviewDto> reviews)
+        {
+            var userIds = reviews.Select(review => review.UserId).Distinct().ToList();
+            var users = await _userRepo.GetManyByIdAsync(userIds);
+            var firstNameById = users.ToDictionary(user => user.UserId, user => user.FirstName);
+
+            foreach (var review in reviews)
+            {
+                firstNameById.TryGetValue(review.UserId, out var firstName);
+                review.FirstName = firstName;
+            }
+        }
+
         public async Task<ReadReviewDto> CreateReviewAsync(CreateReviewDto createDto)
         {
             //TODO: Create only if user order the product
@@ -32,7 +52,9 @@ namespace src.Services.review
 
             var reviewCreated = await _reviewRepo.CreateReviewAsync(review);
             await _reviewRepo.UpdateProductReviewAsync(review.ProductId);
-            return _mapper.Map<Review, ReadReviewDto>(reviewCreated);
+            var readDto = _mapper.Map<Review, ReadReviewDto>(reviewCreated);
+            await AttachAuthorNamesAsync(new List<ReadReviewDto> { readDto });
+            return readDto;
         }
 
         public async Task<bool> DeleteReviewAsync(Guid id)
@@ -58,7 +80,9 @@ namespace src.Services.review
         public async Task<List<ReadReviewDto>> GetAllReviewsAsync()
         {
             var reviews = await _reviewRepo.GetAllReviewsAsync();
-            return _mapper.Map<List<Review>, List<ReadReviewDto>>(reviews);
+            var readDtos = _mapper.Map<List<Review>, List<ReadReviewDto>>(reviews);
+            await AttachAuthorNamesAsync(readDtos);
+            return readDtos;
         }
 
         public async Task<ReadReviewDto> GetReviewByIdAsync(Guid id)
@@ -68,7 +92,9 @@ namespace src.Services.review
             if (foundReview == null)
                 throw CustomException.NotFound($"Review with ID {id} not found");
 
-            return _mapper.Map<Review, ReadReviewDto>(foundReview);
+            var readDto = _mapper.Map<Review, ReadReviewDto>(foundReview);
+            await AttachAuthorNamesAsync(new List<ReadReviewDto> { readDto });
+            return readDto;
         }
         public async Task<List<ReadReviewDto>> GetReviewsByProductIdAsync(Guid productId)
         {
@@ -77,7 +103,9 @@ namespace src.Services.review
                 throw CustomException.NotFound($"Product with ID {productId} not found");
 
             var foundReviews = await _reviewRepo.GetReviewsByProductIdAsync(productId);
-            return _mapper.Map<List<Review>, List<ReadReviewDto>>(foundReviews);
+            var readDtos = _mapper.Map<List<Review>, List<ReadReviewDto>>(foundReviews);
+            await AttachAuthorNamesAsync(readDtos);
+            return readDtos;
         }
 
         public async Task<ReadReviewDto> UpdateReviewAsync(Guid id, UpdateReviewDto updateDto)// must enter both comment and rating
@@ -110,7 +138,9 @@ namespace src.Services.review
 
             var reviewUpdated = await _reviewRepo.UpdateReviewAsync(foundReview);
             await _reviewRepo.UpdateProductReviewAsync(foundReview.ProductId);
-            return _mapper.Map<Review, ReadReviewDto>(reviewUpdated);
+            var readDto = _mapper.Map<Review, ReadReviewDto>(reviewUpdated);
+            await AttachAuthorNamesAsync(new List<ReadReviewDto> { readDto });
+            return readDto;
         }
     }
 }
