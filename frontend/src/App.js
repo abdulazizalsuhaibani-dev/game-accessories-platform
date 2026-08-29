@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { createTheme, ThemeProvider } from "@mui/material";
-import arcadeTheme from "./theme/arcadeTheme";
+import { createArcadeTheme } from "./theme/arcadeTheme";
 import { StoreSettingsProvider, useStoreSettings } from "./context/StoreSettings";
 import { API_BASE } from "./api";
 import HomePage from "./pages/HomePage";
@@ -31,11 +31,13 @@ function App() {
 }
 
 function Store() {
-  const { isRTL } = useStoreSettings();
-  // Rebuilt only when the language flips, so MUI's own portals mirror too.
+  const { isRTL, theme } = useStoreSettings();
+  // Rebuilt when the language or the color theme flips, so MUI's own portals
+  // mirror too. MUI can't read var(--color-x) for its palette (see
+  // theme/arcadeTheme.js), so this is a real rebuild, not just a CSS swap.
   const appTheme = useMemo(
-    () => createTheme(arcadeTheme, { direction: isRTL ? "rtl" : "ltr" }),
-    [isRTL]
+    () => createTheme(createArcadeTheme(theme), { direction: isRTL ? "rtl" : "ltr" }),
+    [theme, isRTL]
   );
 
   function initializeWishlist() {

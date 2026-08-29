@@ -85,16 +85,16 @@ export default function SearchOptionsForm(prop) {
           onChange={(event, value) => setPriceRange(value)}
           aria-label={t("list.price")}
           sx={{
-            color: "#ccff00",
+            color: "var(--color-acid)",
             height: 3,
             padding: "12px 0",
-            "& .MuiSlider-rail": { backgroundColor: "#2a2e37", opacity: 1 },
+            "& .MuiSlider-rail": { backgroundColor: "var(--color-line)", opacity: 1 },
             "& .MuiSlider-thumb": {
               width: 11,
               height: 11,
               borderRadius: 0,
-              backgroundColor: "#f2f3f5",
-              "&:hover, &.Mui-focusVisible": { boxShadow: "0 0 0 6px rgba(204,255,0,.16)" },
+              backgroundColor: "var(--color-ink)",
+              "&:hover, &.Mui-focusVisible": { boxShadow: "0 0 0 6px var(--color-acid-glow)" },
             },
           }}
         />

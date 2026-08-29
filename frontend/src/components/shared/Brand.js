@@ -11,7 +11,7 @@ export default function Brand({ to = "/", size = "md", badge }) {
 
   const content = (
     <>
-      <span className={`${mark} flex-none bg-acid clip-mark`} aria-hidden="true" />
+      <span className={`${mark} flex-none bg-brand clip-mark`} aria-hidden="true" />
       <span
         className={`${word} font-display font-bold uppercase tracking-wordmark text-ink`}
         dir="ltr"
@@ -19,7 +19,7 @@ export default function Brand({ to = "/", size = "md", badge }) {
         Game/Acc
       </span>
       {badge ? (
-        <span className="bg-magenta px-1.5 py-[3px] font-mono text-[9px] font-semibold tracking-badge text-void">
+        <span className="bg-brand-magenta px-1.5 py-[3px] font-mono text-[9px] font-semibold tracking-badge text-on-brand">
           {badge}
         </span>
       ) : null}
