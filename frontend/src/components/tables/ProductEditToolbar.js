@@ -46,7 +46,31 @@ export default function ProductEditToolbar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [productData, setProductData] = useState(BLANK_PRODUCT);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { categories, subCategories, loading: loadingCategories } = useSubCategories();
+
+  // Uploads immediately on file choice and drops the returned url straight into the
+  // same field a pasted url would have gone in - create/update never see the file.
+  function onFileChosen(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setUploading(true);
+    axios
+      .post(`${API_BASE}/Products/image`, formData, { headers: authHeaders() })
+      .then((response) => {
+        setProductData((current) => ({ ...current, productImage: response.data.url }));
+      })
+      .catch((error) => {
+        setSnackBarMessage(error.response?.data?.message ?? `Error: ${error}`);
+        setOpenErrorSnackBar(true);
+      })
+      .finally(() => setUploading(false));
+  }
 
   // the sub-category list only ever offers children of the chosen category, so a
   // product cannot land under a mismatched pair
@@ -144,6 +168,21 @@ export default function ProductEditToolbar(props) {
                   className="field h-9"
                 />
               )}
+              {field.id === "productImage" ? (
+                <div className="mt-1.5 flex items-center gap-2">
+                  <input
+                    id="productImageFile"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={onFileChosen}
+                    disabled={uploading}
+                    className="font-mono text-[11px] text-dim"
+                  />
+                  {uploading ? (
+                    <span className="font-mono text-[11px] text-muted">{t("common.loading")}</span>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           ))}
 
@@ -193,7 +232,7 @@ export default function ProductEditToolbar(props) {
 
           <button
             type="submit"
-            disabled={saving || !canSubmit}
+            disabled={saving || uploading || !canSubmit}
             className="mt-1 h-11 shadow-none btn-acid"
           >
             {saving ? t("common.loading") : t("admin.addProduct")}

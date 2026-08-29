@@ -51,6 +51,14 @@ namespace src.DTO
             public int ProductCount { get; set; }
         }
 
+        // The admin form posts a file here first, then puts this url in the same
+        // ProductImage field a pasted url would have gone in - create/update never
+        // see the file itself.
+        public class ProductImageUploadDto
+        {
+            public string Url { get; set; } = string.Empty;
+        }
+
         public class GetProductListDto
         {
             public List<GetProductDto> Products { get; set; }

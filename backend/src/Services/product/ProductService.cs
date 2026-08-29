@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using src.Entity;
 using src.Repository;
+using src.Services.Media;
 using src.Utils;
 using static src.DTO.ProductDTO;
 
@@ -11,16 +12,19 @@ namespace src.Services.product
     {
         private readonly ProductRepository _productRepository;
         private readonly SubCategoryRepository _subCategories;
+        private readonly IImageUploadService _imageUploadService;
         private readonly IMapper _mapper;
 
         public ProductService(
             ProductRepository productRepository,
             SubCategoryRepository subCategoryRepository,
+            IImageUploadService imageUploadService,
             IMapper mapper
         )
         {
             _productRepository = productRepository;
             _subCategories = subCategoryRepository;
+            _imageUploadService = imageUploadService;
             _mapper = mapper;
         }
 
@@ -186,6 +190,11 @@ namespace src.Services.product
             // validated before the map, so a rejected url never reaches the entity
             product.ProductImage = ValidateProductImage(product.ProductImage);
 
+            // the old Cloudinary asset is only orphaned once the new one actually
+            // replaces it - read before the map overwrites isFound.ProductImage
+            var previousImage = isFound.ProductImage;
+            var imageChanged = product.ProductImage != null && product.ProductImage != previousImage;
+
             _mapper.Map(product, isFound);
 
             // Moving a product between subcategories was impossible: the DTO carried no
@@ -203,6 +212,10 @@ namespace src.Services.product
             }
 
             var updatedProduct = await _productRepository.UpdateProductInfoAsync(isFound);
+
+            if (imageChanged)
+                await _imageUploadService.DeleteIfManagedAsync(previousImage);
+
             return _mapper.Map<Product, GetProductDto>(updatedProduct);
         }
 
@@ -217,6 +230,7 @@ namespace src.Services.product
             }
 
             await _productRepository.DeleteProductAsync(isFound);
+            await _imageUploadService.DeleteIfManagedAsync(isFound.ProductImage);
             return true;
         }
     }

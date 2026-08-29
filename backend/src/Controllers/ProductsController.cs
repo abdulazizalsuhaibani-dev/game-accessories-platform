@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using src.Entity;
 using src.Services;
+using src.Services.Media;
 using src.Services.product;
 using src.Utils;
 using static src.DTO.ProductDTO;
@@ -14,10 +15,12 @@ namespace src.Controller
     public class ProductsController : ControllerBase
     {
         protected readonly IProductService _productService;
+        protected readonly IImageUploadService _imageUploadService;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, IImageUploadService imageUploadService)
         {
             _productService = productService;
+            _imageUploadService = imageUploadService;
         }
 
         //get all products by using the search by name & pagination & filer & sort
@@ -85,6 +88,17 @@ namespace src.Controller
         public async Task<ActionResult<GetProductDto>> GetProductById(Guid productId)
         {
             return Ok(await _productService.GetProductByIdAsync(productId));
+        }
+
+        // uploads a product image file to Cloudinary and hands back the url the admin
+        // form then submits through the normal create/update ProductImage field. a
+        // literal segment ("image") outranks "{productId}" in routing.
+        [HttpPost("image")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ProductImageUploadDto>> UploadProductImage(IFormFile file)
+        {
+            var url = await _imageUploadService.UploadProductImageAsync(file);
+            return Ok(new ProductImageUploadDto { Url = url });
         }
 
         //add product, probably will be deleted in the future, the endpoint in the subcategory will be used instead

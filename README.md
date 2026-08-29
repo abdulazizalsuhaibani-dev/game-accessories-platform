@@ -37,6 +37,13 @@ the database connection string and the JWT signing key. Create it with a
 `Issuer`, `Audience`). `appsettings.Development.json` *is* committed but only
 sets log levels.
 
+Product image uploads go through Cloudinary. Add a `Cloudinary` section
+(`CloudName`, `ApiKey`, `ApiSecret`) from your own Cloudinary account to the
+same `appsettings.json` — everything else runs without it, and only
+`POST /api/v1/Products/image` fails (with a clear error) until it's set. In
+production these are the `Cloudinary__CloudName`, `Cloudinary__ApiKey` and
+`Cloudinary__ApiSecret` environment variables on the Render service.
+
 **`backend/Migrations/` is committed**, and the API applies any pending
 migration on startup — so pointing a fresh, empty database at it and running
 `dotnet run` is enough to build the schema. The same code path migrates the
