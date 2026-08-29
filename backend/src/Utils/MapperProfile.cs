@@ -34,6 +34,7 @@ namespace src.Utils
 
             // Product Mapping
             CreateMap<Product, GetProductDto>();
+            CreateMap<BrandSummary, BrandSummaryDto>();
             CreateMap<CreateProductDto, Product>();
             CreateMap<UpdateProductInfoDto, Product>()
                 // CreateMap<UpdateProdouctDescDto, Product>()

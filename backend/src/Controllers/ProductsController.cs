@@ -39,6 +39,16 @@ namespace src.Controller
             return Ok(response);
         }
 
+        // the brands the catalogue stocks, with how many products each holds. a literal
+        // segment outranks "{productId}" in routing, so this never tries to parse
+        // "brands" as a guid.
+        [HttpGet("brands")]
+        public async Task<ActionResult<List<BrandSummaryDto>>> GetBrands()
+        {
+            var brands = await _productService.GetBrandsAsync();
+            return Ok(brands);
+        }
+
         //get all products by using filter feature
         [HttpGet("filter")]
         public async Task<ActionResult<List<Product>>> FilterProducts(

@@ -40,6 +40,24 @@ namespace src.Repository
             return await _products.CountAsync();
         }
 
+        // the brands the store actually stocks, grouped in the database. a brand with
+        // no products in it cannot appear, which is the whole point: the home page used
+        // to advertise categories that were never in the catalogue.
+        public async Task<List<BrandSummary>> GetBrandsAsync()
+        {
+            return await _products
+                .Where(product => product.Brand != null && product.Brand != "")
+                .GroupBy(product => product.Brand!)
+                .Select(group => new BrandSummary
+                {
+                    Brand = group.Key,
+                    ProductCount = group.Count(),
+                })
+                .OrderByDescending(summary => summary.ProductCount)
+                .ThenBy(summary => summary.Brand)
+                .ToListAsync();
+        }
+
         // how many products the search and filters actually match. counted before
         // Skip/Take, so it is the size of the whole result set rather than of the
         // page - which is what drives the "N results" headline and the pager
@@ -147,9 +165,17 @@ namespace src.Repository
             //implement search
             //all products in all subcategories
             var search = toSearch.Search.ToLower();
+
+            // the Arabic fields are matched too, so a customer reading the store in
+            // Arabic can search in Arabic. they are nullable - a half-translated
+            // catalogue is expected - and a null never matches, so an untranslated
+            // product is still found by its English name
             IQueryable<Product> query = _products.Where(x =>
                 x.ProductName.ToLower().Contains(search)
                 || x.Description.ToLower().Contains(search)
+                || (x.NameAr != null && x.NameAr.ToLower().Contains(search))
+                || (x.DescriptionAr != null && x.DescriptionAr.ToLower().Contains(search))
+                || (x.Brand != null && x.Brand.ToLower().Contains(search))
             );
 
             //or all products in specific subcategory:
@@ -169,6 +195,15 @@ namespace src.Repository
                     .Select(subCategory => subCategory.SubCategoryId);
 
                 query = query.Where(x => subCategoryIds.Contains(x.SubCategoryId));
+            }
+
+            // narrows to one manufacturer. an exact match rather than a Contains, so
+            // the brand chips on the home page land on that brand and nothing else
+            if (!string.IsNullOrEmpty(toSearch.Brand))
+            {
+                query = query.Where(x =>
+                    x.Brand != null && x.Brand.ToLower() == toSearch.Brand.ToLower()
+                );
             }
 
             //implement filter
