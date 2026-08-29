@@ -18,6 +18,7 @@ using static src.Entity.User;
 using src.Services.review;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using src.Services.Coupon;
+using src.Services.Media;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +50,8 @@ builder
     .AddScoped<IPaymentService, PaymentService>().AddScoped<PaymentRepository, PaymentRepository>()
     .AddScoped<ICartService, CartService>().AddScoped<CartRepository, CartRepository>()
     .AddScoped<IReviewService, ReviewService>().AddScoped<ReviewRepository, ReviewRepository>()
-    .AddScoped<ICouponService, CouponService>().AddScoped<CouponRepository, CouponRepository>();
+    .AddScoped<ICouponService, CouponService>().AddScoped<CouponRepository, CouponRepository>()
+    .AddScoped<IImageUploadService, ImageUploadService>();
 
 
 // setting CORS
