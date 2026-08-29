@@ -25,6 +25,9 @@ namespace src.Utils
         // descriptions too - so a tile reading 5 landed on a page of 6
         public Guid? CategoryId { get; set; }
 
+        // narrows the listing to one manufacturer, for the brand chips on the home page
+        public string? Brand { get; set; }
+
         // hides sold out products. applied in the query rather than on the fetched
         // page, so it narrows the count and the pager along with the results
         public bool InStockOnly { get; set; }

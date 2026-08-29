@@ -16,6 +16,7 @@ import PaymentForm from "../forms/PaymentForm";
 import OrderSummary from "../cart/OrderSummary";
 import { cartItemCount, cartSubtotal } from "../cart/Cart";
 import { API_BASE, authHeaders } from "../../api";
+import { productName } from "../../utils/productText";
 import { useStoreSettings } from "../../context/StoreSettings";
 
 const EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
@@ -101,7 +102,7 @@ export default function Checkout(prop) {
     setCart,
     setCartCount,
   } = prop;
-  const { t } = useStoreSettings();
+  const { t, locale } = useStoreSettings();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -471,7 +472,7 @@ export default function Checkout(prop) {
           subtotal={subtotal}
           lines={cart.map((line) => ({
             id: line.product.productId,
-            name: line.product.productName,
+            name: productName(line.product, locale),
             quantity: line.quantity,
             total: line.product.productPrice * line.quantity,
           }))}

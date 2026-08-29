@@ -6,6 +6,7 @@ import ProductDetails from "../components/productDetails/ProductDetails";
 import { formatTitle } from "../components/shared/DocumentTitle";
 import { API_BASE } from "../api";
 import { useStoreSettings } from "../context/StoreSettings";
+import { productName } from "../utils/productText";
 
 export default function ProductDetailsPage(prop) {
   const {
@@ -22,7 +23,7 @@ export default function ProductDetailsPage(prop) {
     setOpenErrorSnackBar,
   } = prop;
   const params = useParams();
-  const { t } = useStoreSettings();
+  const { t, locale } = useStoreSettings();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,9 +33,9 @@ export default function ProductDetailsPage(prop) {
   useEffect(() => {
     if (loading) return;
     document.title = formatTitle(
-      product ? product.productName : t("error.pageTitle")
+      product ? productName(product, locale) : t("error.pageTitle")
     );
-  }, [loading, product, t]);
+  }, [loading, product, t, locale]);
 
   const productUrl = `${API_BASE}/Products/${params.productId}`;
   useEffect(() => {

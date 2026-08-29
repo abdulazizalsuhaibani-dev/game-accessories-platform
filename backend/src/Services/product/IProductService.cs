@@ -10,6 +10,9 @@ namespace src.Services.product
 
         //get all products
         Task<List<GetProductDto>> GetAllProductsAsync();
+        //get the brands the catalogue stocks
+        Task<List<BrandSummaryDto>> GetBrandsAsync();
+
         //get products count
         Task<int> CountProductsAsync();
         //get the count of the products matching a search and its filters

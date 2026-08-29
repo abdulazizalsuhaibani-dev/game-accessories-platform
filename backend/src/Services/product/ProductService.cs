@@ -66,9 +66,12 @@ namespace src.Services.product
             {
                 ProductId = Guid.NewGuid(),
                 ProductName = createProductDto.ProductName,
+                Brand = createProductDto.Brand,
+                NameAr = createProductDto.NameAr,
                 ProductImage = productImage,
                 ProductColor = createProductDto.ProductColor,
                 Description = createProductDto.Description,
+                DescriptionAr = createProductDto.DescriptionAr,
                 SKU = createProductDto.SKU,
                 ProductPrice = createProductDto.ProductPrice,
                 SubCategoryId = subCategory.SubCategoryId,
@@ -78,23 +81,11 @@ namespace src.Services.product
 
             // Save the product using the repository
             var newProduct = await _productRepository.AddProductAsync(product);
-            // var subCategory = await _subCategories.GetByIdAsync(newProduct.SubCategoryId);
-            // Save the product using the repository
-            // var newProduct = await _productRepository.AddProductAsync(product);
-            // var subCategory = await _subCategories.GetByIdAsync(newProduct.SubCategoryId);
 
-            return new GetProductDto
-            {
-                ProductId = newProduct.ProductId,
-                ProductName = newProduct.ProductName,
-                ProductImage = newProduct.ProductImage,
-                ProductColor = newProduct.ProductColor,
-                Description = newProduct.Description,
-                SKU = newProduct.SKU,
-                ProductPrice = newProduct.ProductPrice,
-                SubCategoryName = newProduct.SubCategoryName,
-                SubCategoryId = newProduct.SubCategoryId,
-            };
+            // mapped by name like every other read here. the hand-written projection
+            // this replaces silently dropped AddedDate and AverageRating, and would
+            // have dropped every field added to the product from here on
+            return _mapper.Map<Product, GetProductDto>(newProduct);
         }
 
         //get all products
@@ -102,6 +93,13 @@ namespace src.Services.product
         {
             var productsList = await _productRepository.GetAllProductsAsync();
             return _mapper.Map<List<Product>, List<GetProductDto>>(productsList);
+        }
+
+        // Get the brands the catalogue stocks
+        public async Task<List<BrandSummaryDto>> GetBrandsAsync()
+        {
+            var brands = await _productRepository.GetBrandsAsync();
+            return _mapper.Map<List<BrandSummary>, List<BrandSummaryDto>>(brands);
         }
 
         // Get products count

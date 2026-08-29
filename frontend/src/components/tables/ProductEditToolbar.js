@@ -8,6 +8,9 @@ import useSubCategories from "./useSubCategories";
 
 const BLANK_PRODUCT = {
   productName: "",
+  brand: "",
+  nameAr: "",
+  descriptionAr: "",
   productColor: "",
   productImage: "",
   description: "",
@@ -21,9 +24,12 @@ const NUMERIC_FIELDS = ["sku", "productPrice"];
 
 const FIELDS = [
   { id: "productName", label: "Product name" },
+  { id: "brand", label: "Brand" },
+  { id: "nameAr", label: "Product name (Arabic)" },
   { id: "productImage", label: "Product image URL" },
   { id: "productColor", label: "Product colour" },
   { id: "description", label: "Description", multiline: true },
+  { id: "descriptionAr", label: "Description (Arabic)", multiline: true },
   { id: "sku", label: "SKU", type: "number" },
   { id: "productPrice", label: "Price", type: "number" },
 ];

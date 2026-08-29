@@ -2,11 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { productName } from "../../utils/productText";
 import Money from "../shared/Money";
 
 export default function CartItem(prop) {
   const { cartItem, cart, setCart, setCartCount, setSnackBarMessage, setOpenErrorSnackBar } = prop;
-  const { t, num } = useStoreSettings();
+  const { t, num, locale } = useStoreSettings();
 
   function writeCart(updatedCart) {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -53,7 +54,7 @@ export default function CartItem(prop) {
     <div className="flex flex-wrap gap-5 border-b border-line px-6 py-6 sm:px-7">
       <ImageWell
         src={cartItem.product.productImage}
-        alt={cartItem.product.productName}
+        alt={productName(cartItem.product, locale)}
         className="h-[110px] w-[110px] flex-none"
       />
 
@@ -68,7 +69,7 @@ export default function CartItem(prop) {
           to={`/products/${cartItem.productId}`}
           className="text-[17px] font-semibold leading-snug text-ink hover:text-acid"
         >
-          {cartItem.product.productName}
+          {productName(cartItem.product, locale)}
         </Link>
 
         <div className={`font-mono text-xs ${inStock ? "text-acid" : "text-magenta"}`}>

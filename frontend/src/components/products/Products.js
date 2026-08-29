@@ -29,12 +29,13 @@ export default function Products() {
   const { t, num } = useStoreSettings();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // The header search box navigates here with a ?search= term and the home page's
-  // category tiles with a ?category= id, so the URL is the source of truth for the
-  // query.
+  // The header search box navigates here with a ?search= term, the home page's
+  // category tiles with a ?category= id and its brand chips with a ?brand= name, so
+  // the URL is the source of truth for the query.
   const urlSearch = searchParams.get("search") ?? "";
   const urlSort = searchParams.get("sort") ?? "";
   const urlCategory = searchParams.get("category") ?? "";
+  const urlBrand = searchParams.get("brand") ?? "";
 
   const [searchInput, setSearchInput] = useState(urlSearch);
   const [priceRange, setPriceRange] = useState([PRICE_FLOOR, PRICE_CEILING]);
@@ -60,7 +61,7 @@ export default function Products() {
 
   useEffect(
     () => setPage(1),
-    [debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort, urlCategory]
+    [debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort, urlCategory, urlBrand]
   );
 
   // The id in the URL is all the tile can carry, but the heading and the filter
@@ -99,6 +100,7 @@ export default function Products() {
     });
     if (debouncedSearch) params.set("Search", debouncedSearch);
     if (urlCategory) params.set("CategoryId", urlCategory);
+    if (urlBrand) params.set("Brand", urlBrand);
     if (priceRange[0] > PRICE_FLOOR) params.set("MinPrice", String(priceRange[0]));
     if (priceRange[1] < PRICE_CEILING) params.set("MaxPrice", String(priceRange[1]));
     if (colorSelect) params.set("Colors", colorSelect);
@@ -130,7 +132,16 @@ export default function Products() {
     return () => {
       cancelled = true;
     };
-  }, [page, debouncedSearch, priceRange, colorSelect, inStockOnly, urlSort, urlCategory]);
+  }, [
+    page,
+    debouncedSearch,
+    priceRange,
+    colorSelect,
+    inStockOnly,
+    urlSort,
+    urlCategory,
+    urlBrand,
+  ]);
 
   const activeFilters = useMemo(() => {
     const filters = [];
@@ -143,6 +154,17 @@ export default function Products() {
         label: categoryLabel(t, categoryName) || urlCategory,
         onRemove: () => {
           searchParams.delete("category");
+          setSearchParams(searchParams, { replace: true });
+        },
+      });
+    }
+    if (urlBrand) {
+      filters.push({
+        key: "brand",
+        // Brand names are proper nouns, shown as the catalogue stores them.
+        label: urlBrand,
+        onRemove: () => {
+          searchParams.delete("brand");
           setSearchParams(searchParams, { replace: true });
         },
       });
@@ -180,6 +202,7 @@ export default function Products() {
     debouncedSearch,
     urlCategory,
     categoryName,
+    urlBrand,
     colorSelect,
     priceRange,
     inStockOnly,
@@ -194,6 +217,7 @@ export default function Products() {
     setPriceRange([PRICE_FLOOR, PRICE_CEILING]);
     setInStockOnly(false);
     searchParams.delete("category");
+    searchParams.delete("brand");
     searchParams.delete("search");
     setSearchParams(searchParams, { replace: true });
   }
@@ -223,7 +247,7 @@ export default function Products() {
             {t("list.breadcrumb")}
           </div>
           <h1 className="m-0 font-display text-[30px] font-bold uppercase text-ink sm:text-[38px]">
-            {debouncedSearch || categoryLabel(t, categoryName) || t("list.title")}{" "}
+            {debouncedSearch || categoryLabel(t, categoryName) || urlBrand || t("list.title")}{" "}
             <span className="text-xl text-muted">
               {t("list.results", { count: productsResponse.productsCount || 0 })}
             </span>

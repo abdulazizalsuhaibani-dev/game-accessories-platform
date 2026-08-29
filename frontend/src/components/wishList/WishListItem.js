@@ -2,10 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { productName } from "../../utils/productText";
 import Money from "../shared/Money";
 
 export default function WishListItem({ wishListItem, onRemove }) {
-  const { t } = useStoreSettings();
+  const { t, locale } = useStoreSettings();
 
   return (
     <div className="panel relative transition-colors hover:border-acid">
@@ -20,12 +21,12 @@ export default function WishListItem({ wishListItem, onRemove }) {
       <Link to={`/products/${wishListItem.productId}`} className="block">
         <ImageWell
           src={wishListItem.productImage}
-          alt={wishListItem.productName}
+          alt={productName(wishListItem, locale)}
           className="h-[180px] border-b border-line"
         />
         <div className="p-4">
           <div className="text-[15px] font-semibold leading-snug text-ink">
-            {wishListItem.productName}
+            {productName(wishListItem, locale)}
           </div>
           <div className="mt-3.5 border-t border-line pt-3.5 font-display text-[19px] font-bold text-acid">
             <Money amount={wishListItem.productPrice} />

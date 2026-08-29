@@ -2,11 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { productName } from "../../utils/productText";
 import Money from "../shared/Money";
 
 /** Top four products, ranked — the numbered corner tab marks first place acid. */
 export default function Leaderboard({ products, loading }) {
-  const { t, num } = useStoreSettings();
+  const { t, num, locale } = useStoreSettings();
 
   return (
     <section className="border-b border-line px-6 py-10 sm:px-11">
@@ -38,7 +39,7 @@ export default function Leaderboard({ products, loading }) {
 
                 <ImageWell
                   src={product.productImage}
-                  alt={product.productName}
+                  alt={productName(product, locale)}
                   className="h-[168px] border-b border-line"
                 />
 
@@ -47,7 +48,7 @@ export default function Leaderboard({ products, loading }) {
                     {product.productColor || t("cat.mice")}
                   </div>
                   <div className="mt-2 min-h-[40px] text-[15px] font-semibold leading-snug text-ink">
-                    {product.productName}
+                    {productName(product, locale)}
                   </div>
                   <div className="mt-3.5 flex items-center justify-between border-t border-line pt-3.5">
                     <span className="font-display text-[19px] font-bold text-acid">

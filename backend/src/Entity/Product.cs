@@ -12,6 +12,17 @@ namespace src.Entity
         public Guid ProductId { get; set; }
         public string? ProductName { get; set; }
 
+        // the manufacturer, as its own column. it cannot be derived from the product
+        // name: live first words include "Huntsman" and "DualShock", which are Razer
+        // and Sony models rather than brands
+        public string? Brand { get; set; }
+
+        // the Arabic catalogue. nullable and falling back to the English text, so a
+        // half-translated catalogue renders English rather than blanks
+        public string? NameAr { get; set; }
+
+        public string? DescriptionAr { get; set; }
+
         public DateTime AddedDate { get; set; } = DateTime.UtcNow; // An error will occur in post man if the timestamp not in utc
 
         public string? ProductImage { get; set; }

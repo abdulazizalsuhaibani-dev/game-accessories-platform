@@ -26,9 +26,11 @@ namespace src.Database
             // The uniqueness of an email has to be the database's job. A service-level
             // check is two round trips away from the write, so concurrent signups both
             // pass it — and the loser can never sign in, because FindByEmailAsync takes
-            // the first match. Declared here rather than only in a generated migration:
-            // backend/Migrations/ is gitignored, so a fresh clone rebuilds the schema
-            // from this model and would otherwise get no constraint at all.
+            // the first match. Declared here rather than only in a generated migration
+            // so the model is the single description of the schema, and the migration
+            // follows from it. (This comment used to say backend/Migrations/ was
+            // gitignored; it is committed, and Program.cs applies pending migrations
+            // on startup.)
             modelBuilder.Entity<User>()
                 .HasIndex(user => user.Email)
                 .IsUnique();

@@ -1,22 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useStoreSettings } from "../../context/StoreSettings";
+import BrandRail from "../home/BrandRail";
 
 /**
- * The split panel that closes the home page: a magenta signup block beside a
- * dark "start from a loadout" block.
+ * The split panel that closes the home page: a magenta signup block beside the
+ * brand rail. The rail's markup used to live in this file, which is not where
+ * anyone would look for it — it is now `home/BrandRail.js`.
  */
 export default function Newsletter() {
   const { t } = useStoreSettings();
   const [email, setEmail] = useState("");
   const [joined, setJoined] = useState(false);
-
-  const loadouts = [
-    { key: "fps", query: "mouse" },
-    { key: "mmo", query: "keyboard" },
-    { key: "console", query: "controller" },
-    { key: "streaming", query: "headset" },
-  ];
 
   return (
     <section className="grid border-b border-line lg:grid-cols-2">
@@ -56,23 +50,7 @@ export default function Newsletter() {
         ) : null}
       </div>
 
-      <div className="flex flex-col justify-center gap-5 bg-panel px-6 py-11 sm:px-11">
-        <div className="telemetry text-[11px] tracking-[.18em] text-acid">{t("guides.eyebrow")}</div>
-        <h2 className="m-0 font-display text-[26px] font-bold uppercase leading-tight text-ink sm:text-[30px]">
-          {t("guides.title")}
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {loadouts.map((loadout) => (
-            <Link
-              key={loadout.key}
-              to={`/products?search=${loadout.query}`}
-              className="chip transition-colors hover:border-acid hover:text-acid"
-            >
-              {t(`guides.${loadout.key}`)}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <BrandRail />
     </section>
   );
 }

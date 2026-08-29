@@ -52,12 +52,9 @@ const strings = {
     "news.join": "Join",
     "news.thanks": "You're on the list.",
 
-    "guides.eyebrow": "Build guides",
-    "guides.title": "Not sure what you need? Start from a loadout.",
-    "guides.fps": "FPS · low latency",
-    "guides.mmo": "MMO · macro-heavy",
-    "guides.console": "Console · couch",
-    "guides.streaming": "Streaming",
+    "guides.eyebrow": "Shop by brand",
+    "guides.title": "Not sure what you need? Start from a brand you trust.",
+    "guides.empty": "Brands are on their way.",
 
     "footer.shop": "Shop",
     "footer.support": "Support",
@@ -348,12 +345,9 @@ const strings = {
     "news.join": "اشترك",
     "news.thanks": "تم تسجيلك في القائمة.",
 
-    "guides.eyebrow": "أدلة التجهيز",
-    "guides.title": "لست متأكدًا مما تحتاجه؟ ابدأ من تجهيزة جاهزة.",
-    "guides.fps": "تصويب · استجابة سريعة",
-    "guides.mmo": "ألعاب جماعية · أزرار كثيرة",
-    "guides.console": "أجهزة منزلية · أريكة",
-    "guides.streaming": "بث مباشر",
+    "guides.eyebrow": "تسوق حسب العلامة",
+    "guides.title": "لست متأكدًا مما تحتاجه؟ ابدأ من علامة تثق بها.",
+    "guides.empty": "العلامات في الطريق.",
 
     "footer.shop": "المتجر",
     "footer.support": "الدعم",
