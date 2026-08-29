@@ -4,10 +4,11 @@ import { LinearProgress } from "@mui/material";
 import Error from "../error/Error";
 import ProductDetailsCard from "./ProductDetailsCard";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { productName } from "../../utils/productText";
 
 export default function ProductDetails(prop) {
   const { product, loading, error, ...rest } = prop;
-  const { t } = useStoreSettings();
+  const { t, locale } = useStoreSettings();
 
   if (loading) {
     return (
@@ -28,7 +29,7 @@ export default function ProductDetails(prop) {
           <Link to="/products" className="text-muted hover:text-acid">
             {t("nav.shop")}
           </Link>{" "}
-          / {product.productName}
+          / {productName(product, locale)}
         </div>
         <Link to="/products" className="telemetry text-[11px] tracking-badge">
           <span aria-hidden="true">←</span> {t("cart.keepShopping")}

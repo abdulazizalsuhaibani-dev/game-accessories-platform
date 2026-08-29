@@ -4,6 +4,7 @@ import ImageWell from "../shared/ImageWell";
 import Reviews from "./Reviews";
 import ReviewForm from "../forms/ReviewForm";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { productName, productDescription } from "../../utils/productText";
 import Money from "../shared/Money";
 
 const TABS = ["specs", "reviews", "shipping"];
@@ -23,7 +24,7 @@ export default function ProductDetailsCard(prop) {
     setOpenSuccessSnackBar,
     setOpenErrorSnackBar,
   } = prop;
-  const { t, num } = useStoreSettings();
+  const { t, num, locale } = useStoreSettings();
   const navigate = useNavigate();
 
   const [quantity, setQuantity] = useState(1);
@@ -92,7 +93,7 @@ export default function ProductDetailsCard(prop) {
             product photo up to full-page height. */}
         <ImageWell
           src={product.productImage}
-          alt={product.productName}
+          alt={productName(product, locale)}
           scanlines
           className="h-[340px] lg:h-[460px]"
         />
@@ -125,7 +126,7 @@ export default function ProductDetailsCard(prop) {
         </div>
 
         <h1 className="m-0 font-display text-[32px] font-bold uppercase leading-tight text-ink sm:text-[42px]">
-          {product.productName}
+          {productName(product, locale)}
         </h1>
 
         <div className="flex flex-wrap items-baseline gap-3">
@@ -242,7 +243,7 @@ export default function ProductDetailsCard(prop) {
           <div role="tabpanel">
             {tab === "specs" ? (
               <p className="m-0 text-sm leading-relaxed text-dim">
-                {product.description || "—"}
+                {productDescription(product, locale) || "—"}
               </p>
             ) : null}
 

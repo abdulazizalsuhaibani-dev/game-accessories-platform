@@ -139,8 +139,11 @@ export default function ProductsTable(prop) {
         ),
     },
     { field: "productName", headerName: "Name", width: 220, editable: true },
+    { field: "brand", headerName: "Brand", width: 120, editable: true },
+    { field: "nameAr", headerName: "Name (AR)", width: 180, editable: true },
     { field: "productColor", headerName: "Color", width: 110, editable: true },
     { field: "description", headerName: "Description", width: 200, editable: true },
+    { field: "descriptionAr", headerName: "Description (AR)", width: 200, editable: true },
     { field: "sku", headerName: "Stock", type: "number", width: 90, editable: true },
     { field: "productPrice", headerName: "Price", type: "number", width: 100, editable: true },
     {
@@ -225,7 +228,7 @@ export default function ProductsTable(prop) {
     return rows.filter((row) => {
       if (lowStockOnly && !(row.sku > 0 && row.sku < 5)) return false;
       if (!term) return true;
-      return `${row.productName} ${row.productColor} ${row.productId}`
+      return `${row.productName} ${row.nameAr ?? ""} ${row.brand ?? ""} ${row.productColor} ${row.productId}`
         .toLowerCase()
         .includes(term);
     });

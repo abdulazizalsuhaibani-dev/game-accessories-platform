@@ -2,10 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
+import { productName } from "../../utils/productText";
 import Money from "../shared/Money";
 
 export default function Product({ product }) {
-  const { t, num } = useStoreSettings();
+  const { t, num, locale } = useStoreSettings();
   // `sku === 0` missed a string "0", a null or an absent sku and called all three
   // in stock. Every other stock check in the app compares rather than identifies.
   const outOfStock = Number(product.sku) <= 0;
@@ -22,7 +23,7 @@ export default function Product({ product }) {
           dimmed and badged instead of replaced by an empty well. */}
       <ImageWell
         src={product.productImage}
-        alt={product.productName}
+        alt={productName(product, locale)}
         className="h-[180px] border-b border-line"
         imageClassName={outOfStock ? "opacity-35 grayscale" : ""}
       >
@@ -38,7 +39,7 @@ export default function Product({ product }) {
           {product.productColor || " "}
         </div>
         <div className="mt-2 text-[15px] font-semibold leading-snug text-ink">
-          {product.productName}
+          {productName(product, locale)}
         </div>
 
         <div className="mt-3.5 flex items-center justify-between border-t border-line pt-3.5">
