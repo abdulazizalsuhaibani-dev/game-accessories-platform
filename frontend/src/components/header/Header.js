@@ -4,6 +4,7 @@ import Brand from "../shared/Brand";
 import Ticker from "./Ticker";
 import CurrencyMenu from "./CurrencyMenu";
 import LanguageSwitch from "./LanguageSwitch";
+import ThemeSwitch from "./ThemeSwitch";
 import { useStoreSettings } from "../../context/StoreSettings";
 
 export default function Header(prop) {
@@ -74,6 +75,7 @@ export default function Header(prop) {
 
           <CurrencyMenu />
           <LanguageSwitch />
+          <ThemeSwitch />
 
           <Link
             to="/cart"

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ImageWell from "../shared/ImageWell";
-import mouseSketch from "../images/sketches/mouse.svg";
-import headsetSketch from "../images/sketches/headset.svg";
-import controllerSketch from "../images/sketches/controller.svg";
-import keyboardSketch from "../images/sketches/keyboard.svg";
-import monitorSketch from "../images/sketches/monitor.svg";
-import chairSketch from "../images/sketches/chair.svg";
-import crateSketch from "../images/sketches/crate.svg";
+import { ReactComponent as MouseSketch } from "../images/sketches/mouse.svg";
+import { ReactComponent as HeadsetSketch } from "../images/sketches/headset.svg";
+import { ReactComponent as ControllerSketch } from "../images/sketches/controller.svg";
+import { ReactComponent as KeyboardSketch } from "../images/sketches/keyboard.svg";
+import { ReactComponent as MonitorSketch } from "../images/sketches/monitor.svg";
+import { ReactComponent as ChairSketch } from "../images/sketches/chair.svg";
+import { ReactComponent as CrateSketch } from "../images/sketches/crate.svg";
 import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { categoryKey, categoryLabel } from "../../utils/categoryLabel";
@@ -19,13 +19,13 @@ import { categoryKey, categoryLabel } from "../../utils/categoryLabel";
 // category, so the names, the counts and the artwork are all real. The line art
 // below is only a fallback for a category whose products carry no image.
 const SKETCHES = {
-  mice: mouseSketch,
-  mouses: mouseSketch,
-  headsets: headsetSketch,
-  controllers: controllerSketch,
-  keyboards: keyboardSketch,
-  monitors: monitorSketch,
-  chairs: chairSketch,
+  mice: MouseSketch,
+  mouses: MouseSketch,
+  headsets: HeadsetSketch,
+  controllers: ControllerSketch,
+  keyboards: KeyboardSketch,
+  monitors: MonitorSketch,
+  chairs: ChairSketch,
 };
 
 export default function CategoryGrid() {
@@ -76,7 +76,7 @@ export default function CategoryGrid() {
           >
             <ImageWell
               src={category.topProductImage}
-              fallback={SKETCHES[categoryKey(category.categoryName)] ?? crateSketch}
+              fallback={SKETCHES[categoryKey(category.categoryName)] ?? CrateSketch}
               alt=""
               className="h-[132px]"
             />

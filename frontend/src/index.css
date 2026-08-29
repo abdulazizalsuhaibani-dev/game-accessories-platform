@@ -2,6 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme tokens — the single source of truth both Tailwind (tailwind.config.js)
+   and the MUI theme (theme/arcadeTheme.js) read from via var(--color-x)
+   strings. `:root` carries the dark values as the safety-net default;
+   [data-theme="light"] overrides all of them. `data-theme` is always set
+   explicitly (see the inline script in public/index.html and
+   context/StoreSettings.js), so no @media (prefers-color-scheme) block is
+   needed here.
+
+   acid/magenta/amber are "adaptive": the same role used as a fill, a border,
+   plain text or an unfilled icon/dot everywhere in the app, deliberately
+   darkened in light mode so it stays legible/visible against a light page —
+   paired with `ink`/`void`, which move the opposite direction, so contrast
+   holds in both themes without any extra tokens.
+
+   brand/brand-magenta/on-brand are the one deliberate exception: fixed to the
+   same neon value in both themes, used only by the logo mark
+   (components/shared/Brand.js) as a brand-identity element that should stay
+   recognizable regardless of site theme. */
+:root {
+  --color-void: #06070a;
+  --color-chassis: #0b0c0f;
+  --color-panel: #0f1116;
+  --color-well: #14161b;
+  --color-line: #2a2e37;
+  --color-seam: #1c2027;
+  --color-edge: #4a505c;
+  --color-muted: #5d636e;
+  --color-dim: #8b919c;
+  --color-ink: #f2f3f5;
+
+  --color-acid: #ccff00;
+  --color-acid-hi: #e4ff6b;
+  --color-magenta: #ff2e6b;
+  --color-amber: #ffb020;
+
+  --color-brand: #ccff00;
+  --color-brand-magenta: #ff2e6b;
+  --color-on-brand: #06070a;
+
+  --color-acid-glow: rgba(204, 255, 0, 0.16);
+  --scanline-rgba: rgba(255, 255, 255, 0.035);
+  --scanline-rgba-faint: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] {
+  --color-void: #f4f5f7;
+  --color-chassis: #ffffff;
+  --color-panel: #ffffff;
+  --color-well: #e7e9ec;
+  --color-line: #d3d6db;
+  --color-seam: #e2e4e8;
+  --color-edge: #aab0ba;
+  --color-muted: #6b7280;
+  --color-dim: #4b5563;
+  --color-ink: #0f1116;
+
+  --color-acid: #5c7a00;
+  --color-acid-hi: #7a9e00;
+  --color-magenta: #c41752;
+  --color-amber: #9c6300;
+
+  --color-acid-glow: rgba(92, 122, 0, 0.16);
+  --scanline-rgba: rgba(0, 0, 0, 0.035);
+  --scanline-rgba-faint: rgba(0, 0, 0, 0.03);
+}
+
 @layer base {
   html {
     background: theme("colors.void");

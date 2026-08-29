@@ -10,6 +10,8 @@ import {
 
 const LOCALE_KEY = "locale";
 const CURRENCY_KEY = "currency";
+const THEME_KEY = "theme";
+const THEME_COLOR = { dark: "#06070a", light: "#f4f5f7" };
 
 // Derived, never hand-listed: a returning customer can have any past choice in
 // localStorage, and this is what decides whether it is still offered. A literal
@@ -28,6 +30,13 @@ export function StoreSettingsProvider({ children }) {
   const [currency, setCurrencyState] = useState(() =>
     readStored(CURRENCY_KEY, DEFAULT_CURRENCY, CURRENCY_CODES)
   );
+  // The pre-paint script in public/index.html already resolved and set
+  // data-theme (stored choice, else OS preference, else dark) before this
+  // module ever runs — read it back rather than re-deriving it, so the two
+  // can't disagree and flash on first render.
+  const [theme, setThemeState] = useState(
+    () => document.documentElement.dataset.theme || "dark"
+  );
 
   // Direction lives on <html> so MUI portals (dialogs, popovers, snackbars)
   // mirror along with the rest of the page.
@@ -37,6 +46,12 @@ export function StoreSettingsProvider({ children }) {
     root.dir = locale === "ar" ? "rtl" : "ltr";
   }, [locale]);
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", THEME_COLOR[theme]);
+  }, [theme]);
+
   const setLocale = useCallback((next) => {
     localStorage.setItem(LOCALE_KEY, next);
     setLocaleState(next);
@@ -45,6 +60,11 @@ export function StoreSettingsProvider({ children }) {
   const setCurrency = useCallback((next) => {
     localStorage.setItem(CURRENCY_KEY, next);
     setCurrencyState(next);
+  }, []);
+
+  const setTheme = useCallback((next) => {
+    localStorage.setItem(THEME_KEY, next);
+    setThemeState(next);
   }, []);
 
   /**
@@ -81,11 +101,13 @@ export function StoreSettingsProvider({ children }) {
       currency,
       currencyMeta: getCurrency(currency),
       setCurrency,
+      theme,
+      setTheme,
       t,
       price,
       num,
     }),
-    [locale, setLocale, currency, setCurrency, t, price, num]
+    [locale, setLocale, currency, setCurrency, theme, setTheme, t, price, num]
   );
 
   return (

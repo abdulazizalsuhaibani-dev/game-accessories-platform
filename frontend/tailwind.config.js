@@ -7,22 +7,31 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        void: "#06070a", // page ground
-        chassis: "#0b0c0f", // screen body
-        panel: "#0f1116", // raised panel / header bar
-        well: "#14161b", // image wells, inset surfaces
-        line: "#2a2e37", // standard hairline
-        seam: "#1c2027", // faint hairline between table rows
-        edge: "#4a505c", // secondary button border
-        muted: "#5d636e", // tertiary text
-        dim: "#8b919c", // body text
-        ink: "#f2f3f5", // primary text
+        // Every value below is a CSS custom property (defined in src/index.css,
+        // dark on :root, overridden by [data-theme="light"]) — no literal hex
+        // lives here, so a theme toggle needs no Tailwind rebuild.
+        void: "var(--color-void)", // page ground
+        chassis: "var(--color-chassis)", // screen body
+        panel: "var(--color-panel)", // raised panel / header bar
+        well: "var(--color-well)", // image wells, inset surfaces
+        line: "var(--color-line)", // standard hairline
+        seam: "var(--color-seam)", // faint hairline between table rows
+        edge: "var(--color-edge)", // secondary button border
+        muted: "var(--color-muted)", // tertiary text
+        dim: "var(--color-dim)", // body text
+        ink: "var(--color-ink)", // primary text
         acid: {
-          DEFAULT: "#ccff00",
-          hi: "#e4ff6b",
+          DEFAULT: "var(--color-acid)",
+          hi: "var(--color-acid-hi)",
         },
-        magenta: "#ff2e6b",
-        amber: "#ffb020",
+        magenta: "var(--color-magenta)",
+        amber: "var(--color-amber)",
+        // Fixed neon regardless of theme — reserved for the logo mark
+        // (components/shared/Brand.js), a brand-identity element that should
+        // stay recognizable rather than adapt like everything else.
+        brand: "var(--color-brand)",
+        "brand-magenta": "var(--color-brand-magenta)",
+        "on-brand": "var(--color-on-brand)",
       },
       fontFamily: {
         display: ["'Chakra Petch'", "sans-serif"],
@@ -45,9 +54,9 @@ module.exports = {
       },
       backgroundImage: {
         scanlines:
-          "repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px)",
+          "repeating-linear-gradient(0deg,var(--scanline-rgba) 0 1px,transparent 1px 4px)",
         "scanlines-faint":
-          "repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px)",
+          "repeating-linear-gradient(0deg,var(--scanline-rgba-faint) 0 1px,transparent 1px 4px)",
       },
       keyframes: {
         tick: {

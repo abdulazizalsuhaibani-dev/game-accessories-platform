@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
-<g fill="none" stroke="#ccff00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-<path d="M200 46l112 46v116l-112 46-112-46V92z" fill="#ccff00" fill-opacity=".05"></path>
+<g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M200 46l112 46v116l-112 46-112-46V92z" fill="currentColor" fill-opacity=".05"></path>
 <path d="M88 92l112 46 112-46"></path>
 <path d="M200 138v116"></path>
 <path d="M144 115v54" stroke-opacity=".5"></path>
