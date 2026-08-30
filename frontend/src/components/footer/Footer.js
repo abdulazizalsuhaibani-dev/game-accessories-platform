@@ -18,17 +18,18 @@ export default function Footer() {
     {
       heading: t("footer.support"),
       links: [
-        { label: t("footer.contact"), to: "/products" },
-        { label: t("footer.shipping"), to: "/products" },
-        { label: t("footer.returns"), to: "/products" },
+        { label: t("footer.contact"), to: "/contact" },
+        { label: t("footer.shipping"), to: "/shipping" },
+        { label: t("footer.returns"), to: "/returns" },
+        { label: t("footer.faq"), to: "/faq" },
       ],
     },
     {
       heading: t("footer.company"),
       links: [
-        { label: t("footer.about"), to: "/products" },
-        { label: t("footer.terms"), to: "/products" },
-        { label: t("footer.privacy"), to: "/products" },
+        { label: t("footer.about"), to: "/about" },
+        { label: t("footer.terms"), to: "/terms" },
+        { label: t("footer.privacy"), to: "/privacy" },
       ],
     },
   ];

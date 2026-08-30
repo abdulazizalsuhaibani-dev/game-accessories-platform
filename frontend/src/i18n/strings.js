@@ -65,6 +65,7 @@ const strings = {
     "footer.about": "About",
     "footer.terms": "Terms",
     "footer.privacy": "Privacy",
+    "footer.faq": "FAQ",
     "footer.rights": "© 2026 Game Accessories",
     "footer.reserved": "All rights reserved",
 
@@ -290,6 +291,120 @@ const strings = {
 
     "common.loading": "Loading…",
     "common.close": "Close",
+
+    "contact.title": "Contact",
+    "contact.intro":
+      "Questions about an order, a product, or anything else — reach out and we'll get back to you.",
+    "contact.emailLabel": "Email",
+    "contact.email": "support@gameacc.com",
+    "contact.hoursLabel": "Hours",
+    "contact.hours": "Sunday–Thursday, 9:00–18:00 (Riyadh, GMT+3)",
+    "contact.locationLabel": "Based in",
+    "contact.location": "Riyadh, Saudi Arabia",
+
+    "about.title": "About",
+    "about.p1":
+      "Game/Acc started as a shelf of gear we couldn't stop recommending to friends — mice, keyboards, headsets, monitors, controllers and chairs picked for people who take their setup seriously.",
+    "about.p2":
+      "We're based in Riyadh and ship across the GCC, carrying gear from the brands players already trust rather than chasing every new release.",
+    "about.p3":
+      "The acid-green, telemetry-readout look isn't just a theme — it's the same \"does this actually perform\" scrutiny we put into every product on the shelf.",
+
+    "faq.title": "FAQ",
+    "faq.q1": "What payment methods do you accept?",
+    "faq.a1":
+      "Visa, Mastercard and PayPal. We never store your full card number — only what's needed to confirm the order.",
+    "faq.q2": "Where do you ship?",
+    "faq.a2": "Across the GCC: Saudi Arabia, the UAE, Kuwait, Qatar, Bahrain and Oman.",
+    "faq.q3": "How long does delivery take?",
+    "faq.a3":
+      "1–2 business days within Riyadh, 2–5 business days elsewhere in the GCC. Orders over 500 SAR ship free.",
+    "faq.q4": "What's your return policy?",
+    "faq.a4":
+      "30 days from delivery, unused and in original packaging. See our Returns page for the full process.",
+    "faq.q5": "How do I track my order?",
+    "faq.a5": "Order status and history are available from your account once you're signed in.",
+    "faq.q6": "Do I need an account to buy something?",
+    "faq.a6":
+      "Yes — creating an account lets us confirm the order and keep your order history in one place.",
+    "faq.q7": "Are the products genuine?",
+    "faq.a7":
+      "Yes. Everything we carry is sourced from authorized brands and distributors — no grey-market stock.",
+
+    "shipping.title": "Shipping",
+    "shipping.intro": "We ship across the GCC from our warehouse in Riyadh.",
+    "shipping.s1Heading": "Delivery times",
+    "shipping.s1Body":
+      "1–2 business days within Riyadh. 2–5 business days for the rest of Saudi Arabia and the wider GCC (UAE, Kuwait, Qatar, Bahrain, Oman).",
+    "shipping.s2Heading": "Shipping cost",
+    "shipping.s2Body":
+      "Free on orders over 500 SAR (or the equivalent in your selected currency). A flat delivery fee applies below that.",
+    "shipping.s3Heading": "Processing time",
+    "shipping.s3Body":
+      "Orders placed before 3pm Riyadh time ship the same day; later orders ship the next business day.",
+    "shipping.s4Heading": "Order tracking",
+    "shipping.s4Body": "Once your order ships, its status is visible from your account's order history.",
+
+    "returns.title": "Returns",
+    "returns.intro": "Not the right fit? You have 30 days from delivery to send it back.",
+    "returns.s1Heading": "Return window",
+    "returns.s1Body":
+      "30 days from the delivery date. Items must be unused, undamaged and in their original packaging.",
+    "returns.s2Heading": "How to start a return",
+    "returns.s2Body":
+      "Email us at support@gameacc.com with your order number and the item you'd like to return, and we'll send you next steps.",
+    "returns.s3Heading": "Refunds",
+    "returns.s3Body":
+      "Once we receive and inspect the item, refunds are issued to your original payment method within 5–10 business days.",
+    "returns.s4Heading": "Return shipping",
+    "returns.s4Body":
+      "Return shipping is free for defective or incorrect items. For change-of-mind returns, the cost of return shipping is deducted from the refund.",
+    "returns.s5Heading": "Exchanges",
+    "returns.s5Body":
+      "We don't process direct exchanges — return the item for a refund and place a new order for the item you want instead.",
+
+    "terms.title": "Terms of Service",
+    "terms.intro": "By using Game/Acc, you agree to the terms below.",
+    "terms.s1Heading": "Your account",
+    "terms.s1Body":
+      "You're responsible for keeping your account credentials secure and for all activity under your account.",
+    "terms.s2Heading": "Orders and pricing",
+    "terms.s2Body":
+      "We make every effort to keep prices and stock accurate, but we may cancel or adjust an order if an item is mispriced or out of stock, in which case you'll be notified and refunded in full.",
+    "terms.s3Heading": "Acceptable use",
+    "terms.s3Body":
+      "Don't use the site to do anything unlawful, to interfere with its operation, or to attempt to access accounts or data that aren't yours.",
+    "terms.s4Heading": "Intellectual property",
+    "terms.s4Body":
+      "The Game/Acc name, logo and site design belong to us; product names, images and trademarks belong to their respective owners.",
+    "terms.s5Heading": "Limitation of liability",
+    "terms.s5Body":
+      "We're not liable for indirect or incidental damages arising from use of the site or the products sold through it, beyond what's required by applicable law.",
+    "terms.s6Heading": "Governing law",
+    "terms.s6Body": "These terms are governed by the laws of Saudi Arabia.",
+    "terms.s7Heading": "Changes to these terms",
+    "terms.s7Body":
+      "We may update these terms from time to time; continued use of the site after a change means you accept the update.",
+
+    "privacy.title": "Privacy Policy",
+    "privacy.intro": "This explains what information we collect and how we use it.",
+    "privacy.s1Heading": "Information we collect",
+    "privacy.s1Body":
+      "Account details (name, email), order and delivery information, and any reviews you post.",
+    "privacy.s2Heading": "How we use it",
+    "privacy.s2Body":
+      "To process and deliver your orders, manage your account, and show your name on reviews you write.",
+    "privacy.s3Heading": "Payment information",
+    "privacy.s3Body":
+      "We never store your full card number. Payment details are only used to confirm the transaction at checkout.",
+    "privacy.s4Heading": "Local storage",
+    "privacy.s4Body":
+      "Your language, currency, theme and cart are saved in your browser's local storage so they persist between visits — this data stays on your device.",
+    "privacy.s5Heading": "Your rights",
+    "privacy.s5Body":
+      "You can review or update your account details at any time from your profile, or contact us to request deletion of your data.",
+    "privacy.s6Heading": "Contact",
+    "privacy.s6Body": "Questions about this policy? Email us at support@gameacc.com.",
   },
 
   ar: {
@@ -356,6 +471,7 @@ const strings = {
     "footer.about": "من نحن",
     "footer.terms": "الشروط",
     "footer.privacy": "الخصوصية",
+    "footer.faq": "الأسئلة الشائعة",
     "footer.rights": "© ٢٠٢٦ Game Accessories",
     "footer.reserved": "جميع الحقوق محفوظة",
 
@@ -573,6 +689,106 @@ const strings = {
 
     "common.loading": "جارٍ التحميل…",
     "common.close": "إغلاق",
+
+    "contact.title": "تواصل معنا",
+    "contact.intro": "لديك سؤال عن طلب أو منتج أو أي شيء آخر؟ تواصل معنا وسنعاود الرد عليك.",
+    "contact.emailLabel": "البريد الإلكتروني",
+    "contact.email": "support@gameacc.com",
+    "contact.hoursLabel": "ساعات العمل",
+    "contact.hours": "الأحد–الخميس، ٩:٠٠–١٨:٠٠ (الرياض، توقيت غرينتش+٣)",
+    "contact.locationLabel": "مقرنا",
+    "contact.location": "الرياض، المملكة العربية السعودية",
+
+    "about.title": "من نحن",
+    "about.p1":
+      "بدأت Game/Acc كرف من الأجهزة التي لم نتوقف عن التوصية بها لأصدقائنا — فأرات، لوحات مفاتيح، سماعات، شاشات، أجهزة تحكم وكراسي مختارة لمن يهتم فعلاً بإعداده.",
+    "about.p2":
+      "مقرنا في الرياض ونشحن إلى دول الخليج، ونوفر منتجات من العلامات التي يثق بها اللاعبون بدلاً من ملاحقة كل إصدار جديد.",
+    "about.p3":
+      "الطابع الأخضر الفسفوري وواجهة \"القياس عن بُعد\" ليست مجرد شكل — بل تعكس نفس الدقة التي نطبّقها على كل منتج على الرف.",
+
+    "faq.title": "الأسئلة الشائعة",
+    "faq.q1": "ما هي طرق الدفع المتاحة؟",
+    "faq.a1": "فيزا وماستركارد وباي بال. لا نخزّن رقم بطاقتك الكامل أبدًا — فقط ما يلزم لتأكيد الطلب.",
+    "faq.q2": "إلى أين تشحنون؟",
+    "faq.a2": "نشحن إلى دول الخليج: المملكة العربية السعودية، الإمارات، الكويت، قطر، البحرين وعُمان.",
+    "faq.q3": "كم يستغرق التوصيل؟",
+    "faq.a3":
+      "يوم إلى يومي عمل داخل الرياض، ومن ٢ إلى ٥ أيام عمل في باقي دول الخليج. الطلبات فوق ٥٠٠ ريال تُشحن مجانًا.",
+    "faq.q4": "ما هي سياسة الإرجاع؟",
+    "faq.a4":
+      "٣٠ يومًا من تاريخ التسليم، بشرط أن يكون المنتج غير مستخدم وبتغليفه الأصلي. راجع صفحة الإرجاع للتفاصيل الكاملة.",
+    "faq.q5": "كيف أتابع طلبي؟",
+    "faq.a5": "حالة الطلب وسجله متاحان من حسابك بعد تسجيل الدخول.",
+    "faq.q6": "هل أحتاج حسابًا للشراء؟",
+    "faq.a6": "نعم — إنشاء حساب يتيح لنا تأكيد الطلب والاحتفاظ بسجل طلباتك في مكان واحد.",
+    "faq.q7": "هل المنتجات أصلية؟",
+    "faq.a7": "نعم. كل ما نوفره مصدره علامات تجارية وموزعون معتمدون — دون أي منتجات من السوق الموازية.",
+
+    "shipping.title": "الشحن",
+    "shipping.intro": "نشحن إلى دول الخليج من مستودعنا في الرياض.",
+    "shipping.s1Heading": "مدة التوصيل",
+    "shipping.s1Body":
+      "يوم إلى يومي عمل داخل الرياض. من ٢ إلى ٥ أيام عمل لباقي المملكة ودول الخليج (الإمارات، الكويت، قطر، البحرين، عُمان).",
+    "shipping.s2Heading": "تكلفة الشحن",
+    "shipping.s2Body":
+      "مجاني للطلبات فوق ٥٠٠ ريال (أو ما يعادلها بعملتك المختارة). يُطبّق رسم شحن ثابت لما دون ذلك.",
+    "shipping.s3Heading": "مدة التجهيز",
+    "shipping.s3Body": "الطلبات قبل الساعة ٣ عصرًا بتوقيت الرياض تُشحن في نفس اليوم؛ وما بعدها يُشحن في يوم العمل التالي.",
+    "shipping.s4Heading": "متابعة الطلب",
+    "shipping.s4Body": "بمجرد شحن طلبك، تظهر حالته في سجل الطلبات ضمن حسابك.",
+
+    "returns.title": "الإرجاع",
+    "returns.intro": "المنتج غير مناسب؟ لديك ٣٠ يومًا من تاريخ التسليم لإرجاعه.",
+    "returns.s1Heading": "مدة الإرجاع",
+    "returns.s1Body": "٣٠ يومًا من تاريخ التسليم. يجب أن يكون المنتج غير مستخدم وغير تالف وبتغليفه الأصلي.",
+    "returns.s2Heading": "كيفية بدء الإرجاع",
+    "returns.s2Body":
+      "راسلنا على support@gameacc.com برقم طلبك والمنتج الذي ترغب بإرجاعه، وسنرسل لك الخطوات التالية.",
+    "returns.s3Heading": "استرداد المبلغ",
+    "returns.s3Body": "بعد استلام المنتج وفحصه، يُسترد المبلغ إلى وسيلة الدفع الأصلية خلال ٥ إلى ١٠ أيام عمل.",
+    "returns.s4Heading": "تكلفة إرجاع الشحنة",
+    "returns.s4Body":
+      "شحن الإرجاع مجاني للمنتجات التالفة أو الخاطئة. أما في حال تغيير الرأي، تُخصم تكلفة شحن الإرجاع من المبلغ المسترد.",
+    "returns.s5Heading": "الاستبدال",
+    "returns.s5Body": "لا نوفر استبدالًا مباشرًا — أرجع المنتج لاسترداد المبلغ ثم ضع طلبًا جديدًا للمنتج الذي تريده.",
+
+    "terms.title": "شروط الخدمة",
+    "terms.intro": "باستخدامك لموقع Game/Acc، فإنك توافق على الشروط التالية.",
+    "terms.s1Heading": "حسابك",
+    "terms.s1Body": "أنت مسؤول عن الحفاظ على سرية بيانات حسابك وعن جميع الأنشطة التي تتم من خلاله.",
+    "terms.s2Heading": "الطلبات والأسعار",
+    "terms.s2Body":
+      "نبذل جهدنا للحفاظ على دقة الأسعار والمخزون، لكن قد نُلغي أو نعدّل طلبًا في حال وجود خطأ في السعر أو نفاد المخزون، وسيتم إعلامك واسترداد المبلغ بالكامل.",
+    "terms.s3Heading": "الاستخدام المقبول",
+    "terms.s3Body":
+      "يُمنع استخدام الموقع لأي غرض غير قانوني، أو التأثير على تشغيله، أو محاولة الوصول إلى حسابات أو بيانات لا تخصك.",
+    "terms.s4Heading": "الملكية الفكرية",
+    "terms.s4Body": "اسم Game/Acc وشعاره وتصميم الموقع ملك لنا؛ أسماء المنتجات وصورها وعلاماتها التجارية ملك لأصحابها.",
+    "terms.s5Heading": "حدود المسؤولية",
+    "terms.s5Body":
+      "لسنا مسؤولين عن أي أضرار غير مباشرة أو عرضية ناتجة عن استخدام الموقع أو المنتجات المباعة عبره، بما يتجاوز ما يقتضيه القانون المعمول به.",
+    "terms.s6Heading": "القانون المعمول به",
+    "terms.s6Body": "تخضع هذه الشروط لأنظمة المملكة العربية السعودية.",
+    "terms.s7Heading": "التعديلات على هذه الشروط",
+    "terms.s7Body": "قد نُحدّث هذه الشروط من وقت لآخر؛ واستمرارك في استخدام الموقع بعد أي تعديل يعني موافقتك عليه.",
+
+    "privacy.title": "سياسة الخصوصية",
+    "privacy.intro": "توضح هذه الصفحة المعلومات التي نجمعها وكيفية استخدامها.",
+    "privacy.s1Heading": "المعلومات التي نجمعها",
+    "privacy.s1Body": "بيانات الحساب (الاسم والبريد الإلكتروني)، معلومات الطلب والتوصيل، وأي تقييمات تكتبها.",
+    "privacy.s2Heading": "كيفية استخدامها",
+    "privacy.s2Body": "لمعالجة طلباتك وتوصيلها، وإدارة حسابك، وإظهار اسمك على التقييمات التي تكتبها.",
+    "privacy.s3Heading": "معلومات الدفع",
+    "privacy.s3Body": "لا نخزّن رقم بطاقتك الكامل أبدًا. تُستخدم بيانات الدفع فقط لتأكيد العملية عند الدفع.",
+    "privacy.s4Heading": "التخزين المحلي",
+    "privacy.s4Body":
+      "يتم حفظ لغتك وعملتك ونمط العرض وسلة التسوق في التخزين المحلي لمتصفحك لتبقى محفوظة بين الزيارات — وتبقى هذه البيانات على جهازك فقط.",
+    "privacy.s5Heading": "حقوقك",
+    "privacy.s5Body":
+      "يمكنك مراجعة بيانات حسابك أو تعديلها في أي وقت من صفحتك الشخصية، أو التواصل معنا لطلب حذف بياناتك.",
+    "privacy.s6Heading": "التواصل",
+    "privacy.s6Body": "لديك سؤال عن هذه السياسة؟ راسلنا على support@gameacc.com.",
   },
 };
 
