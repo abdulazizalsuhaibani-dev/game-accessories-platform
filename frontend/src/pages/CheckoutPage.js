@@ -9,7 +9,6 @@ export default function CheckoutPage(prop) {
     setOpenErrorSnackBar,
     cart,
     setCart,
-    setCartCount,
   } = prop;
 
   return (
@@ -20,7 +19,6 @@ export default function CheckoutPage(prop) {
       setOpenErrorSnackBar={setOpenErrorSnackBar}
       cart={cart}
       setCart={setCart}
-      setCartCount={setCartCount}
     />
   );
 }

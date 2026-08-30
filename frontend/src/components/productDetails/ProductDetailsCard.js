@@ -17,7 +17,6 @@ export default function ProductDetailsCard(prop) {
     setWishListCount,
     cart,
     setCart,
-    setCartCount,
     userData,
     isAuthenticated,
     setSnackBarMessage,
@@ -64,7 +63,6 @@ export default function ProductDetailsCard(prop) {
 
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCart(updatedCart);
-    setCartCount(updatedCart.length);
     setSnackBarMessage(t("detail.addedToCart"));
     setOpenSuccessSnackBar(true);
   }
@@ -73,7 +71,6 @@ export default function ProductDetailsCard(prop) {
     const line = [buildCartLine(quantity)];
     localStorage.setItem("cart", JSON.stringify(line));
     setCart(line);
-    setCartCount(line.length);
     navigate("/checkout");
   }
 

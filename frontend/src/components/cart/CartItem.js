@@ -6,13 +6,12 @@ import { productName } from "../../utils/productText";
 import Money from "../shared/Money";
 
 export default function CartItem(prop) {
-  const { cartItem, cart, setCart, setCartCount, setSnackBarMessage, setOpenErrorSnackBar } = prop;
+  const { cartItem, cart, setCart, setSnackBarMessage, setOpenErrorSnackBar } = prop;
   const { t, num, locale } = useStoreSettings();
 
   function writeCart(updatedCart) {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCart(updatedCart);
-    setCartCount(updatedCart.length);
   }
 
   function setQuantity(next) {

@@ -15,7 +15,6 @@ export default function ProductDetailsPage(prop) {
     setWishListCount,
     cart,
     setCart,
-    setCartCount,
     userData,
     isAuthenticated,
     setSnackBarMessage,
@@ -70,7 +69,6 @@ export default function ProductDetailsPage(prop) {
         setWishListCount={setWishListCount}
         cart={cart}
         setCart={setCart}
-        setCartCount={setCartCount}
         userData={userData}
         isAuthenticated={isAuthenticated}
         setSnackBarMessage={setSnackBarMessage}

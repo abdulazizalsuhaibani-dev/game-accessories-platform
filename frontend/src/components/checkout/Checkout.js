@@ -14,7 +14,7 @@ import * as yup from "yup";
 import OrderForm from "../forms/OrderForm";
 import PaymentForm from "../forms/PaymentForm";
 import OrderSummary from "../cart/OrderSummary";
-import { cartItemCount, cartSubtotal } from "../cart/Cart";
+import { cartItemCount, cartSubtotal } from "../../utils/cart";
 import { API_BASE, authHeaders } from "../../api";
 import { productName } from "../../utils/productText";
 import { useStoreSettings } from "../../context/StoreSettings";
@@ -100,7 +100,6 @@ export default function Checkout(prop) {
     setOpenErrorSnackBar,
     cart,
     setCart,
-    setCartCount,
   } = prop;
   const { t, locale } = useStoreSettings();
   const navigate = useNavigate();
@@ -277,7 +276,6 @@ export default function Checkout(prop) {
       localStorage.removeItem("cart");
       localStorage.removeItem("cartId");
       setCart([]);
-      setCartCount(0);
       setOpenDialog(true);
     } catch (error) {
       // The API answers a CustomException as { statusCode, message }. A DTO rule
