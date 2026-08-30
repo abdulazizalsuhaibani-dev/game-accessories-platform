@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using src.Entity;
 
 namespace src.DTO
@@ -17,6 +18,14 @@ namespace src.DTO
             public string? DescriptionAr { get; set; }
             public int SKU { get; set; }
             public decimal ProductPrice { get; set; }
+
+            // a whole percent. [ApiController] turns anything outside 0-100 into a 400
+            // before the service runs, so the clamp in PricingUtils is a backstop rather
+            // than the only guard
+            [Range(0, 100)]
+            public decimal DiscountPercentage { get; set; }
+            public DateTime? SaleStartsAt { get; set; }
+            public DateTime? SaleEndsAt { get; set; }
             public Guid SubCategoryId { get; set; }
             public string? SubCategoryName { get; set; }
         }
@@ -40,7 +49,18 @@ namespace src.DTO
             public string Description { get; set; }
             public string? DescriptionAr { get; set; }
             public int SKU { get; set; }
+
+            // the list price, always - it is not overwritten when a sale is running
             public decimal ProductPrice { get; set; }
+            public decimal DiscountPercentage { get; set; }
+            public DateTime? SaleStartsAt { get; set; }
+            public DateTime? SaleEndsAt { get; set; }
+
+            // What the customer would actually pay right now, or null when nothing is
+            // on sale. Computed server-side on every read path so the storefront never
+            // repeats the percentage or the date arithmetic - and so a client whose
+            // clock is wrong cannot disagree with the price it will be charged.
+            public decimal? SalePrice { get; set; }
             public decimal? AverageRating { get; set; }
         }
 
@@ -78,6 +98,11 @@ namespace src.DTO
             public string? DescriptionAr { get; set; }
             public int SKU { get; set; }
             public decimal ProductPrice { get; set; }
+
+            [Range(0, 100)]
+            public decimal DiscountPercentage { get; set; }
+            public DateTime? SaleStartsAt { get; set; }
+            public DateTime? SaleEndsAt { get; set; }
             // null leaves the product where it is; supplying it re-derives SubCategoryName
             // from the looked-up subcategory, the same way creation does
             public Guid? SubCategoryId { get; set; }

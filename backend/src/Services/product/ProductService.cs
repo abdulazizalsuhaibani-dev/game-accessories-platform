@@ -78,6 +78,9 @@ namespace src.Services.product
                 DescriptionAr = createProductDto.DescriptionAr,
                 SKU = createProductDto.SKU,
                 ProductPrice = createProductDto.ProductPrice,
+                DiscountPercentage = createProductDto.DiscountPercentage,
+                SaleStartsAt = createProductDto.SaleStartsAt,
+                SaleEndsAt = createProductDto.SaleEndsAt,
                 SubCategoryId = subCategory.SubCategoryId,
                 SubCategoryName = subCategory.Name // Link to the correct subcategory
 

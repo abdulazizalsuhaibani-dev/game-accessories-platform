@@ -41,7 +41,15 @@ namespace src.Services.Payment
                 src.Entity.Coupon coupon = await _paymentRepo.GetCoupon(createDto.CouponId);
                 if (coupon != null && coupon.IsActive)
                 {
-                    createDto.TotalPrice = cart.TotalPrice * (1 - coupon.DiscountPercentage);// update total price with coupon
+                    // cart.TotalPrice already carries any product sale, because the cart
+                    // line captured the discounted UnitPrice. So a coupon stacks on top
+                    // of a sale, applied to the already-discounted total.
+                    //
+                    // This used to read cart.TotalPrice * (1 - coupon.DiscountPercentage),
+                    // treating a whole percent as a fraction: a 20% coupon produced
+                    // total * -19. ApplyPercentage is the one place that decides what a
+                    // percentage means, and it clamps to 0-100.
+                    createDto.TotalPrice = PricingUtils.ApplyPercentage(cart.TotalPrice, coupon.DiscountPercentage);
                 }
                 else
                 {
@@ -96,7 +104,8 @@ namespace src.Services.Payment
                 src.Entity.Coupon coupon = await _paymentRepo.GetCoupon(updateDto.CouponId);
                 if (coupon != null && coupon.IsActive)
                 {
-                    updateDto.TotalPrice = cart.TotalPrice * (1 - coupon.DiscountPercentage);// update total price with coupon
+                    // same stacking and same clamp as the create path above
+                    updateDto.TotalPrice = PricingUtils.ApplyPercentage(cart.TotalPrice, coupon.DiscountPercentage);
                 }
                 else
                 {

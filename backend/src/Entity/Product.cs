@@ -33,7 +33,21 @@ namespace src.Entity
 
         public int SKU { get; set; }
 
+        // the list price. it stays the list price when the product is on sale - what
+        // a shopper is charged is derived from it by PricingUtils, never stored here,
+        // so ending a sale is a matter of the window lapsing rather than an edit that
+        // has to remember the original number
         public decimal ProductPrice { get; set; }
+
+        // a whole percent, 0-100. zero means no sale. the window is optional at both
+        // ends: no start means "already running", no end means "until switched off".
+        // the effective price is computed at read time from these three, so a sale
+        // expires on its own - there is no job that has to run for it to stop
+        public decimal DiscountPercentage { get; set; }
+
+        public DateTime? SaleStartsAt { get; set; }
+
+        public DateTime? SaleEndsAt { get; set; }
 
         public decimal? AverageRating { get; set; }
     }

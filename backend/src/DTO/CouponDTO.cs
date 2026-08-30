@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using src.Entity;
 
@@ -12,6 +13,12 @@ namespace src.DTO
         public class CouponCreateDto
         {
             public string CouponCode { get; set; }
+
+            // a whole percent, the same convention product sales use. it was previously
+            // read as a fraction when applied, so a coupon stored as 20 produced a
+            // negative payment total; the range guard stops the ambiguous values
+            // reaching the table at all
+            [Range(0, 100)]
             public decimal DiscountPercentage { get; set; }
             public bool IsActive { get; set; }
         }
