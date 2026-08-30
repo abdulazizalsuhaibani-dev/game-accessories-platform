@@ -16,6 +16,13 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import EntityPage from "./pages/EntityPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import FaqPage from "./pages/FaqPage";
+import ShippingPage from "./pages/ShippingPage";
+import ReturnsPage from "./pages/ReturnsPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 import axios from "axios";
 import ProtectedRoute from "./components/shared/ProtectedRoute";
 import Layout from "./components/shared/Layout";
@@ -209,6 +216,13 @@ function Store() {
                   }
                   key="wishlist"
                 />,
+                <Route path="/about" element={<AboutPage />} key="about" />,
+                <Route path="/contact" element={<ContactPage />} key="contact" />,
+                <Route path="/faq" element={<FaqPage />} key="faq" />,
+                <Route path="/shipping" element={<ShippingPage />} key="shipping" />,
+                <Route path="/returns" element={<ReturnsPage />} key="returns" />,
+                <Route path="/terms" element={<TermsPage />} key="terms" />,
+                <Route path="/privacy" element={<PrivacyPage />} key="privacy" />,
                 <Route
                   path="/profile"
                   element={
