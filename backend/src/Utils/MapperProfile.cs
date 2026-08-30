@@ -40,6 +40,13 @@ namespace src.Utils
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
+            CreateMap<UpdateProductInfoDto, Product>()
+                // The null-guard above doesn't protect Guid? -> Guid: AutoMapper still
+                // resolves a null source through GetValueOrDefault() and writes
+                // Guid.Empty, which then violates the SubCategory FK on save. Left to
+                // the explicit SubCategoryId handling in ProductService instead, which
+                // already treats "omitted" as "leave it where it is".
+                .ForMember(dest => dest.SubCategoryId, opt => opt.Ignore());
 
             // Category mappings
             CreateMap<Category, CategoryReadDto>();
