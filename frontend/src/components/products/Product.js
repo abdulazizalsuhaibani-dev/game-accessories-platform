@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName } from "../../utils/productText";
-import Money from "../shared/Money";
+import PriceBlock from "../shared/PriceBlock";
+import { isOnSale } from "../../utils/pricing";
 
 export default function Product({ product }) {
   const { t, num, locale } = useStoreSettings();
   // `sku === 0` missed a string "0", a null or an absent sku and called all three
   // in stock. Every other stock check in the app compares rather than identifies.
   const outOfStock = Number(product.sku) <= 0;
+  const onSale = isOnSale(product);
 
   return (
     <Link
@@ -32,6 +34,17 @@ export default function Product({ product }) {
             {t("list.outOfStock")}
           </span>
         ) : null}
+        {/* Opposite corner from the out-of-stock pill so the two can coexist, and
+            `end` rather than `right` so it mirrors under RTL. */}
+        {onSale ? (
+          <span className="pointer-events-none absolute top-3 end-3 status-pill bg-acid text-chassis">
+            {t("list.saleBadge", {
+              percent: Math.round(
+                (1 - product.salePrice / product.productPrice) * 100
+              ),
+            })}
+          </span>
+        ) : null}
       </ImageWell>
 
       <div className="p-4">
@@ -43,13 +56,12 @@ export default function Product({ product }) {
         </div>
 
         <div className="mt-3.5 flex items-center justify-between border-t border-line pt-3.5">
-          <span
+          <PriceBlock
+            product={product}
             className={`font-display text-[19px] font-bold ${
               outOfStock ? "text-dim" : "text-acid"
             }`}
-          >
-            <Money amount={product.productPrice} />
-          </span>
+          />
           <span className="font-mono text-[11px] font-medium text-dim">
             {num(Number(product.averageRating || 0).toFixed(1))}★
           </span>

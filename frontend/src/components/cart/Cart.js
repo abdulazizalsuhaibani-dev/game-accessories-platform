@@ -7,10 +7,14 @@ import ImageWell from "../shared/ImageWell";
 import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName } from "../../utils/productText";
-import Money from "../shared/Money";
+import PriceBlock from "../shared/PriceBlock";
+import { effectivePrice } from "../../utils/pricing";
 
 export function cartSubtotal(cart) {
-  return cart.reduce((sum, line) => sum + line.product.productPrice * line.quantity, 0);
+  // the effective price, not the list price: the server charges the sale price
+  // (it is captured onto the cart line when the cart is created), so summing
+  // list prices here would show a subtotal the customer is not asked to pay
+  return cart.reduce((sum, line) => sum + effectivePrice(line.product) * line.quantity, 0);
 }
 
 export function cartItemCount(cart) {
@@ -106,8 +110,12 @@ export default function Cart(prop) {
                       <div className="truncate text-[13px] font-medium leading-snug text-ink">
                         {productName(product, locale)}
                       </div>
-                      <div className="mt-1.5 font-display text-sm font-bold text-acid">
-                        <Money amount={product.productPrice} />
+                      <div className="mt-1.5">
+                        <PriceBlock
+                          product={product}
+                          className="font-display text-sm font-bold text-acid"
+                          strikeClassName="font-mono text-[11px] font-medium text-dim"
+                        />
                       </div>
                     </div>
                   </Link>

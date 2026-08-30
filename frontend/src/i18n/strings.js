@@ -87,6 +87,9 @@ const strings = {
     "list.prev": "Prev",
     "list.empty": "No results.",
     "list.outOfStock": "Out of stock",
+    "list.onSale": "Sale",
+    "list.saleBadge": "-{percent}%",
+    "list.was": "Was",
     "list.loadError": "We couldn't find products!",
 
     "detail.addToCart": "Add to cart",
@@ -493,6 +496,9 @@ const strings = {
     "list.prev": "السابق",
     "list.empty": "لا توجد نتائج.",
     "list.outOfStock": "غير متوفر",
+    "list.onSale": "تخفيض",
+    "list.saleBadge": "{percent}%-",
+    "list.was": "كان",
     "list.loadError": "تعذّر العثور على المنتجات!",
 
     "detail.addToCart": "أضف إلى السلة",
