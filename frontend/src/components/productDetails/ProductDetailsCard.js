@@ -151,7 +151,7 @@ export default function ProductDetailsCard(prop) {
 
         {product.productColor ? (
           <div>
-            <div className="mb-2.5 telemetry text-[11px] text-dim">{t("detail.colour")}</div>
+            <div className="mb-2.5 telemetry text-[11px] text-dim">{t("detail.color")}</div>
             <span
               className="block h-9 w-9 border border-acid"
               style={{ background: product.productColor }}
