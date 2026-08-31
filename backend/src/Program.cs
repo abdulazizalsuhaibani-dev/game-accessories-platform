@@ -149,7 +149,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-app.UseHttpsRedirection();
+// There is deliberately no app.UseHttpsRedirection() here. Render terminates TLS
+// at its proxy and forwards over plain HTTP, and the container only ever listens
+// on http://0.0.0.0:5125 (see the Dockerfile) - it has no HTTPS endpoint to
+// redirect to. The call used to sit at the end of this file, after
+// MapControllers(), where it never ran for a matched route: middleware order is
+// execution order, so it read as protection that was not there. Moving it up
+// without first adding UseForwardedHeaders would be worse than useless - the app
+// would see http, redirect to https, and the proxy would forward it as http
+// again. If redirection is ever wanted here, configure forwarded headers first.
 
 app.Run();
