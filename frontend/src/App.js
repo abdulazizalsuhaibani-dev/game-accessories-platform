@@ -23,6 +23,7 @@ import ShippingPage from "./pages/ShippingPage";
 import ReturnsPage from "./pages/ReturnsPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
+import SubscriptionActionPage from "./pages/SubscriptionActionPage";
 import axios from "axios";
 import ProtectedRoute from "./components/shared/ProtectedRoute";
 import Layout from "./components/shared/Layout";
@@ -223,6 +224,18 @@ function Store() {
                 <Route path="/returns" element={<ReturnsPage />} key="returns" />,
                 <Route path="/terms" element={<TermsPage />} key="terms" />,
                 <Route path="/privacy" element={<PrivacyPage />} key="privacy" />,
+                // where the links in our emails land - public, since a subscriber need not
+                // have an account
+                <Route
+                  path="/subscriptions/confirm"
+                  element={<SubscriptionActionPage action="confirm" />}
+                  key="subscriptionConfirm"
+                />,
+                <Route
+                  path="/subscriptions/unsubscribe"
+                  element={<SubscriptionActionPage action="unsubscribe" />}
+                  key="subscriptionUnsubscribe"
+                />,
                 <Route
                   path="/profile"
                   element={
