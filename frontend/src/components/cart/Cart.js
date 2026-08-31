@@ -8,20 +8,12 @@ import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName } from "../../utils/productText";
 import Money from "../shared/Money";
-
-export function cartSubtotal(cart) {
-  return cart.reduce((sum, line) => sum + line.product.productPrice * line.quantity, 0);
-}
-
-export function cartItemCount(cart) {
-  return cart.reduce((sum, line) => sum + line.quantity, 0);
-}
+import { cartSubtotal, cartItemCount } from "../../utils/cart";
 
 export default function Cart(prop) {
   const {
     cart,
     setCart,
-    setCartCount,
     userData,
     setSnackBarMessage,
     setOpenErrorSnackBar,
@@ -80,7 +72,6 @@ export default function Cart(prop) {
               cartItem={cartItem}
               cart={cart}
               setCart={setCart}
-              setCartCount={setCartCount}
               setSnackBarMessage={setSnackBarMessage}
               setOpenErrorSnackBar={setOpenErrorSnackBar}
             />

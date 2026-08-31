@@ -26,6 +26,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import axios from "axios";
 import ProtectedRoute from "./components/shared/ProtectedRoute";
 import Layout from "./components/shared/Layout";
+import { cartItemCount } from "./utils/cart";
 import DocumentTitle from "./components/shared/DocumentTitle";
 import CheckoutPage from "./pages/CheckoutPage";
 
@@ -65,16 +66,14 @@ function Store() {
     return wishListCount;
   }
 
-  function initializeCartCount() {
-    const cart = initializeCart();
-    const cartCount = cart.length;
-    return cartCount;
-  }
-
   const [wishList, setWishList] = useState(initializeWishlist);
   const [wishListCount, setWishListCount] = useState(initializeWishlistCount);
   const [cart, setCart] = useState(initializeCart);
-  const [cartCount, setCartCount] = useState(initializeCartCount);
+  // Derived, never set. The badge is the sum of quantities, which is what a
+  // shopper expects and what the cart summary already showed; keeping it as
+  // state meant four call sites each writing their own idea of the count, and
+  // three of them wrote the number of lines instead.
+  const cartCount = useMemo(() => cartItemCount(cart), [cart]);
   const [userData, setUserData] = useState(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState(true);
   const [openSuccessSnackBar, setOpenSuccessSnackBar] = useState(false);
@@ -177,8 +176,6 @@ function Store() {
                       setWishListCount={setWishListCount}
                       cart={cart}
                       setCart={setCart}
-                      cartCount={cartCount}
-                      setCartCount={setCartCount}
                       userData={userData}
                       isAuthenticated={isAuthenticated}
                       setSnackBarMessage={setSnackBarMessage}
@@ -194,8 +191,6 @@ function Store() {
                     <CartPage
                       cart={cart}
                       setCart={setCart}
-                      cartCount={cartCount}
-                      setCartCount={setCartCount}
                       userData={userData}
                       setSnackBarMessage={setSnackBarMessage}
                       setOpenSuccessSnackBar={setOpenSuccessSnackBar}
@@ -257,7 +252,6 @@ function Store() {
                           setOpenSuccessSnackBar={setOpenSuccessSnackBar}
                           setOpenErrorSnackBar={setOpenErrorSnackBar}
                           setCart={setCart}
-                          setCartCount={setCartCount}
                           cart={cart}
                         />
                       }

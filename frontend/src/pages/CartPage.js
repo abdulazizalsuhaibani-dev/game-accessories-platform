@@ -5,8 +5,6 @@ export default function CartPage(prop) {
   const {
     cart,
     setCart,
-    cartCount,
-    setCartCount,
     userData,
     setSnackBarMessage,
     setOpenSuccessSnackBar,
@@ -18,8 +16,6 @@ export default function CartPage(prop) {
       <Cart
         cart={cart}
         setCart={setCart}
-        cartCount={cartCount}
-        setCartCount={setCartCount}
         userData={userData}
         setSnackBarMessage={setSnackBarMessage}
         setOpenSuccessSnackBar={setOpenSuccessSnackBar}
