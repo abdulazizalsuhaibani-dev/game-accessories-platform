@@ -105,7 +105,7 @@ export default function SearchOptionsForm(prop) {
       </div>
 
       <div>
-        <div className="mb-3 telemetry text-[11px] text-ink">{t("list.colour")}</div>
+        <div className="mb-3 telemetry text-[11px] text-ink">{t("list.color")}</div>
         <div className="flex flex-col gap-2.5">
           {COLORS.map((color) => {
             const checked = colorSelect === color;

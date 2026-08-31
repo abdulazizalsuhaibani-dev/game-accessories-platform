@@ -27,7 +27,7 @@ const FIELDS = [
   { id: "brand", label: "Brand" },
   { id: "nameAr", label: "Product name (Arabic)" },
   { id: "productImage", label: "Product image URL" },
-  { id: "productColor", label: "Product colour" },
+  { id: "productColor", label: "Product color" },
   { id: "description", label: "Description", multiline: true },
   { id: "descriptionAr", label: "Description (Arabic)", multiline: true },
   { id: "sku", label: "SKU", type: "number" },
