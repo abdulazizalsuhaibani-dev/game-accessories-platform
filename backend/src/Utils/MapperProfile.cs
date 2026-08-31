@@ -32,7 +32,23 @@ namespace src.Utils
                 );
 
             // Product Mapping
-            CreateMap<Product, GetProductDto>();
+            //
+            // SalePrice is stamped here rather than at each read path in ProductService:
+            // nine methods map a Product to a GetProductDto, and a helper call missed in
+            // one of them is a product that quietly shows its list price on one screen
+            // and its sale price on another. Doing it in the map means every read path,
+            // including the ones that return the product just created or updated, is
+            // covered by construction.
+            CreateMap<Product, GetProductDto>()
+                .AfterMap((product, dto) =>
+                    dto.SalePrice = PricingUtils.SalePriceOrNull(
+                        product.ProductPrice,
+                        product.DiscountPercentage,
+                        product.SaleStartsAt,
+                        product.SaleEndsAt,
+                        DateTime.UtcNow
+                    )
+                );
             CreateMap<BrandSummary, BrandSummaryDto>();
             CreateMap<CreateProductDto, Product>();
             CreateMap<UpdateProductInfoDto, Product>()

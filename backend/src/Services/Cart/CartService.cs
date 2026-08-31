@@ -27,6 +27,9 @@ namespace src.Services.cart
                 CartQuantity = 0,
                 TotalPrice = 0
             };
+            // one timestamp for the whole cart, so a sale that lapses mid-loop cannot
+            // price the first line on sale and the second at list
+            var nowUtc = DateTime.UtcNow;
             foreach (var detailsDto in createDto.CartDetails)
             {
                 //check if product exists
@@ -40,6 +43,7 @@ namespace src.Services.cart
                 {
                     Product = product,
                     Quantity = detailsDto.Quantity,
+                    UnitPrice = PricingUtils.EffectiveUnitPrice(product, nowUtc),
                     CartId = cart.Id
                 };
                 cart.CartDetails.Add(cartDetails);
@@ -85,6 +89,7 @@ namespace src.Services.cart
 
             foundCart.CartDetails.Clear();
 
+            var nowUtc = DateTime.UtcNow;
 
             foreach (var detailsDto in updateDto.CartDetails)
             {
@@ -98,6 +103,7 @@ namespace src.Services.cart
                 {
                     Product = product,
                     Quantity = detailsDto.Quantity,
+                    UnitPrice = PricingUtils.EffectiveUnitPrice(product, nowUtc),
                     CartId = foundCart.Id
                 };
                 foundCart.CartDetails.Add(cartDetails);
