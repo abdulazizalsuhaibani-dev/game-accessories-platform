@@ -49,6 +49,11 @@ namespace src.Entity
 
         public DateTime? SaleEndsAt { get; set; }
 
+        // stamped once the sale has been announced to subscribers, so a restart or a
+        // second scan cannot mail the same sale twice. Cleared when the discount goes
+        // back to zero, so the next sale on this product announces again.
+        public DateTime? SaleAnnouncedAt { get; set; }
+
         public decimal? AverageRating { get; set; }
     }
 }

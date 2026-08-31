@@ -19,6 +19,9 @@ using src.Services.review;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using src.Services.Coupon;
 using src.Services.Media;
+using src.Services.Email;
+using src.Services.Notifications;
+using src.Services.Subscriptions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +55,44 @@ builder
     .AddScoped<IReviewService, ReviewService>().AddScoped<ReviewRepository, ReviewRepository>()
     .AddScoped<ICouponService, CouponService>().AddScoped<CouponRepository, CouponRepository>()
     .AddScoped<IImageUploadService, ImageUploadService>();
+
+// Subscriptions and outbound email.
+//
+// The queue and the sender are singletons because the two BackgroundServices below
+// are; the service and repository stay scoped like every other pair here.
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>()
+    .AddScoped<SubscriptionRepository, SubscriptionRepository>();
+
+builder.Services.AddSingleton<EmailQueue>();
+
+builder.Services.AddSingleton(new StorefrontOptions
+{
+    // where confirm and unsubscribe links point. Overridable so a local run can send
+    // links back to localhost:3000 instead of the deployed store.
+    BaseUrl = builder.Configuration["Storefront:BaseUrl"] ?? "https://game-accessories-store.onrender.com"
+});
+
+// Resend when a key is configured, a logging sender when it is not - the same way
+// image upload degrades without a Cloudinary section, so a fresh clone runs and the
+// subscribe flow can be exercised by reading the token out of the console.
+var resendApiKey = builder.Configuration["Resend:ApiKey"];
+if (string.IsNullOrWhiteSpace(resendApiKey))
+{
+    builder.Services.AddSingleton<IEmailSender, LoggingEmailSender>();
+}
+else
+{
+    var resendOptions = new ResendOptions
+    {
+        ApiKey = resendApiKey,
+        From = builder.Configuration["Resend:From"] ?? "onboarding@resend.dev"
+    };
+    builder.Services.AddSingleton(resendOptions);
+    builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>();
+}
+
+builder.Services.AddHostedService<EmailDispatcherBackgroundService>();
+builder.Services.AddHostedService<SaleAnnouncerBackgroundService>();
 
 
 // setting CORS

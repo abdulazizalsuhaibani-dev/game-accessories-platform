@@ -44,6 +44,18 @@ same `appsettings.json` — everything else runs without it, and only
 production these are the `Cloudinary__CloudName`, `Cloudinary__ApiKey` and
 `Cloudinary__ApiSecret` environment variables on the Render service.
 
+Restock and sale notifications send email through [Resend](https://resend.com).
+Add a `Resend` section (`ApiKey`, `From`) to the same `appsettings.json`, or the
+`Resend__ApiKey` and `Resend__From` environment variables on Render. **Without a
+key nothing breaks**: a logging sender takes over and writes each message to the
+console instead, so a fresh clone runs and the subscribe flow can be exercised
+locally by copying the confirm link out of the log. `From` must be an address on
+a domain verified with Resend, which is the usual first thing to get wrong.
+
+Confirmation and unsubscribe links point at the storefront, not the API.
+`Storefront:BaseUrl` (or `Storefront__BaseUrl`) sets that origin; it defaults to
+the deployed store, so point it at `http://localhost:3000` when testing locally.
+
 **`backend/Migrations/` is committed**, and the API applies any pending
 migration on startup — so pointing a fresh, empty database at it and running
 `dotnet run` is enough to build the schema. The same code path migrates the

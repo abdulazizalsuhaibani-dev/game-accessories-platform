@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using src.Database;
 using src.Entity;
 using src.Repository;
+using src.Services.Subscriptions;
 using src.Utils;
 using static src.DTO.OrderDTO;
 
@@ -15,6 +16,9 @@ namespace src.Services
         protected readonly ProductRepository _productRepository;
         protected readonly PaymentRepository _paymentRepository;
         protected readonly UserRepository _userRepository;
+        // the restock alert hook. Cancelling an order puts stock back, which is one of
+        // only two places SKU rises
+        protected readonly ISubscriptionService _subscriptionService;
         // placing an order writes to several tables through several repositories,
         // and the context is what lets those writes share one transaction
         protected readonly DatabaseContext _databaseContext;
@@ -23,7 +27,8 @@ namespace src.Services
 
         public OrderService(OrderRepository orderRepository, CartRepository cartRepository,
             ProductRepository productRepository, PaymentRepository paymentRepository,
-            UserRepository userRepository, DatabaseContext databaseContext, IMapper mapper)
+            UserRepository userRepository, DatabaseContext databaseContext,
+            ISubscriptionService subscriptionService, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;
@@ -31,6 +36,7 @@ namespace src.Services
             _paymentRepository = paymentRepository;
             _userRepository = userRepository;
             _databaseContext = databaseContext;
+            _subscriptionService = subscriptionService;
             _mapper = mapper;
         }
 
@@ -184,8 +190,15 @@ namespace src.Services
             foreach (var cartdetail in cart.CartDetails)
             {
                 var product = cartdetail.Product;
+                var previousSku = product.SKU;
                 product.SKU += cartdetail.Quantity;
                 await _productRepository.UpdateProductInfoAsync(product);
+
+                // Cancelling the order that emptied the shelf puts the product back, and
+                // that is a genuine restock for anyone waiting on it. This is the second
+                // of the two paths that move stock; the other is the admin edit in
+                // ProductService. Both go through the same 0 -> positive check.
+                await _subscriptionService.OnStockChangedAsync(product.ProductId, previousSku, product.SKU);
             }
 
             return await _orderRepository.DeleteOneAsync(foundOrder);
