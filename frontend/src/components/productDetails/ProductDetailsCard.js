@@ -5,7 +5,7 @@ import Reviews from "./Reviews";
 import ReviewForm from "../forms/ReviewForm";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName, productDescription } from "../../utils/productText";
-import Money from "../shared/Money";
+import PriceBlock from "../shared/PriceBlock";
 
 const TABS = ["specs", "reviews", "shipping"];
 
@@ -127,9 +127,11 @@ export default function ProductDetailsCard(prop) {
         </h1>
 
         <div className="flex flex-wrap items-baseline gap-3">
-          <span className="font-display text-[34px] font-bold leading-none text-acid">
-            <Money amount={product.productPrice} />
-          </span>
+          <PriceBlock
+            product={product}
+            className="font-display text-[34px] font-bold leading-none text-acid"
+            strikeClassName="font-mono text-base font-medium text-dim"
+          />
           <span className="ms-auto font-mono text-xs font-medium text-dim">
             {num(Number(product.averageRating || 0).toFixed(1))}★
           </span>

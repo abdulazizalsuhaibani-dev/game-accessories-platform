@@ -16,11 +16,14 @@ const BLANK_PRODUCT = {
   description: "",
   sku: 0,
   productPrice: 0,
+  discountPercentage: 0,
   categoryId: "",
   subCategoryId: "",
 };
 
-const NUMERIC_FIELDS = ["sku", "productPrice"];
+// consulted by onChangeHandler to Number()-cast; a percentage left out of this
+// list would post as a string and be rejected by the [Range] guard on the API
+const NUMERIC_FIELDS = ["sku", "productPrice", "discountPercentage"];
 
 const FIELDS = [
   { id: "productName", label: "Product name" },
@@ -32,6 +35,10 @@ const FIELDS = [
   { id: "descriptionAr", label: "Description (Arabic)", multiline: true },
   { id: "sku", label: "SKU", type: "number" },
   { id: "productPrice", label: "Price", type: "number" },
+  // 0 means no sale. The sale window is left to the products grid rather than
+  // added here: creation with a future-dated sale is not a case that comes up,
+  // and two more date inputs in the popover earn nothing.
+  { id: "discountPercentage", label: "Discount %", type: "number" },
 ];
 
 export default function ProductEditToolbar(props) {

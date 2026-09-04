@@ -26,6 +26,9 @@ const READ_ONLY_FIELDS = [
   "id",
   "isNew",
   "productId",
+  // derived by the API from the percentage and the window; sending it back would
+  // be claiming to set a price the server computes for itself
+  "salePrice",
   "subCategoryName",
 ];
 
@@ -146,6 +149,40 @@ export default function ProductsTable(prop) {
     { field: "descriptionAr", headerName: "Description (AR)", width: 200, editable: true },
     { field: "sku", headerName: "Stock", type: "number", width: 90, editable: true },
     { field: "productPrice", headerName: "Price", type: "number", width: 100, editable: true },
+    // The sale, editable in place. READ_ONLY_FIELDS is a denylist, so declaring
+    // these columns is enough for them to reach the PUT. salePrice is computed by
+    // the API and is shown read-only so an admin can see what a percentage works
+    // out to without being able to type a price the server would ignore.
+    {
+      field: "discountPercentage",
+      headerName: "Discount %",
+      type: "number",
+      width: 110,
+      editable: true,
+    },
+    {
+      field: "saleStartsAt",
+      headerName: "Sale from",
+      type: "dateTime",
+      width: 160,
+      editable: true,
+      valueGetter: (value) => (value ? new Date(value) : null),
+    },
+    {
+      field: "saleEndsAt",
+      headerName: "Sale until",
+      type: "dateTime",
+      width: 160,
+      editable: true,
+      valueGetter: (value) => (value ? new Date(value) : null),
+    },
+    {
+      field: "salePrice",
+      headerName: "Sale price",
+      type: "number",
+      width: 110,
+      editable: false,
+    },
     {
       field: "subCategoryId",
       headerName: "Sub-category",

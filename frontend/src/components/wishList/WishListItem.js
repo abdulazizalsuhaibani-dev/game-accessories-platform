@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName } from "../../utils/productText";
-import Money from "../shared/Money";
+import PriceBlock from "../shared/PriceBlock";
 
 export default function WishListItem({ wishListItem, onRemove }) {
   const { t, locale } = useStoreSettings();
@@ -28,8 +28,14 @@ export default function WishListItem({ wishListItem, onRemove }) {
           <div className="text-[15px] font-semibold leading-snug text-ink">
             {productName(wishListItem, locale)}
           </div>
-          <div className="mt-3.5 border-t border-line pt-3.5 font-display text-[19px] font-bold text-acid">
-            <Money amount={wishListItem.productPrice} />
+          <div className="mt-3.5 border-t border-line pt-3.5">
+            {/* the wishlist stores the whole product object, so the saved row is
+                the product PriceBlock expects. Rows saved before sales existed
+                carry no salePrice and fall back to the list price. */}
+            <PriceBlock
+              product={wishListItem}
+              className="font-display text-[19px] font-bold text-acid"
+            />
           </div>
         </div>
       </Link>

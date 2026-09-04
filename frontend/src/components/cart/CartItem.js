@@ -4,6 +4,7 @@ import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName } from "../../utils/productText";
 import Money from "../shared/Money";
+import { effectivePrice } from "../../utils/pricing";
 
 export default function CartItem(prop) {
   const { cartItem, cart, setCart, setSnackBarMessage, setOpenErrorSnackBar } = prop;
@@ -88,7 +89,9 @@ export default function CartItem(prop) {
 
       <div className="flex flex-col items-end gap-3">
         <div className="font-display text-xl font-bold text-ink">
-          <Money amount={cartItem.product.productPrice * cartItem.quantity} />
+          {/* the line total has to use the price the server will charge, or the
+              cart's own arithmetic disagrees with the total that comes back */}
+          <Money amount={effectivePrice(cartItem.product) * cartItem.quantity} />
         </div>
         <div className="flex h-9 border border-line">
           <button
