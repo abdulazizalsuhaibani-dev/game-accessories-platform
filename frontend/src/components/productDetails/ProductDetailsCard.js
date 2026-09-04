@@ -6,6 +6,7 @@ import ReviewForm from "../forms/ReviewForm";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName, productDescription } from "../../utils/productText";
 import PriceBlock from "../shared/PriceBlock";
+import RestockNotify from "./RestockNotify";
 
 const TABS = ["specs", "reviews", "shipping"];
 
@@ -213,10 +214,15 @@ export default function ProductDetailsCard(prop) {
             </div>
           </>
         ) : (
-          <div className="flex items-center gap-2.5 border border-magenta p-4 telemetry text-[11px] text-magenta">
-            <span className="h-[7px] w-[7px] flex-none bg-magenta" aria-hidden="true" />
-            {t("detail.outOfStock")}
-          </div>
+          <>
+            <div className="flex items-center gap-2.5 border border-magenta p-4 telemetry text-[11px] text-magenta">
+              <span className="h-[7px] w-[7px] flex-none bg-magenta" aria-hidden="true" />
+              {t("detail.outOfStock")}
+            </div>
+            {/* the moment a customer wanted to buy and could not is exactly when
+                a restock alert is worth offering */}
+            <RestockNotify productId={product.productId} />
+          </>
         )}
 
         <div className="flex flex-col gap-3 border-t border-line pt-5">

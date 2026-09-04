@@ -37,6 +37,8 @@ export default function DocumentTitle() {
       [/^\/returns$/, t("returns.title")],
       [/^\/terms$/, t("terms.title")],
       [/^\/privacy$/, t("privacy.title")],
+      [/^\/subscriptions\/confirm$/, t("notify.confirmTitle")],
+      [/^\/subscriptions\/unsubscribe$/, t("notify.unsubTitle")],
       [/^\/profile$/, t("profile.title")],
       [/^\/login$/, t("auth.signIn")],
       [/^\/signUp$/, t("auth.createAccount")],
