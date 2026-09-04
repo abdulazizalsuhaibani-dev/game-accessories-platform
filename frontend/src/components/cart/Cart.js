@@ -7,8 +7,8 @@ import ImageWell from "../shared/ImageWell";
 import { API_BASE } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName } from "../../utils/productText";
-import Money from "../shared/Money";
 import { cartSubtotal, cartItemCount } from "../../utils/cart";
+import PriceBlock from "../shared/PriceBlock";
 
 export default function Cart(prop) {
   const {
@@ -97,8 +97,12 @@ export default function Cart(prop) {
                       <div className="truncate text-[13px] font-medium leading-snug text-ink">
                         {productName(product, locale)}
                       </div>
-                      <div className="mt-1.5 font-display text-sm font-bold text-acid">
-                        <Money amount={product.productPrice} />
+                      <div className="mt-1.5">
+                        <PriceBlock
+                          product={product}
+                          className="font-display text-sm font-bold text-acid"
+                          strikeClassName="font-mono text-[11px] font-medium text-dim"
+                        />
                       </div>
                     </div>
                   </Link>

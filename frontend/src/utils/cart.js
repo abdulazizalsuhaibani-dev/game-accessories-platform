@@ -9,8 +9,13 @@
 // quantity, so both figures are derivable from the array and neither needs to be
 // tracked as separate state.
 
+import { effectivePrice } from "./pricing";
+
 export function cartSubtotal(cart) {
-  return cart.reduce((sum, line) => sum + line.product.productPrice * line.quantity, 0);
+  // the effective price, not the list price: the server charges the sale price
+  // (it is captured onto the cart line when the cart is created), so summing
+  // list prices here would show a subtotal the customer is not asked to pay
+  return cart.reduce((sum, line) => sum + effectivePrice(line.product) * line.quantity, 0);
 }
 
 export function cartItemCount(cart) {

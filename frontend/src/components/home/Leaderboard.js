@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ImageWell from "../shared/ImageWell";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { productName } from "../../utils/productText";
-import Money from "../shared/Money";
+import PriceBlock from "../shared/PriceBlock";
 
 /** Top four products, ranked — the numbered corner tab marks first place acid. */
 export default function Leaderboard({ products, loading }) {
@@ -51,9 +51,10 @@ export default function Leaderboard({ products, loading }) {
                     {productName(product, locale)}
                   </div>
                   <div className="mt-3.5 flex items-center justify-between border-t border-line pt-3.5">
-                    <span className="font-display text-[19px] font-bold text-acid">
-                      <Money amount={product.productPrice} />
-                    </span>
+                    <PriceBlock
+                      product={product}
+                      className="font-display text-[19px] font-bold text-acid"
+                    />
                     <span className="font-mono text-[11px] font-medium text-dim">
                       {num(Number(product.averageRating || 0).toFixed(1))}★
                     </span>
