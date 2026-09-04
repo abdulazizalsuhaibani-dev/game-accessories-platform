@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using src.Entity;
 using src.Repository;
 using src.Services.Media;
+using src.Services.Subscriptions;
 using src.Utils;
 using static src.DTO.ProductDTO;
 
@@ -13,18 +14,23 @@ namespace src.Services.product
         private readonly ProductRepository _productRepository;
         private readonly SubCategoryRepository _subCategories;
         private readonly IImageUploadService _imageUploadService;
+        // restock alerts fire from the admin stock edit; the other stock path is
+        // an order being cancelled, in OrderService
+        private readonly ISubscriptionService _subscriptionService;
         private readonly IMapper _mapper;
 
         public ProductService(
             ProductRepository productRepository,
             SubCategoryRepository subCategoryRepository,
             IImageUploadService imageUploadService,
+            ISubscriptionService subscriptionService,
             IMapper mapper
         )
         {
             _productRepository = productRepository;
             _subCategories = subCategoryRepository;
             _imageUploadService = imageUploadService;
+            _subscriptionService = subscriptionService;
             _mapper = mapper;
         }
 
@@ -198,6 +204,12 @@ namespace src.Services.product
             var previousImage = isFound.ProductImage;
             var imageChanged = product.ProductImage != null && product.ProductImage != previousImage;
 
+            // read before the map, so the 0 -> positive edge can be spotted after it.
+            // This is one of only two places a SKU rises; the other is an order being
+            // cancelled, in OrderService.
+            var previousSku = isFound.SKU;
+            var previousDiscount = isFound.DiscountPercentage;
+
             _mapper.Map(product, isFound);
 
             // Moving a product between subcategories was impossible: the DTO carried no
@@ -214,7 +226,15 @@ namespace src.Services.product
                 isFound.SubCategoryName = subCategory.Name;
             }
 
+            // A sale being switched off resets the announcement stamp, so the next sale
+            // on this product is announced rather than treated as already sent.
+            if (previousDiscount > 0 && isFound.DiscountPercentage <= 0)
+                isFound.SaleAnnouncedAt = null;
+
             var updatedProduct = await _productRepository.UpdateProductInfoAsync(isFound);
+
+            // after the save, so nobody is told a product is back before it actually is
+            await _subscriptionService.OnStockChangedAsync(isFound.ProductId, previousSku, isFound.SKU);
 
             if (imageChanged)
                 await _imageUploadService.DeleteIfManagedAsync(previousImage);
