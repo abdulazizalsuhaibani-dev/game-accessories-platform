@@ -4,15 +4,8 @@ import ImageWell from "../shared/ImageWell";
 import HeroImage from "../images/hero.jpg";
 import { useStoreSettings } from "../../context/StoreSettings";
 
-export default function Hero({ stats }) {
-  const { t, num } = useStoreSettings();
-
-  // The only figure here that anything can vouch for. It used to sit beside a
-  // hardcoded "24h" dispatch time with no data source at all, and an "average
-  // rating" computed from the four products the home page happened to fetch.
-  // Both had fallback constants, so they rendered a number even when the API
-  // never answered. Nothing renders now until the count arrives.
-  const itemCount = stats?.itemCount;
+export default function Hero() {
+  const { t } = useStoreSettings();
 
   return (
     <section className="grid border-b border-line lg:grid-cols-[1.05fr_.95fr]">
@@ -30,19 +23,6 @@ export default function Hero({ stats }) {
             {t("hero.ctaPrimary")}
           </Link>
         </div>
-
-        {itemCount == null ? null : (
-          <dl className="mt-5 flex flex-wrap gap-9 border-t border-line pt-6">
-            <div>
-              <dd className="m-0 font-display text-[26px] font-bold leading-none text-ink">
-                {num(itemCount)}
-              </dd>
-              <dt className="mt-2 telemetry text-[10px] font-medium text-muted">
-                {t("hero.statItems")}
-              </dt>
-            </div>
-          </dl>
-        )}
       </div>
 
       <ImageWell
