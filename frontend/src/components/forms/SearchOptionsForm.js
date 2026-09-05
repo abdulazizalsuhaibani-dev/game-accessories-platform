@@ -2,6 +2,7 @@ import React from "react";
 import { Slider } from "@mui/material";
 import { useStoreSettings } from "../../context/StoreSettings";
 import Money from "../shared/Money";
+import { categoryLabel } from "../../utils/categoryLabel";
 
 export const PRICE_FLOOR = 0;
 export const PRICE_CEILING = 500;
@@ -16,6 +17,12 @@ export default function SearchOptionsForm(prop) {
   const {
     searchInput,
     setSearchInput,
+    categories,
+    categorySelect,
+    onToggleCategory,
+    brands,
+    brandSelect,
+    onToggleBrand,
     priceRange,
     setPriceRange,
     colorSelect,
@@ -74,6 +81,56 @@ export default function SearchOptionsForm(prop) {
           className="field h-9 text-xs"
         />
       </div>
+
+      {categories.length ? (
+        <div>
+          <div className="mb-3 telemetry text-[11px] text-ink">{t("list.category")}</div>
+          <div className="flex flex-col gap-2.5">
+            {categories.map((category) => {
+              const checked = categorySelect === category.id;
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => onToggleCategory(category.id)}
+                  aria-pressed={checked}
+                  className="flex items-center gap-2.5 text-start text-[13px] text-dim hover:text-ink"
+                >
+                  <span className={`box-check ${checked ? "box-check-on" : ""}`} />
+                  <span className={checked ? "text-ink" : undefined}>
+                    {categoryLabel(t, category.categoryName)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
+      {brands.length ? (
+        <div>
+          <div className="mb-3 telemetry text-[11px] text-ink">{t("list.brand")}</div>
+          <div className="flex flex-col gap-2.5">
+            {brands.map((brand) => {
+              const checked = brandSelect === brand.brand;
+              return (
+                <button
+                  key={brand.brand}
+                  type="button"
+                  onClick={() => onToggleBrand(brand.brand)}
+                  aria-pressed={checked}
+                  className="flex items-center gap-2.5 text-start text-[13px] text-dim hover:text-ink"
+                >
+                  <span className={`box-check ${checked ? "box-check-on" : ""}`} />
+                  {/* Brand names are proper nouns, not translated — same as the home
+                      page's brand chips. */}
+                  <span className={checked ? "text-ink" : undefined}>{brand.brand}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
 
       <div>
         <div className="mb-3 telemetry text-[11px] text-ink">{t("list.price")}</div>

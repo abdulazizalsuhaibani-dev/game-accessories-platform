@@ -93,6 +93,52 @@ export default function Products() {
     };
   }, [urlCategory]);
 
+  // Every category and every brand the catalogue actually stocks, for the rail's
+  // pickers — the same two endpoints the home page's tiles and chips already use.
+  // Fetched once; unrelated to whichever one is currently selected.
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    axios
+      .get(`${API_BASE}/Categories/summary`)
+      .then((response) => {
+        if (!cancelled) setCategories(Array.isArray(response.data) ? response.data : []);
+      })
+      .catch(() => {
+        if (!cancelled) setCategories([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  useEffect(() => {
+    let cancelled = false;
+    axios
+      .get(`${API_BASE}/Products/brands`)
+      .then((response) => {
+        if (!cancelled) setBrands(Array.isArray(response.data) ? response.data : []);
+      })
+      .catch(() => {
+        if (!cancelled) setBrands([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Single-select, same as color: choosing the one already active clears it.
+  function toggleCategory(id) {
+    if (urlCategory === id) searchParams.delete("category");
+    else searchParams.set("category", id);
+    setSearchParams(searchParams, { replace: true });
+  }
+  function toggleBrand(brand) {
+    if (urlBrand === brand) searchParams.delete("brand");
+    else searchParams.set("brand", brand);
+    setSearchParams(searchParams, { replace: true });
+  }
+
   useEffect(() => {
     const params = new URLSearchParams({
       Limit: String(LIMIT),
@@ -277,6 +323,12 @@ export default function Products() {
         <SearchOptionsForm
           searchInput={searchInput}
           setSearchInput={setSearchInput}
+          categories={categories}
+          categorySelect={urlCategory}
+          onToggleCategory={toggleCategory}
+          brands={brands}
+          brandSelect={urlBrand}
+          onToggleBrand={toggleBrand}
           priceRange={priceRange}
           setPriceRange={setPriceRange}
           colorSelect={colorSelect}
