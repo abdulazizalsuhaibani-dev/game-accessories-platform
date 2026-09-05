@@ -132,6 +132,7 @@ const strings = {
     "detail.loadError": "We couldn't find that product!",
     "detail.addedToCart": "Added to cart",
     "detail.addedToWishlist": "Saved to wishlist",
+    "detail.removedFromWishlist": "Removed from wishlist",
 
     "cart.title": "Your cart",
     "cart.empty": "Your cart is empty!",
@@ -557,6 +558,7 @@ const strings = {
     "detail.loadError": "تعذّر العثور على هذا المنتج!",
     "detail.addedToCart": "أُضيف إلى السلة",
     "detail.addedToWishlist": "حُفظ في المفضلة",
+    "detail.removedFromWishlist": "أُزيل من المفضلة",
 
     "cart.title": "سلتك",
     "cart.empty": "سلتك فارغة!",

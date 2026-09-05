@@ -33,13 +33,14 @@ export default function ProductDetailsCard(prop) {
   const inStock = product.sku > 0;
   const saved = wishList.some((item) => item.productId === product.productId);
 
-  function handleAddToWishList() {
-    if (saved) return;
-    const updated = [...wishList, product];
+  function handleToggleWishList() {
+    const updated = saved
+      ? wishList.filter((item) => item.productId !== product.productId)
+      : [...wishList, product];
     localStorage.setItem("wishList", JSON.stringify(updated));
     setWishList(updated);
     setWishListCount(updated.length);
-    setSnackBarMessage(t("detail.addedToWishlist"));
+    setSnackBarMessage(t(saved ? "detail.removedFromWishlist" : "detail.addedToWishlist"));
     setOpenSuccessSnackBar(true);
   }
 
@@ -191,7 +192,7 @@ export default function ProductDetailsCard(prop) {
 
               <button
                 type="button"
-                onClick={handleAddToWishList}
+                onClick={handleToggleWishList}
                 aria-label={t("nav.wishlist")}
                 aria-pressed={saved}
                 className={`h-[52px] w-[52px] border text-base transition-colors ${
