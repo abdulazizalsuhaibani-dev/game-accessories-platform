@@ -24,7 +24,7 @@ export default function ImageWell({
   const showFallback = !src || failed;
 
   return (
-    <div className={`relative overflow-hidden bg-well ${className}`}>
+    <div className={`relative overflow-hidden bg-white ${className}`}>
       {showFallback ? (
         <Fallback
           aria-hidden={alt === "" ? "true" : undefined}
