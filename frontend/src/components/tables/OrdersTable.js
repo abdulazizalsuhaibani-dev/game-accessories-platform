@@ -7,9 +7,22 @@ import { API_BASE, authHeaders } from "../../api";
 import { useStoreSettings } from "../../context/StoreSettings";
 import { isShipped, isUnshipped } from "../../utils/orderStatus";
 
+// The API answers in UTC ISO strings ("2026-08-15T17:12:36.210634Z"); the grid
+// used to render those verbatim. Intl reads the viewer's own locale and
+// timezone, same as the customer-facing order history's `day()` helper.
+function formatOrderDate(value, locale) {
+  if (!value) return "—";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "—";
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar-SA" : "en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(parsed);
+}
+
 export default function OrdersTable(prop) {
   const { setSnackBarMessage, setOpenErrorSnackBar } = prop;
-  const { t } = useStoreSettings();
+  const { t, locale } = useStoreSettings();
   const [rows, setRows] = useState([]);
   const [query, setQuery] = useState("");
   const [unshippedOnly, setUnshippedOnly] = useState(false);
@@ -41,9 +54,19 @@ export default function OrdersTable(prop) {
       // left to identify the order by
       valueGetter: (value, row) => value || row.userId,
     },
-    { field: "orderDate", headerName: "Placed", width: 160 },
+    {
+      field: "orderDate",
+      headerName: "Placed",
+      width: 180,
+      valueFormatter: (value) => formatOrderDate(value, locale),
+    },
     // ShipDate is the delivery date promised at checkout, not a dispatch timestamp
-    { field: "shipDate", headerName: "Est. delivery", width: 160 },
+    {
+      field: "shipDate",
+      headerName: "Est. delivery",
+      width: 180,
+      valueFormatter: (value) => formatOrderDate(value, locale),
+    },
     {
       field: "orderStatus",
       headerName: "Status",
