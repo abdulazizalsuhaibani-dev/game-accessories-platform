@@ -43,7 +43,7 @@ export default function Header(prop) {
     <header className="sticky top-0 z-30 bg-chassis">
       <Ticker />
 
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line bg-panel px-4 py-2.5 sm:h-[66px] sm:flex-nowrap sm:px-7 sm:py-0">
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-b border-line bg-panel px-4 py-2.5 sm:h-[66px] sm:flex-nowrap sm:justify-between sm:px-7 sm:py-0">
         <div className="flex items-center gap-6 lg:gap-9">
           <Brand />
           <nav className="hidden items-center gap-6 lg:flex">
@@ -112,7 +112,7 @@ export default function Header(prop) {
       {/* Below lg the desktop nav next to the logo is hidden, so its links
           (plus account access) get their own stacked row here instead of a
           fixed bar that would float over page content while scrolling. */}
-      <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-line bg-panel px-4 py-2.5 lg:hidden">
+      <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-b border-line bg-panel px-4 py-2.5 lg:hidden">
         {navItems.map((item) => (
           <NavLink key={item.to} to={item.to} end={item.end} className={navClass}>
             {item.label}
