@@ -25,13 +25,16 @@ export default function ProductDetails(prop) {
   return (
     <div className="bg-chassis">
       <div className="flex items-center justify-between gap-4 border-b border-line px-6 py-4 sm:px-7">
-        <div className="telemetry text-[11px] font-medium tracking-badge text-muted">
+        <div className="telemetry min-w-0 truncate text-[11px] font-medium tracking-badge text-muted">
           <Link to="/products" className="text-muted hover:text-acid">
             {t("nav.shop")}
           </Link>{" "}
           / {productName(product, locale)}
         </div>
-        <Link to="/products" className="telemetry text-[11px] tracking-badge">
+        <Link
+          to="/products"
+          className="telemetry shrink-0 text-[11px] tracking-badge"
+        >
           <span aria-hidden="true">←</span> {t("cart.keepShopping")}
         </Link>
       </div>
