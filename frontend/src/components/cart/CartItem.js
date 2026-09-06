@@ -51,14 +51,14 @@ export default function CartItem(prop) {
   const inStock = cartItem.product.sku > 0;
 
   return (
-    <div className="flex flex-wrap gap-5 border-b border-line px-6 py-6 sm:px-7">
+    <div className="flex min-w-0 flex-col gap-5 border-b border-line px-6 py-6 sm:flex-row sm:flex-wrap sm:px-7">
       <ImageWell
         src={cartItem.product.productImage}
         alt={productName(cartItem.product, locale)}
         className="h-[110px] w-[110px] flex-none"
       />
 
-      <div className="flex min-w-[200px] flex-1 flex-col gap-2">
+      <div className="flex min-w-0 flex-col gap-2 sm:min-w-[200px] sm:flex-1">
         {cartItem.product.productColor ? (
           <div className="telemetry text-[10px] font-medium text-muted">
             {cartItem.product.productColor}
@@ -87,7 +87,7 @@ export default function CartItem(prop) {
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-3 max-sm:w-full max-sm:flex-row max-sm:items-center max-sm:justify-between">
+      <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
         <div className="font-display text-xl font-bold text-ink">
           {/* the line total has to use the price the server will charge, or the
               cart's own arithmetic disagrees with the total that comes back */}

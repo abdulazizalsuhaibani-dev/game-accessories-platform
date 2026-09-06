@@ -65,7 +65,7 @@ export default function Cart(prop) {
       </div>
 
       <div className="grid lg:grid-cols-[1fr_380px]">
-        <div className="border-line lg:border-e">
+        <div className="min-w-0 border-line lg:border-e">
           {cart.map((cartItem) => (
             <CartItem
               key={cartItem.product.productId}
@@ -85,7 +85,7 @@ export default function Cart(prop) {
                   <Link
                     key={product.productId}
                     to={`/products/${product.productId}`}
-                    className="panel flex items-center gap-3 p-3.5 transition-colors hover:border-acid"
+                    className="panel flex min-w-0 items-center gap-3 p-3.5 transition-colors hover:border-acid"
                   >
                     <ImageWell
                       src={product.productImage}
