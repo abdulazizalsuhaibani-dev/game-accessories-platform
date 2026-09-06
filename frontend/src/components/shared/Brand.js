@@ -13,7 +13,7 @@ export default function Brand({ to = "/", size = "md", badge }) {
     <>
       <span className={`${mark} flex-none bg-brand clip-mark`} aria-hidden="true" />
       <span
-        className={`${word} font-display font-bold uppercase tracking-wordmark text-ink`}
+        className={`${word} whitespace-nowrap font-display font-bold uppercase tracking-wordmark text-ink`}
         dir="ltr"
       >
         Game/Acc

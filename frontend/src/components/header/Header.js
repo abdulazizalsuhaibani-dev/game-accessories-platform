@@ -43,7 +43,7 @@ export default function Header(prop) {
     <header className="sticky top-0 z-30 bg-chassis">
       <Ticker />
 
-      <div className="flex h-[66px] items-center justify-between gap-4 border-b border-line bg-panel px-4 sm:px-7">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line bg-panel px-4 py-2.5 sm:h-[66px] sm:flex-nowrap sm:px-7 sm:py-0">
         <div className="flex items-center gap-6 lg:gap-9">
           <Brand />
           <nav className="hidden items-center gap-6 lg:flex">
