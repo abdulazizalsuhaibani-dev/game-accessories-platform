@@ -35,7 +35,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="border-t border-line bg-void px-4 pb-24 pt-8 sm:px-11 lg:pb-8">
+    <footer className="border-t border-line bg-void px-4 pb-8 pt-8 sm:px-11">
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Brand to={null} size="sm" />

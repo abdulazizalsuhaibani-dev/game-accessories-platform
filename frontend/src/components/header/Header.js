@@ -109,27 +109,39 @@ export default function Header(prop) {
         </div>
       </div>
 
-      {/* Compact tab bar for the mobile layout in screen 06. */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-line bg-panel lg:hidden">
-        {[
-          { to: "/products", label: t("nav.shop"), end: false },
-          { to: "/wishlist", label: t("nav.wishlist"), end: false },
-          { to: "/cart", label: t("nav.cart"), end: false },
-          { to: isAuthenticated ? "/profile" : "/login", label: t("nav.profile"), end: false },
-        ].map((item) => (
-          <NavLink
-            key={item.label}
-            to={item.to}
-            end={item.end}
-            className={({ isActive }) =>
-              `py-3 text-center telemetry text-[10px] tracking-badge transition-colors ${
-                isActive ? "text-acid" : "text-dim"
-              }`
-            }
-          >
+      {/* Below lg the desktop nav next to the logo is hidden, so its links
+          (plus account access) get their own stacked row here instead of a
+          fixed bar that would float over page content while scrolling. */}
+      <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-line bg-panel px-4 py-2.5 lg:hidden">
+        {navItems.map((item) => (
+          <NavLink key={item.to} to={item.to} end={item.end} className={navClass}>
             {item.label}
           </NavLink>
         ))}
+
+        {/* sm and up already show account access in the controls row above. */}
+        {isUserDataLoading ? null : isAuthenticated ? (
+          <>
+            <NavLink
+              to="/profile"
+              end={false}
+              className={(state) => `${navClass(state)} sm:hidden`}
+            >
+              {t("nav.profile")}
+            </NavLink>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="telemetry text-xs tracking-badge text-dim transition-colors hover:text-ink sm:hidden"
+            >
+              {t("nav.signOut")}
+            </button>
+          </>
+        ) : (
+          <NavLink to="/login" end={false} className={(state) => `${navClass(state)} sm:hidden`}>
+            {t("nav.signIn")}
+          </NavLink>
+        )}
       </nav>
     </header>
   );
