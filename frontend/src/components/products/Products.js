@@ -42,6 +42,9 @@ export default function Products() {
   const [colorSelect, setColorSelect] = useState("");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [page, setPage] = useState(1);
+  // Below `lg` the rail would otherwise sit above the grid and push every
+  // product below the fold, so it starts collapsed there.
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -319,25 +322,42 @@ export default function Products() {
         </div>
       </div>
 
+      <div className="border-b border-line px-6 py-3 sm:px-7 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((open) => !open)}
+          aria-expanded={filtersOpen}
+          className="flex h-9 w-full items-center justify-between border border-line px-3.5 telemetry text-[11px] tracking-badge text-ink transition-colors hover:border-acid hover:text-acid"
+        >
+          <span>
+            {t("list.filters")}
+            {activeFilters.length ? ` (${num(activeFilters.length)})` : ""}
+          </span>
+          <span aria-hidden="true">{filtersOpen ? "▴" : "▾"}</span>
+        </button>
+      </div>
+
       <div className="grid lg:grid-cols-[236px_1fr]">
-        <SearchOptionsForm
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-          categories={categories}
-          categorySelect={urlCategory}
-          onToggleCategory={toggleCategory}
-          brands={brands}
-          brandSelect={urlBrand}
-          onToggleBrand={toggleBrand}
-          priceRange={priceRange}
-          setPriceRange={setPriceRange}
-          colorSelect={colorSelect}
-          setColorSelect={setColorSelect}
-          inStockOnly={inStockOnly}
-          setInStockOnly={setInStockOnly}
-          activeFilters={activeFilters}
-          onClearFilters={clearAllFilters}
-        />
+        <div className={`${filtersOpen ? "block" : "hidden"} lg:block`}>
+          <SearchOptionsForm
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+            categories={categories}
+            categorySelect={urlCategory}
+            onToggleCategory={toggleCategory}
+            brands={brands}
+            brandSelect={urlBrand}
+            onToggleBrand={toggleBrand}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            colorSelect={colorSelect}
+            setColorSelect={setColorSelect}
+            inStockOnly={inStockOnly}
+            setInStockOnly={setInStockOnly}
+            activeFilters={activeFilters}
+            onClearFilters={clearAllFilters}
+          />
+        </div>
 
         <div className="px-6 pb-9 pt-6 sm:px-7">
           {loading ? <LinearProgress /> : null}

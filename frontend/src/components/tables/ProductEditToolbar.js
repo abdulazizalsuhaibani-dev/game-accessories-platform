@@ -150,7 +150,10 @@ export default function ProductEditToolbar(props) {
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
-        <form onSubmit={handleSubmit} className="flex w-[320px] flex-col gap-3 p-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-[320px] max-w-[calc(100vw-2rem)] flex-col gap-3 p-4"
+        >
           <div className="telemetry text-[11px] text-ink">{t("admin.addProduct")}</div>
 
           {FIELDS.map((field) => (

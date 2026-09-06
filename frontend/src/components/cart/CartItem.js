@@ -87,7 +87,7 @@ export default function CartItem(prop) {
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-3">
+      <div className="flex flex-col items-end gap-3 max-sm:w-full max-sm:flex-row max-sm:items-center max-sm:justify-between">
         <div className="font-display text-xl font-bold text-ink">
           {/* the line total has to use the price the server will charge, or the
               cart's own arithmetic disagrees with the total that comes back */}
